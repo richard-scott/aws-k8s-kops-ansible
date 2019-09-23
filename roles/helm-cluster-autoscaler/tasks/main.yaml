@@ -30,6 +30,7 @@
     --set rbac.create=true \
     --set rbac.pspEnabled=true \
     --set cloudProvider=aws \
+    --set replicaCount={{ node_count }} \
     stable/cluster-autoscaler
 
 - name: "Update ASG to {{ node_autoscaler_min }}:{{ node_autoscaler_max }} Nodes"
