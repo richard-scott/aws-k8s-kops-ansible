@@ -12,7 +12,15 @@
     state: present
     policy_json: " {{ lookup( 'template', 'cluster-autoscale.json.j2') }}"
 
-- name: Adding Metrics-Server via Helm
+- name: Wait for policy to be applied.
+  iam_role_facts:
+    name: "nodes.{{ cluster_name }}"
+  register: result
+  until: result.iam_roles[0].inline_policies | length > 1
+  retries: 30
+  delay: 60
+
+- name: Adding Cluster Autoscaller via Helm
   shell: |
     helm install --name cluster-autoscaler \
     --namespace kube-system \
@@ -20,8 +28,6 @@
     --set extraArgs.balance-similar-node-groups=true \
     --set extraArgs.scale-down-enabled=true \
     --set awsRegion="${REGION}" \
-    --set awsAccessKeyID="${AWS_SECRET_KEY}" \
-    --set awsSecretAcessKey="${AWS_ACCESS_KEY}" \
     --set rbac.create=true \
     --set rbac.pspEnabled=true \
     --set cloudProvider=aws \

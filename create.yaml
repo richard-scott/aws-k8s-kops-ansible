@@ -22,7 +22,7 @@
       name: helm-install
     tags: always
   - import_role:
-      name: helm_metrics_server
+      name: helm-metrics-server
     tags: always
   - import_role:
       name: helm-cluster-autoscaler
