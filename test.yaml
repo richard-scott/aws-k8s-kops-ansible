@@ -1,5 +1,0 @@
----
-- hosts: localhost
-  connection: local
-  roles:
-    - helm-cluster-autoscaler
