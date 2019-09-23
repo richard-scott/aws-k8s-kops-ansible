@@ -8,4 +8,5 @@
   shell: |
     helm install --name grafana \
     --namespace kube-system \
+    --service.type=LoadBalancer \    
     stable/grafana

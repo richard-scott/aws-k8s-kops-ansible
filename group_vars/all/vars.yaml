@@ -42,12 +42,12 @@ master_count: auto
 
 # Node configuration
 node_size: t2.medium
-node_count: 1
+node_count: 3
 # Use node_max_price if you want to use spot instances.
 # Useful to reduce cost during testing
 #node_max_price: 0.05
 node_autoscaler_min: 1
-node_autoscaler_max: 10
+node_autoscaler_max: 20
 # Use node_profile if you want custom iam policies
 #node_profile: arn:aws:iam::1234567890108:instance-profile/kops-custom-node-role
 
