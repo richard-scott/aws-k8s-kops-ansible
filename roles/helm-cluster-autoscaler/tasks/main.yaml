@@ -26,9 +26,14 @@
     --namespace kube-system \
     --set autoDiscovery.clusterName=k8s.rs.brainomix.com \
     --set extraArgs.balance-similar-node-groups=true \
-    --set extraArgs.scale-down-enabled=true \
     --set awsRegion="${REGION}" \
     --set rbac.create=true \
     --set rbac.pspEnabled=true \
     --set cloudProvider=aws \
     stable/cluster-autoscaler
+
+- name: "Update ASG to {{ node_autoscaler_min }}:{{ node_autoscaler_max }} Nodes"
+  ec2_asg:
+    name: "nodes.{{ cluster_name }}"
+    min_size: "{{ node_autoscaler_min }}"
+    max_size: "{{ node_autoscaler_max }}"

@@ -1,0 +1,11 @@
+---
+
+#####################################
+# Install Prometheus via Helm
+#####################################
+
+- name: Adding Prometheus via Helm
+  shell: |
+    helm install --name prometheus \
+    --namespace kube-system \
+    stable/prometheus
