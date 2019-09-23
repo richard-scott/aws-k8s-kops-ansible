@@ -1,7 +1,7 @@
 ---
 
 - name: Fetch current cluster config
-  shell: 'kops get cluster --name {{ cluster_name }} -o yaml > /tmp/{{ cluster_name }}-cluster-conf.yaml'
+  shell: 'kops get cluster --name {{ cluster_name }} -o yaml --state {{ state_store }} > /tmp/{{ cluster_name }}-cluster-conf.yaml'
   changed_when: false
 
 - name: Configure IAM ContainerRegistry 

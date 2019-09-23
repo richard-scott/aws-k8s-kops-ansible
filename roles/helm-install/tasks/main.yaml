@@ -1,0 +1,25 @@
+---
+
+####################
+# Install Helm
+####################
+
+- name: "Create 'tiller' Service Account"
+  shell: "{{ item }}"
+  with_items:
+    - "kubectl -n kube-system create serviceaccount tiller"
+    - "kubectl create clusterrolebinding tiller --clusterrole cluster-admin --serviceaccount=kube-system:tiller"
+
+- name: Install Helm
+  shell: "helm init --service-account tiller --history-max 200"
+
+- name: Waiting for Helm to start
+  shell: "helm version"
+  ignore_errors: true
+  register: cmd_result
+  until: cmd_result.rc == 0
+  retries: 30
+  delay: 60
+
+- name: "Updating Helm repo's"
+  shell: "helm repo update"

@@ -9,49 +9,84 @@
     topology: "public"
   when: topology != "private"
 
-- name: Configure bastion variables
+- name: Configure api_loadbalancer_type  variable
   set_fact:
-    bastion: "false"
-    public_ip: "true"
+    api_loadbalancer_type: "public"
+  when: api_loadbalancer_type != "private"
 
-- name: Configure bastion variables
+- block:
+  - name: "Gathering facts about all availability zones in {{ aws_region }}"
+    aws_az_facts:
+      region: "{{ aws_region }}"
+    register: aws_az_list
+
+  - set_fact:
+      aws_zones: "{{ lookup('flattened','{{ aws_az_list | json_query(query) }}') }}"
+    vars:
+      query: 'availability_zones[*].zone_name'
+  when: aws_zones is undefined
+
+- name: Configure master_zones variable.
   set_fact:
-    bastion: "true"
-    public_ip: "false"
-  when: topology == "private"
+    master_zones: "{{ aws_zones }}"
+  when: master_zones is undefined
 
-- name: Configure the cluster
-  shell: "kops create cluster --associate-public-ip={{ public_ip }} --bastion={{ bastion }} --cloud=aws --dns-zone={{ dns_zone }} --image {{ base_image }} --master-size={{ master_size }} --master-zones={{ master_zones|default(aws_zones) }} --master-count={{ master_count }} --master-volume-size={{ master_volume_size }} --network-cidr={{ network_cidr }} --networking={{ kubernetes_networking }} --node-count={{ node_count }} --node-size={{ node_size }} --node-volume-size={{ node_volume_size }} --target=direct --topology={{ topology }} --zones={{ aws_zones }} --ssh-public-key={{ ssh_public_key }} --name={{ cluster_name }} --state {{ state_store }} --authorization=rbac --encrypt-etcd-storage --kubernetes-version {{ kubernetes_version }} --cloud-labels=\"Application={{ tag_application }},Confidentiality={{ tag_confidentiality }},CostCenter={{ tag_costcenter }},Product={{ tag_product }},Owner={{ tag_owner }},Creator={{ tag_creator }},Environment={{ tag_environment }}\""
-  when: lambda_tags is defined
+- name: Count master_zones
+  set_fact:
+    master_zones_count: "{{  master_zones.split(',') | length | int }}"
 
-- name: Configure the cluster
-  shell: "kops create cluster --associate-public-ip={{ public_ip }} --bastion={{ bastion }} --cloud=aws --dns-zone={{ dns_zone }} --image {{ base_image }} --master-size={{ master_size }} --master-zones={{ master_zones|default(aws_zones) }} --master-count={{ master_count }} --master-volume-size={{ master_volume_size }} --network-cidr={{ network_cidr }} --networking={{ kubernetes_networking }} --node-count={{ node_count }} --node-size={{ node_size }} --node-volume-size={{ node_volume_size }} --target=direct --topology={{ topology }} --zones={{ aws_zones }} --ssh-public-key={{ ssh_public_key }} --name={{ cluster_name }} --state {{ state_store }} --authorization=rbac --encrypt-etcd-storage --kubernetes-version {{ kubernetes_version }}"
-  when: lambda_tags is not defined
+- name: Configure master count based on zones
+  set_fact: 
+    master_count: "{{  master_zones.split(',') | length | int }}"
+  when: master_count is undefined or master_count == "auto" or master_count < master_zones_count
+
+- name: Create initial cluster configuration
+  shell: |
+    kops create cluster \
+    --admin-access "{{ api_access_cidr | default('0.0.0.0/0') }}" \
+    --api-loadbalancer-type "{{ api_loadbalancer_type }}" \
+    --associate-public-ip=false \
+    --cloud aws \
+    --dns-zone "{{ dns_zone }}" \
+    --encrypt-etcd-storage \
+    --image "{{ base_image }}" \
+    --master-size "{{ master_size }}" \
+    --master-zones "{{ master_zones }}" \
+    --master-count "{{ master_count }}" \
+    --name "{{ cluster_name }}" \
+    --network-cidr "{{ network_cidr }}" \
+    --networking "{{ kubernetes_networking }}" \
+    --node-count "{{ node_count }}" \
+    --node-size "{{ node_size }}" \
+    --topology "{{ topology }}" \
+    --ssh-public-key "{{ ssh_public_key }}" \
+    --state "{{ state_store }}" \
+    --ssh-access "{{ ssh_access_cidr | default('0.0.0.0/0') }}" \
+    --zones "{{ aws_zones }}"
+
+- name: Enable Kubelet options
+  shell: "kops --name '{{ cluster_name }}' --state '{{ state_store }}' set cluster '{{ item.name }}'='{{ item.value }}'"
+  environment:
+    KOPS_FEATURE_FLAGS: SpecOverrideFlag
+  with_items:
+    - { 'name': 'spec.kubelet.authenticationTokenWebhook', 'value': 'true' }
+    - { 'name': 'spec.kubelet.authorizationMode', 'value': 'Webhook' }
 
 - include: ig_conf.yaml
 
 - include: cluster_conf.yaml
 
-- name: Configure IAM update policy
-  set_fact:
-    custom_iam: false
-
-- name: Configure IAM update policy
-  set_fact:
-    custom_iam: true
-    when: "{{ node_profile }} is defined or {{ master_profile }} is defined"
-
-- name: Create the physical cluster
-  shell: "kops update cluster {{ cluster_name }} --yes --state {{ state_store }} --lifecycle-overrides IAMRole=ExistsAndWarnIfChanges,IAMRolePolicy=ExistsAndWarnIfChanges,IAMInstanceProfileRole=ExistsAndWarnIfChanges"
-  when: custom_iam
-
 - name: Create the physical cluster
   shell: "kops update cluster {{ cluster_name }} --yes --state {{ state_store }}"
-  when: not custom_iam
 
-- name: Verify that all Kubernetes nodes are ready
-  shell: kubectl get nodes | grep "Ready" | wc -l
+- name: Export configuration for kubectl
+  shell: "kops export kubecfg {{ cluster_name }} --state {{ state_store }}"
+
+- name: Wait for all Kubernetes nodes to be available (This can take around 15 min to complete).
+  shell: |
+    kops --name "k8s.rs.brainomix.com" --state "s3://rs-k8s" validate cluster
+  ignore_errors: true
   register: cmd_result
-  until: cmd_result.stdout.find('{{ node_count + master_count }}') != -1
-  retries: 20
+  until: cmd_result.rc == 0
+  retries: 30
   delay: 60

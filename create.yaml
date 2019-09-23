@@ -18,3 +18,12 @@
   - import_role: 
       name: create-cluster
     tags: always
+  - import_role:
+      name: helm-install
+    tags: always
+  - import_role:
+      name: helm_metrics_server
+    tags: always
+  - import_role:
+      name: helm-cluster-autoscaler
+    tags: always

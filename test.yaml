@@ -1,0 +1,15 @@
+---
+- hosts: localhost
+  connection: local
+#  roles:
+#    -  helm-cluster-autoscaler
+
+  tasks:
+
+  - name: "Update role/nodes.{{ cluster_name }}"
+    iam_policy:
+      iam_type: role
+      iam_name: "nodes.{{ cluster_name }}"
+      policy_name: "ec2ClusterAutoscale"
+      state: present
+      policy_json: " {{ lookup( 'template', 'cluster-autoscale.json.j2') }}"

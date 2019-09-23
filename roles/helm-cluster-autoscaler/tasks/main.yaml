@@ -1,0 +1,28 @@
+---
+
+#####################################
+# Install Cluster Autoscaler via Helm
+#####################################
+
+- name: "Update role/nodes.{{ cluster_name }}"
+  iam_policy:
+    iam_type: role
+    iam_name: "nodes.{{ cluster_name }}"
+    policy_name: "ec2ClusterAutoscale"
+    state: present
+    policy_json: " {{ lookup( 'template', 'cluster-autoscale.json.j2') }}"
+
+- name: Adding Metrics-Server via Helm
+  shell: |
+    helm install --name cluster-autoscaler \
+    --namespace kube-system \
+    --set autoDiscovery.clusterName=k8s.rs.brainomix.com \
+    --set extraArgs.balance-similar-node-groups=true \
+    --set extraArgs.scale-down-enabled=true \
+    --set awsRegion="${REGION}" \
+    --set awsAccessKeyID="${AWS_SECRET_KEY}" \
+    --set awsSecretAcessKey="${AWS_ACCESS_KEY}" \
+    --set rbac.create=true \
+    --set rbac.pspEnabled=true \
+    --set cloudProvider=aws \
+    stable/cluster-autoscaler
