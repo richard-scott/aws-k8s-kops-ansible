@@ -1,9 +1,0 @@
----
-###########################
-# Config kubectl
-###########################
-
-- hosts: localhost
-  connection: local
-  roles:
-    - kubectl-config

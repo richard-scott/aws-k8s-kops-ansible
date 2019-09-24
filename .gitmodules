@@ -1,3 +1,6 @@
 [submodule "aws-export-profile"]
 	path = aws-export-profile
 	url = https://github.com/richard-scott/aws-export-profile.git
+[submodule "roles/systemd-service"]
+	path = roles/systemd-service
+	url = https://github.com/cimon-io/ansible-role-systemd-service.git
