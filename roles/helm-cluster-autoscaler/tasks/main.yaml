@@ -4,6 +4,9 @@
 # Install Cluster Autoscaler via Helm
 #####################################
 
+- debug: 
+    var: max_instances
+
 - name: "Update role/nodes.{{ cluster_name }}"
   iam_policy:
     iam_type: role
