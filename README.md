@@ -148,12 +148,12 @@ The tags are configured in also in `group_vars/all/vars.yaml` using following va
 
 Additionally to these tags, all resources without the `Name` tag will be named according to the cluster name (e.g. `kubernetes.my-cluster.com-resource`)
 
-### Install add-ons (optional)
+### Installed Add-ons
 
-Currently, the supported add-ons are:
 * Kubernetes dashboard
-* Heapster for resource monitoring
-* External DNS
+* Metrics-Server for resource monitoring
+* Prometheus
+* Grafana
 * Cluster Autoscaler
 
 To install the add-ons run
