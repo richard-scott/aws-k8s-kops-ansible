@@ -1,6 +1,6 @@
 # Kubernetes setup on Amazon AWS using Kops and Ansible
 
-This repository contains tooling for deploying Kubernetes cluster in Amazon AWS using the [Kops](https://github.com/kubernetes/kops) tool. Kops is a great tool if you want to setup HA cluster and don't require too much flexibility. If you prefer flexibility instead of HA setup you should have a look at [another repsoitory](https://github.com/scholzj/aws-kubernetes) where I have Kubernetes setup implemented using Terraform and Kubeadm tool. I have also a [special *minikube* single node installation](https://github.com/scholzj/aws-minikube).
+This repository contains tooling for deploying Kubernetes cluster in Amazon AWS using the [Kops](https://github.com/kubernetes/kops) tool. Kops is a great tool if you want to setup HA cluster and don't require too much flexibility. 
 
 <!-- TOC depthFrom:2 -->
 
