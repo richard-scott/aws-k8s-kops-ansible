@@ -53,6 +53,7 @@
 
 - name: "Update ASG to {{ node_autoscaler_min }}:{{ node_autoscaler_max }} Nodes"
   ec2_asg:
+    region: "{{ aws_region }}"
     name: "nodes.{{ cluster_name }}"
     min_size: "{{ node_autoscaler_min }}"
     max_size: "{{ node_autoscaler_max }}"
