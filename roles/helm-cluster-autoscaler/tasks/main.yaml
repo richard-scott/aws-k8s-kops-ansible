@@ -42,10 +42,6 @@
     node_autoscaler_min: "{{ node_count | default(1) }}"
   when: node_autoscaler_min is not defined or ( node_count is defined and node_autoscaler_min is defined and node_autoscaler_min < node_count )
 
-- name: Read AWS Max Instances Value
-  set_fact:
-    max_instances: "{{ lookup('aws_account_attribute', wantlist='true', region=aws_region)['max-instances'] | int }}"
-
 - name: Check we have defined a Maximum ASG Node count
   set_fact:
     node_autoscaler_max: "{{ max_instances }}"
