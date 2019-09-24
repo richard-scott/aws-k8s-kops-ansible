@@ -65,6 +65,14 @@ export AWS_ACCESS_KEY_ID="XXX"
 export AWS_SECRET_ACCESS_KEY="XXX"
 ```
 
+Permissions required on this account are:
+ - AmazonEC2FullAccess
+ - AWSLambdaFullAccess
+ - IAMFullAccess
+ - AmazonS3FullAccess
+ - AmazonVPCFullAccess
+ - AmazonRoute53FullAccess
+
 ### S3 bucket for state store
 
 Create S3 bucket to store where `Kops` will store its information:
