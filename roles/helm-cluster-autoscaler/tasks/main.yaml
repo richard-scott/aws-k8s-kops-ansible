@@ -4,9 +4,6 @@
 # Install Cluster Autoscaler via Helm
 #####################################
 
-- debug: 
-    var: max_instances
-
 - name: "Update role/nodes.{{ cluster_name }}"
   iam_policy:
     iam_type: role
@@ -42,7 +39,7 @@
 
 - name: Check we have defined a Minimum ASG Node count
   set_fact:
-    node_autoscaler_min: "{{ node_count | default(1) }}"
+    node_autoscaler_min: "{{ node_count }}"
   when: node_autoscaler_min is not defined or ( node_count is defined and node_autoscaler_min is defined and node_autoscaler_min < node_count )
 
 - name: Check we have defined a Maximum ASG Node count
