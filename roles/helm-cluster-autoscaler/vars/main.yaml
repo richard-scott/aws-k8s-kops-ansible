@@ -1,2 +1,3 @@
 ---
-max_instances: "{{ lookup('aws_account_attribute', wantlist='true', region=aws_region)['max-instances'] | int }}"
+max_instances_raw: "{{ lookup('aws_account_attribute', wantlist='true', region=aws_region)['max-instances'] }}"
+max_instances: "{{ max_instances_raw | int }}"
