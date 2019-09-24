@@ -7,7 +7,7 @@
     systemd_service:
       kubectl-proxy:
         enabled: Yes
-        exec_start: "/usr/local/bin/kubectl --address=0.0.0.0 --port=80 --accept-hosts='.*'"
+        exec_start: "/usr/local/bin/kubectl proxy --address=0.0.0.0 --port=80 --accept-hosts='.*'"
         restart: "always"
         restart_sec: 120
         wanted_by: "multi-user.target"
