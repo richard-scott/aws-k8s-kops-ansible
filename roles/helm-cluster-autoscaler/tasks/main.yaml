@@ -34,7 +34,7 @@
 
 - name: Configure node count variable
   set_fact:
-    node_count: "{{ node_count | default(1) }}"
+    node_count: 1
   when: node_count is undefined or node_count == "auto"
 
 - name: Check we have defined a Minimum ASG Node count
