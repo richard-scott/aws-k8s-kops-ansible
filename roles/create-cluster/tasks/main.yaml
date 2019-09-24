@@ -40,6 +40,11 @@
     master_count: "{{  master_zones.split(',') | length | int }}"
   when: master_count is undefined or master_count == "auto" or master_count < master_zones_count
 
+- name: Configure node count variable
+  set_fact: 
+    node_count: "1"
+  when: node_count is undefined or node_count == "auto"
+
 - name: Create initial cluster configuration
   shell: |
     kops create cluster \

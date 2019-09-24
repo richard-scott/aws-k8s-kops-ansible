@@ -26,12 +26,30 @@
     --namespace kube-system \
     --set autoDiscovery.clusterName=k8s.rs.brainomix.com \
     --set extraArgs.balance-similar-node-groups=true \
-    --set awsRegion="${REGION}" \
+    --set awsRegion="{{ aws_region }}" \
     --set rbac.create=true \
     --set rbac.pspEnabled=true \
     --set cloudProvider=aws \
-    --set replicaCount={{ node_count }} \
     stable/cluster-autoscaler
+
+- name: Configure node count variable
+  set_fact:
+    node_count: "{{ node_count | default(1) }}"
+  when: node_count is undefined or node_count == "auto"
+
+- name: Check we have defined a Minimum ASG Node count
+  set_fact:
+    node_autoscaler_min: "{{ node_count | default(1) }}"
+  when: node_autoscaler_min is not defined or ( node_autoscaler_min is defined and node_autoscaler_min < node_count )
+
+- name: Read AWS Max Instances Value
+  set_fact:
+    max_instances: "{{ lookup('aws_account_attribute', attribute='max-instances', region='{{ aws_region }}') }}"
+
+- name: Check we have defined a Maximum ASG Node count
+  set_fact:
+    node_autoscaler_max: "{{ max_instances }}"
+  when: node_autoscaler_min is not defined or node_autoscaler_max > max_instances or node_autoscaler_max < node_autoscaler_min
 
 - name: "Update ASG to {{ node_autoscaler_min }}:{{ node_autoscaler_max }} Nodes"
   ec2_asg:
