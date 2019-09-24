@@ -44,7 +44,7 @@
 
 - name: Read AWS Max Instances Value
   set_fact:
-    max_instances: "{{ lookup('aws_account_attribute', wantlist='true', region=aws_region)['max-instances'] }}"
+    max_instances: "{{ lookup('aws_account_attribute', wantlist='true', region=aws_region)['max-instances'] | int }}"
 
 - name: Check we have defined a Maximum ASG Node count
   set_fact:
