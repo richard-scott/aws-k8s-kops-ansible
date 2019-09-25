@@ -5,4 +5,4 @@
 ####################
 
 - name: Configure kubectl using kops
-  shell: "kops export kubecfg --name {{ cluster_name }} --state {{ state_store }} --kubeconfig '../{{ cluster_name }}.yaml'"
+  shell: "kops export kubecfg --name {{ cluster_name }} --state {{ state_store }}"
