@@ -94,7 +94,7 @@
   ignore_errors: true
   register: cmd_result
   until: cmd_result.rc == 0
-  retries: 30
+  retries: 15
   delay: 60
 
 - name: Install Kubernetes Dashboard
