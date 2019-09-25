@@ -1,6 +1,3 @@
-[submodule "aws-export-profile"]
-	path = aws-export-profile
-	url = https://github.com/richard-scott/aws-export-profile.git
 [submodule "roles/nginx_revproxy"]
 	path = roles/nginx_revproxy
 	url = https://github.com/richard-scott/ansible-nginx-revproxy.git
