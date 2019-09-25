@@ -1,3 +1,0 @@
-[submodule "roles/nginx_revproxy"]
-	path = roles/nginx_revproxy
-	url = https://github.com/richard-scott/ansible-nginx-revproxy.git
