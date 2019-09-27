@@ -59,6 +59,14 @@ node_count: auto
 # Use node_profile if you want custom iam policies
 #node_profile: arn:aws:iam::1234567890108:instance-profile/kops-custom-node-role
 
+## Tags
+tag_creator: CreatorTag
+tag_owner: OwnerTag
+tag_application: AppTag
+tag_costcenter: CostCenterTag
+tag_product: ProductTag
+tag_confidentiality: ConfidentialityTag
+tag_environment: EnvironmentTag
 
 # IAM
 iam:

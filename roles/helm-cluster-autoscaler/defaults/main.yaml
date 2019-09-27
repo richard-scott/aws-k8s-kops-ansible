@@ -1,2 +1,3 @@
 ---
 scale-down-unneeded-time: 1m
+expendable-pods-priority-cutoff: -10

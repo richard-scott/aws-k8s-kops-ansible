@@ -32,6 +32,7 @@
     --set autoDiscovery.clusterName=k8s.rs.brainomix.com \
     --set extraArgs.balance-similar-node-groups=true \
     --set extraArgs.scale-down-unneeded-time="{{ scale-down-unneeded-time }}" \
+    --set extraArgs.expendable-pods-priority-cutoff="{{ expendable-pods-priority-cutoff }}" \
     --set awsRegion="{{ aws_region }}" \
     --set rbac.create=true \
     --set rbac.pspEnabled=true \

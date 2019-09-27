@@ -16,6 +16,9 @@
       lambda_tags: true
     tags: [use_lambda,never]
   - import_role: 
+      name: create-state-store
+    tags: always
+  - import_role: 
       name: create-cluster
     tags: always
   - import_role:
@@ -26,6 +29,9 @@
     tags: always
   - import_role:
       name: helm-cluster-autoscaler
+    tags: always
+  - import_role:
+      name: helm-cluster-overprovisioner
     tags: always
   - import_role:
       name: helm-prometheus
