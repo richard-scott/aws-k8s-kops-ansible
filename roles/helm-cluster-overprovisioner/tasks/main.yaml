@@ -7,5 +7,4 @@
 - name: Adding Cluster overprovisioner via Helm
   shell: |
     helm install --name cluster-overprovisioner \
-    --namespace kube-system \
     stable/cluster-overprovisioner

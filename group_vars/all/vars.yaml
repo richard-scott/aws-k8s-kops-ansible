@@ -40,7 +40,7 @@ api_access_cidr: "{{ ssh_access_cidr }}"
 base_image: 595879546273/CoreOS-stable-2191.5.0-hvm
 
 # Master configuration
-master_size: t3.small
+master_size: t3.medium
 master_count: auto
 # Use master_max_price if you want to use spot instances.
 # Useful to reduce cost during testing
@@ -49,7 +49,7 @@ master_count: auto
 #master_profile: arn:aws:iam::1234567890108:instance-profile/kops-custom-master-role
 
 # Node configuration
-node_size: t3.small
+node_size: t3.medium
 node_count: auto
 # Use node_max_price if you want to use spot instances.
 # Useful to reduce cost during testing
