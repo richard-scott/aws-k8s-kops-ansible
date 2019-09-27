@@ -22,8 +22,8 @@
 
 - name: Set a default scale-down-unneeded-time value
   set_fact:
-    scale-down-unneeded-time: "5m"
-  when: scale-down-unneeded-time is undefined
+    scale_down_unneeded_time: "5m"
+  when: scale_down_unneeded_time is undefined
 
 - name: Adding Cluster Autoscaller via Helm
   shell: |
@@ -31,8 +31,8 @@
     --namespace kube-system \
     --set autoDiscovery.clusterName=k8s.rs.brainomix.com \
     --set extraArgs.balance-similar-node-groups=true \
-    --set extraArgs.scale-down-unneeded-time="{{ scale-down-unneeded-time }}" \
-    --set extraArgs.expendable-pods-priority-cutoff="{{ expendable-pods-priority-cutoff }}" \
+    --set extraArgs.scale-down-unneeded-time="{{ scale_down_unneeded_time }}" \
+    --set extraArgs.expendable-pods-priority-cutoff="{{ expendable_pods_priority_cutoff }}" \
     --set awsRegion="{{ aws_region }}" \
     --set rbac.create=true \
     --set rbac.pspEnabled=true \
