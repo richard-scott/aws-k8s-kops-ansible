@@ -3,6 +3,18 @@
 ####################
 # Create Kubernetes cluster using Kops
 ####################
+- block:
+  - name: Find out the latest release version
+    register: url_content
+    uri:
+      url: "https://github.com/kubernetes/kubernetes/releases/latest"
+      return_content: yes
+
+  - name: Configure k8s_version  variable
+    set_fact:
+      k8s_version: "{{ url_content['url'] | basename }}"
+
+  when: k8s_version is undefined or k8s_version == "latest"
 
 - name: Configure topology variable
   set_fact:
@@ -24,7 +36,7 @@
       aws_zones: "{{ lookup('flattened','{{ aws_az_list | json_query(query) }}') }}"
     vars:
       query: 'availability_zones[*].zone_name'
-  when: aws_zones is undefined
+  when: aws_zones is undefined or aws_zones == "auto"
 
 - name: Configure master_zones variable.
   set_fact:
@@ -62,6 +74,7 @@
     --name "{{ cluster_name }}" \
     --network-cidr "{{ network_cidr }}" \
     --networking "{{ kubernetes_networking }}" \
+    --kubernetes-version "{{ k8s_version }}" \
     --node-count "{{ node_count }}" \
     --node-size "{{ node_size }}" \
     --topology "{{ topology }}" \

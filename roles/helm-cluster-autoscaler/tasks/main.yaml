@@ -20,12 +20,18 @@
   retries: 30
   delay: 60
 
+- name: Set a default scale-down-unneeded-time value
+  set_fact:
+    scale-down-unneeded-time: "5m"
+  when: scale-down-unneeded-time is undefined
+
 - name: Adding Cluster Autoscaller via Helm
   shell: |
     helm install --name cluster-autoscaler \
     --namespace kube-system \
     --set autoDiscovery.clusterName=k8s.rs.brainomix.com \
     --set extraArgs.balance-similar-node-groups=true \
+    --set extraArgs.scale-down-unneeded-time="{{ scale-down-unneeded-time }}" \
     --set awsRegion="{{ aws_region }}" \
     --set rbac.create=true \
     --set rbac.pspEnabled=true \

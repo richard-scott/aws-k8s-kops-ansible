@@ -1,9 +1,0 @@
----
-###########################
-# Export Kops Configuration
-###########################
-
-- hosts: localhost
-  connection: local
-  roles:
-    - kubectl-export-config
