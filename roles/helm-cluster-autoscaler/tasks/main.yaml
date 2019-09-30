@@ -27,8 +27,9 @@
 
 - name: Adding Cluster Autoscaller via Helm
   shell: |
-    helm install --name cluster-autoscaler \
-    --namespace kube-system \
+    helm install --atomic --dep-up \
+    --name cluster-autoscaler \
+    --namespace kube-system-cluster \
     --set autoDiscovery.clusterName=k8s.rs.brainomix.com \
     --set extraArgs.balance-similar-node-groups=true \
     --set extraArgs.scale-down-unneeded-time="{{ scale_down_unneeded_time }}" \

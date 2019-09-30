@@ -6,6 +6,7 @@
 
 - name: Adding Prometheus via Helm
   shell: |
-    helm install --name prometheus \
+    helm install --atomic --dep-up \
+    --name prometheus \
     --namespace kube-system \
     stable/prometheus

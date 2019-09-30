@@ -6,7 +6,8 @@
 
 - name: Adding Grafana via Helm
   shell: |
-    helm install --name grafana \
+    helm install --atomic --dep-up \
+    --name grafana \
     --namespace kube-system \
     --set service.type=LoadBalancer \    
     stable/grafana

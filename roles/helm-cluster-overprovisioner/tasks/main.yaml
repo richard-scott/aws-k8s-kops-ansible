@@ -6,5 +6,10 @@
 
 - name: Adding Cluster overprovisioner via Helm
   shell: |
-    helm install --name cluster-overprovisioner \
+    helm install --atomic --dep-up \
+    --namespace kube-system-cluster \
+    --name cluster-overprovisioner \
+    --set deployments[0].name=nodes \
+    --set deployments[0].replicaCount=2 \
     stable/cluster-overprovisioner
+
