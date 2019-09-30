@@ -23,3 +23,8 @@
 
 - name: "Updating Helm repo's"
   shell: "helm repo update"
+
+- name: "Add some Chart Repositories"
+  shell: "helm repo add appscode {{ item }}"
+  with_items:
+    - "https://charts.appscode.com/stable/"

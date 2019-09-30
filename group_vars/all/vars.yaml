@@ -42,8 +42,8 @@ api_access_cidr:
   - 81.133.235.205/32
 
 ## EC2 host sizing
-#base_image: kope.io/k8s-1.11-debian-stretch-amd64-hvm-ebs-2018-08-17
-base_image: 595879546273/CoreOS-stable-2191.5.0-hvm
+#base_image: 595879546273/CoreOS-stable-2191.5.0-hvm
+#base_image: 075585003325/Flatcar-stable-2191.5.0-hvm
 
 # Master configuration
 master_size: t3.medium

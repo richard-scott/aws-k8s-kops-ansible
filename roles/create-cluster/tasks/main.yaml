@@ -67,7 +67,6 @@
     --cloud-labels "k8s.io/cluster-autoscaler/{{ cluster_name }}=Active,k8s.io/cluster-autoscaler/enabled=True" \
     --dns-zone "{{ dns_zone }}" \
     --encrypt-etcd-storage \
-    --image "{{ base_image }}" \
     --master-size "{{ master_size }}" \
     --master-zones "{{ master_zones }}" \
     --master-count "{{ master_count }}" \
