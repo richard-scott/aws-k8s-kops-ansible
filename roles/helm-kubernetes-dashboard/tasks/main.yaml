@@ -11,9 +11,7 @@
     --namespace kube-system \
     --set service.type=LoadBalancer \
     --set enableInsecureLogin=true \
-    --set service.externalPort=80 \
-    --set service.internalPort=80 \
-    --set service.loadBalancerSourceRanges="{{ api_access_cidr | join(',') }}" \
+    --set service.loadBalancerSourceRanges="{{ api_access_cidr }}" \
     stable/kubernetes-dashboard
 
 - name: Add a Dashboard Admin user account
