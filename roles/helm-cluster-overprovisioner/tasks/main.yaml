@@ -4,12 +4,17 @@
 # Install Cluster overprovisioner via helm
 #####################################
 
+- name: Set replicaCount variable
+  set_fact: 
+    replicaCount: 1
+  when: replicaCount is undefined or replicaCount =="auto"
+
 - name: Adding Cluster overprovisioner via Helm
   shell: |
     helm install --atomic --dep-up \
     --namespace kube-system-cluster \
     --name cluster-overprovisioner \
     --set deployments[0].name=nodes \
-    --set deployments[0].replicaCount=2 \
+    --set deployments[0].replicaCount="{{ replicaCount }}" \
     stable/cluster-overprovisioner
 

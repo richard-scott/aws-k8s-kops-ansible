@@ -32,6 +32,8 @@
     tags: always
   - import_role:
       name: helm-cluster-overprovisioner
+    vars:
+      replicaCount: 10
     tags: always
   - import_role:
       name: helm-prometheus
