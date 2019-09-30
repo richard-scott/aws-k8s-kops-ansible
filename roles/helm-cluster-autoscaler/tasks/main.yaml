@@ -51,8 +51,19 @@
   when: node_autoscaler_min is not defined or ( node_count is defined and node_autoscaler_min is defined and node_autoscaler_min < node_count )
 
 - name: Check we have defined a Maximum ASG Node count
+  block:
+    - ec2_instance_facts:
+        region: "{{ aws_region }}"
+        filters:
+          "instance-state-name": "pending"
+          "instance-state-name": "running"
+      register: eif
+
+    - set_fact::
+        running_instances: "{{ eif.instances|length }}"
+
   set_fact:
-    node_autoscaler_max: "{{ max_instances }}"
+    node_autoscaler_max: "{{ max_instances - running_instances }}"
   when: node_autoscaler_max is not defined or ( node_autoscaler_max > max_instances or node_autoscaler_max < node_autoscaler_min )
 
 - name: "Update ASG to {{ node_autoscaler_min }}:{{ node_autoscaler_max }} Nodes"
