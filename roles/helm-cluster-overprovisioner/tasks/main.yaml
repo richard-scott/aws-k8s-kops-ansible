@@ -4,10 +4,15 @@
 # Install Cluster overprovisioner via helm
 #####################################
 
-- name: Set replicaCount variable
+- name: Set replica_count variable
   set_fact: 
-    replicaCount: 1
-  when: replicaCount is undefined or replicaCount =="auto"
+    replica_count: 1
+  when: replica_count is undefined or replica_count =="auto"
+
+- name: Set utilisation_multiplier variable
+  set_fact: 
+    utilisation_multiplier: 0.50
+  when: utilisation_multiplier is undefined or utilisation_multiplier =="auto"
 
 - name: Set resources_limitss_cpu variable
   block: 
@@ -18,7 +23,7 @@
       register: ec2if
  
     - set_fact:
-        resources_limitss_cpu: "{{ ec2if.instances[0].cpu_options.core_count * ec2if.instances[0].cpu_options.threads_per_core * 0.75 }}"
+        resources_limitss_cpu: "{{ ec2if.instances[0].cpu_options.core_count * ec2if.instances[0].cpu_options.threads_per_core * utilisation_multiplier }}"
 
   when: resources_limitss_cpu is undefined or resources_limitss_cpu =="auto"
 
@@ -28,6 +33,6 @@
     --namespace kube-system-cluster \
     --name cluster-overprovisioner \
     --set deployments[0].name=nodes \
-    --set deployments[0].replicaCount="{{ replicaCount }}" \
+    --set deployments[0].replica_count="{{ replica_count }}" \
     --set deployments[0].resources.limits.cpu="{{ resources_limitss_cpu }}" \
     stable/cluster-overprovisioner

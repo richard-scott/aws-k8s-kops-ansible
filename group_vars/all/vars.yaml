@@ -41,9 +41,8 @@ api_access_cidr:
   - 62.30.202.70/32
   - 81.133.235.205/32
 
-## EC2 host sizing
-base_image: 595879546273/CoreOS-stable-2191.5.0-hvm
-#base_image: 075585003325/Flatcar-stable-2191.5.0-hvm
+## EC2 host details
+#base_image: 595879546273/CoreOS-stable-2191.5.0-hvm
 
 # Master configuration
 master_size: t3.medium
@@ -78,3 +77,7 @@ tag_environment: EnvironmentTag
 iam:
   allow_container_registry: true
   legacy: false
+
+## Cluster Overprovision
+replica_count: 1
+utilisation_multiplier: 0.5

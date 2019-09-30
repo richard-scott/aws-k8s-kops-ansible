@@ -57,12 +57,18 @@
     node_count: "1"
   when: node_count is undefined or node_count == "auto"
 
+- name: Configure node count variable
+  set_fact: 
+    base_image_string: "--image {{ base_image }}"
+  when: base_image is defined
+
 - name: Create initial cluster configuration
   shell: |
     kops create cluster \
     --admin-access "{{ api_access_cidr | join(',') | default('0.0.0.0/0') }}" \
     --api-loadbalancer-type "{{ api_loadbalancer_type }}" \
     --associate-public-ip=false \
+    {{ base_image_string }} \
     --cloud aws \
     --cloud-labels "k8s.io/cluster-autoscaler/{{ cluster_name }}=Active,k8s.io/cluster-autoscaler/enabled=True" \
     --dns-zone "{{ dns_zone }}" \
@@ -102,7 +108,7 @@
 
 - name: Wait for all Kubernetes nodes to be available (This can take around 15 min to complete).
   shell: |
-    kops --name "k8s.rs.brainomix.com" --state "s3://rs-k8s" validate cluster
+    kops --name '{{ cluster_name }}' --state '{{ state_store }}' validate cluster
   ignore_errors: true
   register: cmd_result
   until: cmd_result.rc == 0
