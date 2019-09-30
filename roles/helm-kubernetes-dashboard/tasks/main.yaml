@@ -1,0 +1,25 @@
+---
+
+#######################################
+# Install Kubernetes Dashboard via Helm
+#######################################
+
+- name: Adding Kubernetes Dashboard via Helm
+  shell: |
+    helm install --atomic --dep-up \
+    --name kubernetes-dashboard \
+    --namespace kube-system \
+    --set service.type=LoadBalancer \
+    --set enableInsecureLogin=true \
+    --set service.externalPort=80 \
+    --set service.internalPort=80 \
+    --set service.loadBalancerSourceRanges="{{ api_access_cidr | join(',') }}" \
+    stable/kubernetes-dashboard
+
+- name: Add a Dashboard Admin user account
+  shell: |
+    kubectl apply -f {{ role_path }}/files/{{item}}.yaml
+  with_items:
+    - ServiceAccount
+    - ClusterRoleBinding
+

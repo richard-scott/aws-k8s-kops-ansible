@@ -9,7 +9,10 @@ k8s_version: latest
 
 ## Remote access
 ssh_public_key: ~/.ssh/id_rsa.pub
-ssh_access_cidr: "80.6.82.34/32,62.30.202.70/32,81.133.235.205/32"
+ssh_access_cidr:
+  - 80.6.82.34/32
+  - 62.30.202.70/32
+  - 81.133.235.205/32
 
 ## Region to use
 aws_region: eu-west-2
@@ -33,7 +36,10 @@ bastion: false
 
 # API Access to be either public or private
 api_loadbalancer_type: public
-api_access_cidr: "{{ ssh_access_cidr }}"
+api_access_cidr:
+  - 80.6.82.34/32
+  - 62.30.202.70/32
+  - 81.133.235.205/32
 
 ## EC2 host sizing
 #base_image: kope.io/k8s-1.11-debian-stretch-amd64-hvm-ebs-2018-08-17

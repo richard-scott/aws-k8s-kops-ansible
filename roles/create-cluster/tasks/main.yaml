@@ -60,7 +60,7 @@
 - name: Create initial cluster configuration
   shell: |
     kops create cluster \
-    --admin-access "{{ api_access_cidr | default('0.0.0.0/0') }}" \
+    --admin-access "{{ api_access_cidr | join(',') | default('0.0.0.0/0') }}" \
     --api-loadbalancer-type "{{ api_loadbalancer_type }}" \
     --associate-public-ip=false \
     --cloud aws \
@@ -80,7 +80,7 @@
     --topology "{{ topology }}" \
     --ssh-public-key "{{ ssh_public_key }}" \
     --state "{{ state_store }}" \
-    --ssh-access "{{ ssh_access_cidr | default('0.0.0.0/0') }}" \
+    --ssh-access "{{ ssh_access_cidr | join(',') | default('0.0.0.0/0') }}" \
     --zones "{{ aws_zones }}"
 
 - name: Enable Kubelet options
