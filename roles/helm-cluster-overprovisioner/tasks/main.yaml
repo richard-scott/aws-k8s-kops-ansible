@@ -9,7 +9,7 @@
     replicaCount: 1
   when: replicaCount is undefined or replicaCount =="auto"
 
-- name: Set resources_requets_cpu variable
+- name: Set resources_limitss_cpu variable
   block: 
     - ec2_instance_facts:
         region: "{{ aws_region }}"
@@ -18,16 +18,16 @@
       register: ec2if
  
     - set_fact:
-        resources_requets_cpu: "{{ ec2if.instances[0].cpu_options.core_count }}"
+        resources_limitss_cpu: "{{ ec2if.instances[0].cpu_options.core_count * ec2if.instances[0].cpu_options.threads_per_core * 0.75 }}"
 
-  when: resources_requets_cpu is undefined or resources_requets_cpu =="auto"
+  when: resources_limitss_cpu is undefined or resources_limitss_cpu =="auto"
 
 - name: Adding Cluster overprovisioner via Helm
   shell: |
-    helm install --atomic --dep-up \
+    helm install --atomic --dep-up --timeout=600 \
     --namespace kube-system-cluster \
     --name cluster-overprovisioner \
     --set deployments[0].name=nodes \
     --set deployments[0].replicaCount="{{ replicaCount }}" \
-    --set deployments[0].resources.requests.cpu="{{ resources_requets_cpu }}" \
+    --set deployments[0].resources.limits.cpu="{{ resources_limitss_cpu }}" \
     stable/cluster-overprovisioner
