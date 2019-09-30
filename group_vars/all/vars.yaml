@@ -42,7 +42,7 @@ api_access_cidr:
   - 81.133.235.205/32
 
 ## EC2 host sizing
-#base_image: 595879546273/CoreOS-stable-2191.5.0-hvm
+base_image: 595879546273/CoreOS-stable-2191.5.0-hvm
 #base_image: 075585003325/Flatcar-stable-2191.5.0-hvm
 
 # Master configuration

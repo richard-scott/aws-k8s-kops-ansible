@@ -4,6 +4,7 @@
 ###########################
 
 - hosts: localhost
+  gather_facts: no
   connection: local
   tasks:
   - import_role: 
