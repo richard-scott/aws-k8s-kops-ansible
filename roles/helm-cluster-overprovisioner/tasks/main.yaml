@@ -16,5 +16,6 @@
     --name cluster-overprovisioner \
     --set deployments[0].name=nodes \
     --set deployments[0].replicaCount="{{ replicaCount }}" \
+    --set deployments[0].resources="limits: { cpu: 250m, memory: 250Mi }, requests: { cpu: 250m, memory: 250Mi }" \
     stable/cluster-overprovisioner
 

@@ -109,14 +109,3 @@
   until: cmd_result.rc == 0
   retries: 15
   delay: 60
-
-#- name: Install Kubernetes Dashboard
-#  shell: |
-#    kubectl apply -f https://raw.githubusercontent.com/kubernetes/dashboard/master/aio/deploy/recommended.yaml
-
-#- name: Add a Dashboard Admin user account
-#  shell: |
-#    kubectl apply -f {{ role_path }}/files/{{item}}.yaml
-#  with_items:
-#    - ServiceAccount
-#    - ClusterRoleBinding
