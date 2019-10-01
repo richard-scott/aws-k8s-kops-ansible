@@ -111,7 +111,7 @@
 - name: Export configuration for kubectl
   shell: "kops export kubecfg {{ cluster_name }}.{{ dns_zone }} --state {{ state_store }}"
 
-- name: "Waiting for DNS to update on {{ cluster_name }}.{{ dns_zone }}"
+- name: "Waiting for DNS to update on api.{{ cluster_name }}.{{ dns_zone }}"
   shell: |
     dig +short api.{{ cluster_name }}.{{ dns_zone }} | egrep -v "^$"
   register: cmd_result
