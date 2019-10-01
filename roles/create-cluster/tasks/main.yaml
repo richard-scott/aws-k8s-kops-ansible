@@ -112,14 +112,12 @@
   shell: "kops export kubecfg {{ cluster_name }}.{{ dns_zone }} --state {{ state_store }}"
 
 - name: "Waiting for DNS to update on {{ cluster_name }}.{{ dns_zone }}"
-  set_fact:
-    dig_result: "{{ lookup('dig', '{{ cluster_name }}.{{ dns_zone }}' ) | replace('NXDOMAIN','') }}"
-  until: dig_result != ''
+  shell: |
+    dig +short api.{{ cluster_name }}.{{ dns_zone }} | egrep -v "^$"
+  register: cmd_result
+  until: cmd_result.rc == 0
   retries: 30
   delay: 60
-
-- debug:
-    var: dig_result
 
 - name: Wait for all Kubernetes nodes to be available (This can take around 15 min to complete).
   shell: |
