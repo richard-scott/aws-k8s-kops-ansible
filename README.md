@@ -93,7 +93,7 @@ The main configuration of the cluster is in the variables in `group_vars/all/var
 
 | Option | Explanation | Example |
 |--------|-------------|---------|
-| `cluster_name` | Name of the cluster which should be created. The name has to end with the domain name of the DNS zone hosted in Route 53. | `kubernetes.my-cluster.com` |
+| `cluster_name` | Name of the cluster which should be created. This will be appended by the domain name of the DNS zone hosted in Route 53. | `kubernetes.my-cluster.com` |
 | `state_store` | Name of the Amazon S3 bucket which should be used as a Kops state store. It should start with `s3://`. | `s3://kops-state-store` |
 | `ssh_public_key` | Path to the public part of the SSH key, which should be used for the SSH access to the Kubernetes hosts | `~/.ssh/id_rsa.pub` |
 | `aws_region` | AWS region where the cluster should be installed. | `eu-west-1` |

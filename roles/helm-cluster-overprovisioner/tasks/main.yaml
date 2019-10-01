@@ -19,7 +19,7 @@
     - ec2_instance_facts:
         region: "{{ aws_region }}"
         filters:
-          "tag:Name": "nodes.{{ cluster_name }}"
+          "tag:Name": "nodes.{{ cluster_name }}.{{ dns_zone }}"
       register: ec2if
  
     - set_fact:

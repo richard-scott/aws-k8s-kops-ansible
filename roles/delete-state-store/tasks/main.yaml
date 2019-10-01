@@ -10,6 +10,7 @@
     state: absent
     region: "{{ aws_region }}"
     versioning: no
+    force: yes
     tags:
       Name: "{{ state_store | replace('s3://', '') }}"
       Creator: "{{ tag_creator }}"

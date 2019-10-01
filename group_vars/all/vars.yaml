@@ -1,6 +1,7 @@
 ---
 ## Cluster details
-cluster_name: k8s.rs.brainomix.com
+dns_zone: rs.brainomix.com
+cluster_name: k8s
 state_store: s3://rs-k8s
 
 # Which Kubernetes to install
@@ -18,8 +19,9 @@ ssh_access_cidr:
 aws_region: eu-west-2
 
 ## Availability zones to use
-aws_zones: "eu-west-2a"
+aws_zones: "eu-west-2c"
 #aws_zones: "auto"
+
 # Use master_zones if you want your masters in different zones than worker nodes.
 # Useful especially when you want 1 master in single zone but workers in several zones.
 # When not defined, aws_zones will be used instead
@@ -27,40 +29,43 @@ aws_zones: "eu-west-2a"
 
 
 ## Network
-dns_zone: rs.brainomix.com
 network_cidr: 10.10.0.0/16
 kubernetes_networking: calico
+
 # Topology must be either public or private
 topology: private
 bastion: false
 
 # API Access to be either public or private
 api_loadbalancer_type: public
-api_access_cidr:
-  - 80.6.82.34/32
-  - 62.30.202.70/32
-  - 81.133.235.205/32
+api_access_cidr: "{{ ssh_access_cidr }}"
 
 ## EC2 host details
+#base_image: 075585003325/Flatcar-stable-2191.5.0-hvm <-- Does NOT work.
 #base_image: 595879546273/CoreOS-stable-2191.5.0-hvm
 
 # Master configuration
 master_size: t3.medium
-master_count: auto
+#master_count: auto
+
 # Use master_max_price if you want to use spot instances.
 # Useful to reduce cost during testing
 #master_max_price: 0.05
+
 # Use master_profile if you want custom iam policies
 #master_profile: arn:aws:iam::1234567890108:instance-profile/kops-custom-master-role
 
 # Node configuration
 node_size: t3.medium
 node_count: auto
+
 # Use node_max_price if you want to use spot instances.
 # Useful to reduce cost during testing
 #node_max_price: 0.05
+
 #node_autoscaler_min: 1
 #node_autoscaler_max: 2
+
 # Use node_profile if you want custom iam policies
 #node_profile: arn:aws:iam::1234567890108:instance-profile/kops-custom-node-role
 

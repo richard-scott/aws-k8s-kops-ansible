@@ -37,7 +37,7 @@
 #
 
 - set_fact:
-    lambda_name: "{{ cluster_name | replace('.', '_') }}-tagging"
+    lambda_name: "{{ cluster_name | replace('.', '_') }}_{{ dns_zone | replace('.', '_') }}-tagging"
 
 - name: Create IAM role using AWS CLI
   command: "aws iam create-role --role-name {{ lambda_name }} --assume-role-policy-document file:///tmp/trust-policy.json --output json"

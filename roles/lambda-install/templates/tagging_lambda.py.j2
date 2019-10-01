@@ -13,8 +13,8 @@ LOGGER.addHandler(log_handler)
 
 # Configuration
 region = "{{ aws_region}}"
-cluster = "{{ cluster_name }}"
-tag_Name = "{{ cluster_name }}-resource"
+cluster = "{{ cluster_name }}.{{ dns_zone }}"
+tag_Name = "{{ cluster_name }}.{{ dns_zone }}-resource"
 tag_Application = "{{ tag_application }}"
 tag_Confidentiality = "{{ tag_confidentiality }}"
 tag_CostCenter = "{{ tag_costcenter }}"

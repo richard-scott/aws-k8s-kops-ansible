@@ -52,6 +52,11 @@
     master_count: "{{  master_zones.split(',') | length | int }}"
   when: master_count is undefined or master_count == "auto" or master_count < master_zones_count
 
+- name: Check we have an enough masters
+  set_fact:
+    master_count: "{{ master_count | int }} + 1"
+  when: master_count | int is divisibleby 2
+
 - name: Configure node count variable
   set_fact: 
     node_count: "1"
@@ -60,7 +65,7 @@
 - name: Configure node count variable
   set_fact: 
     base_image_string: "--image {{ base_image }}"
-  when: base_image is defined
+  when: base_image is defined and base_image | length > 1
 
 - name: Create initial cluster configuration
   shell: |
@@ -70,13 +75,13 @@
     --associate-public-ip=false \
     {{ base_image_string }} \
     --cloud aws \
-    --cloud-labels "k8s.io/cluster-autoscaler/{{ cluster_name }}=Active,k8s.io/cluster-autoscaler/enabled=True" \
+    --cloud-labels "k8s.io/cluster-autoscaler/{{ cluster_name }}.{{ dns_zone }}=Active,k8s.io/cluster-autoscaler/enabled=True" \
     --dns-zone "{{ dns_zone }}" \
     --encrypt-etcd-storage \
     --master-size "{{ master_size }}" \
     --master-zones "{{ master_zones }}" \
     --master-count "{{ master_count }}" \
-    --name "{{ cluster_name }}" \
+    --name "{{ cluster_name }}.{{ dns_zone }}" \
     --network-cidr "{{ network_cidr }}" \
     --networking "{{ kubernetes_networking }}" \
     --kubernetes-version "{{ k8s_version }}" \
@@ -89,7 +94,7 @@
     --zones "{{ aws_zones }}"
 
 - name: Enable Kubelet options
-  shell: "kops --name '{{ cluster_name }}' --state '{{ state_store }}' set cluster '{{ item.name }}'='{{ item.value }}'"
+  shell: "kops --name '{{ cluster_name }}.{{ dns_zone }}' --state '{{ state_store }}' set cluster '{{ item.name }}'='{{ item.value }}'"
   environment:
     KOPS_FEATURE_FLAGS: SpecOverrideFlag
   with_items:
@@ -101,16 +106,26 @@
 - include: cluster_conf.yaml
 
 - name: Create the physical cluster
-  shell: "kops update cluster {{ cluster_name }} --yes --state {{ state_store }}"
+  shell: "kops update cluster {{ cluster_name }}.{{ dns_zone }} --yes --state {{ state_store }}"
 
 - name: Export configuration for kubectl
-  shell: "kops export kubecfg {{ cluster_name }} --state {{ state_store }}"
+  shell: "kops export kubecfg {{ cluster_name }}.{{ dns_zone }} --state {{ state_store }}"
+
+- name: "Waiting for DNS to update on {{ cluster_name }}.{{ dns_zone }}"
+  set_fact:
+    dig_result: "{{ lookup('dig', '{{ cluster_name }}.{{ dns_zone }}' ) | replace('NXDOMAIN','') }}"
+  until: dig_result != ''
+  retries: 30
+  delay: 60
+
+- debug:
+    var: dig_result
 
 - name: Wait for all Kubernetes nodes to be available (This can take around 15 min to complete).
   shell: |
-    kops --name '{{ cluster_name }}' --state '{{ state_store }}' validate cluster
+    kops --name '{{ cluster_name }}.{{ dns_zone }}' --state '{{ state_store }}' validate cluster
   ignore_errors: true
   register: cmd_result
   until: cmd_result.rc == 0
-  retries: 15
+  retries: 30
   delay: 60

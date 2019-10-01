@@ -5,4 +5,5 @@
 ####################
 
 - name: Delete the cluster
-  shell: "kops delete cluster {{ cluster_name }} --state {{ state_store }} --yes"
+  shell: "kops delete cluster {{ cluster_name }}.{{ dns_zone }} --state {{ state_store }} --yes"
+  ignore_errors: true
