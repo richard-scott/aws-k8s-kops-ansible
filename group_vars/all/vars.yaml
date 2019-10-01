@@ -42,6 +42,7 @@ api_access_cidr: "{{ ssh_access_cidr }}"
 
 ## EC2 host details
 #base_image: 595879546273/CoreOS-stable-2191.5.0-hvm
+#base_image: 075585003325/Flatcar-stable-2191.5.0-hvm
 
 # Master configuration
 master_size: t3.medium
