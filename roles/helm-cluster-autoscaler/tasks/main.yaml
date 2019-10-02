@@ -62,8 +62,8 @@
     max_instances: "{{ ( max_instances | int ) - (  eif.instances | length ) }}"
 
 - name: Check we have a valid Maximum ASG Node count setting
-  - set_fact:
-      node_autoscaler_max: "{{ ( max_instances | int ) }}"
+  set_fact:
+    node_autoscaler_max: "{{ ( max_instances | int ) }}"
   when: node_autoscaler_max is not defined or ( node_autoscaler_max > max_instances or node_autoscaler_max < node_autoscaler_min )
 
 - name: "Update ASG to {{ node_autoscaler_min }}:{{ node_autoscaler_max }} Nodes"
