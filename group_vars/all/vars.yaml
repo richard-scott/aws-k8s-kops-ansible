@@ -19,7 +19,7 @@ ssh_access_cidr:
 aws_region: eu-west-2
 
 ## Availability zones to use
-aws_zones: "eu-west-2c"
+aws_zones: "eu-west-2b"
 #aws_zones: "auto"
 
 # Use master_zones if you want your masters in different zones than worker nodes.
