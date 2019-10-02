@@ -38,6 +38,9 @@
       name: helm-cluster-overprovisioner
     tags: always
   - import_role:
+      name: helm-k8s-spot-termination-handler
+    tags: always
+  - import_role:
       name: helm-prometheus
     tags: always
   - import_role:

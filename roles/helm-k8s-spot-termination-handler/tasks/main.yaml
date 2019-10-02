@@ -1,0 +1,12 @@
+---
+
+#####################################
+# Install k8s-spot-termination-handler via helm
+#####################################
+
+- name: Adding k8s-spot-termination-handler via Helm
+  shell: |
+    helm install --atomic --dep-up --timeout=600 \
+    --namespace kube-system \
+    --name k8s-spot-termination-handler \
+    stable/k8s-spot-termination-handler
