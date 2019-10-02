@@ -40,3 +40,6 @@
   - import_role:
       name: helm-grafana
     tags: always
+  - import_role:
+      name: helm-kubernetes-dashboard
+    tags: always
