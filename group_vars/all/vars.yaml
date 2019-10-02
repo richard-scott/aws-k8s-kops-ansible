@@ -84,5 +84,5 @@ iam:
   legacy: false
 
 ## Cluster Overprovision
-replica_count: 1
-utilisation_multiplier: 0.5
+replica_count: 2
+utilisation_multiplier: 0.75
