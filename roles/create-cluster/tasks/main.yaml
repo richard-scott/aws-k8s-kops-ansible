@@ -100,7 +100,6 @@
   with_items:
     - { 'name': 'spec.kubelet.authenticationTokenWebhook', 'value': 'true' }
     - { 'name': 'spec.kubelet.authorizationMode', 'value': 'Webhook' }
-#    - { 'name': 'spec.addons.manifest', 'value': 's3://kops-addons/addon.yaml' }
 
 - include: ig_conf.yaml
 

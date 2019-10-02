@@ -7,15 +7,15 @@
 - name: Adding Kubernetes Dashboard via Helm
   shell: |
     helm install --atomic --dep-up \
-    --name kube-system \
+    --name kubernetes-dashboard \
     --namespace kube-system \
-    --set service.type=LoadBalancer \
-    --set service.externalPort=80 \
-    --set service.internalPort=9090 \
-    --set service.loadBalancerSourceRanges="{ {{ dashboard_access_cidr | join(',') }} }" \
-    --set enableInsecureLogin=true \
-    --set ingress.enabled=true \
     stable/kubernetes-dashboard
+#    --set service.type=LoadBalancer \
+#    --set service.externalPort=80 \
+#    --set service.internalPort=9090 \
+#    --set service.loadBalancerSourceRanges="{ {{ dashboard_access_cidr | join(',') }} }" \
+#    --set enableInsecureLogin=true \
+#    --set ingress.enabled=true \
 
 - name: Add a Dashboard Admin user account
   shell: |
