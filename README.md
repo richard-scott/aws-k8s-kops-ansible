@@ -113,12 +113,11 @@ The main configuration of the cluster is in the variables in `group_vars/all/var
 | `node_volume_size` | Size of the node disk volume in GB. | `50` |
 | `node_max_price` | Optional, max price for node spot instances. | `0.05` |
 | `node_profile` | Optional, custom node IAM role. | `arn:aws:iam::1234567890108:instance-profile/kops-custom-node-role` |
-| `node_autoscaler_min` | Minimum number of nodes (for the autoscaler). | `3` |
-| `node_autoscaler_max` | Maximum number of nodes (for the autoscaler). | `6` |
+| `node_autoscaler_min` | Minimum number of nodes (for the autoscaler). | `auto` |
+| `node_autoscaler_max` | Maximum number of nodes (for the autoscaler). | `auto` |
 | `base_image` | Image used for all the instances | `kope.io/k8s-1.11-debian-stretch-amd64-hvm-ebs-2018-08-17` |
-| `kubernetes_version` | Version of kubernetes which should be used. | `1.11` |
+| `kubernetes_version` | Version of kubernetes which should be used. | `latest` |
 | `iam.allow_container_registry` | Optional, boolean to allow read access to Amazon ECR | `true` |
-| `iam.legacy` | Optional, boolean to use the legacy IAM privileges | `false` |
 
 
 Additionally to the Kubernetes cluster it self, an AWS Lambda function may be created which will run periodically to tag all resources creating by Kops and by Kubernetes. To use it, a tag must be specified :

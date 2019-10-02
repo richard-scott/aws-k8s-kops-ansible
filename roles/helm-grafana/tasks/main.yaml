@@ -10,4 +10,5 @@
     --name grafana \
     --namespace kube-system \
     --set service.type=LoadBalancer \    
+    --set service.loadBalancerSourceRanges="{ {{ grafana_access_cidr | join(',') }} }" \
     stable/grafana

@@ -34,12 +34,12 @@
   - import_role:
       name: helm-cluster-overprovisioner
     tags: always
-  - import_role:
-      name: helm-prometheus
-    tags: always
-  - import_role:
-      name: helm-grafana
-    tags: always
-  - import_role:
-      name: helm-kubernetes-dashboard
-    tags: always
+#  - import_role:
+#      name: helm-prometheus
+#    tags: always
+#  - import_role:
+#      name: helm-grafana
+#    tags: always
+#  - import_role:
+#      name: helm-kubernetes-dashboard
+#    tags: always

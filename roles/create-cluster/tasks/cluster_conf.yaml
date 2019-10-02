@@ -13,14 +13,5 @@
   when: iam.allow_container_registry is defined
   notify: 'Push cluster config'
 
-- name: Configure IAM legacy 
-  lineinfile:
-    path: /tmp/{{ cluster_name }}.{{ dns_zone }}-cluster-conf.yaml
-    regexp: '^(\s+)legacy:'
-    line: '\1legacy: {{ iam.legacy }}'
-    backrefs: yes
-  when: iam.legacy is defined
-  notify: 'Push cluster config'
-
 - name: Run handlers
   meta: flush_handlers
