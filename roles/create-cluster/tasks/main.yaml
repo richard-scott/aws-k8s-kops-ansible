@@ -41,7 +41,7 @@
 - name: Configure master_zones variable.
   set_fact:
     master_zones: "{{ aws_zones }}"
-  when: master_zones is undefined
+  when: master_zones is undefined or master_zones == "auto"
 
 - name: Count master_zones
   set_fact:
@@ -52,9 +52,9 @@
     master_count: "{{  master_zones.split(',') | length | int }}"
   when: master_count is undefined or master_count == "auto" or master_count < master_zones_count
 
-- name: Check we have an enough masters
+- name: Check we have an odd count of masters
   set_fact:
-    master_count: "{{ master_count | int }} + 1"
+    master_count: "{{ master_count }} + 1"
   when: master_count | int is divisibleby 2
 
 - name: Configure node count variable
@@ -67,6 +67,11 @@
     base_image_string: "--image {{ base_image }}"
   when: base_image is defined and base_image | length > 1
 
+- name: Configure master node sizeing
+  set_fact: 
+    master_size_string: "--master-size {{ master_size }}"
+  when: master_size is defined and master_size != "auto"
+
 - name: Create initial cluster configuration
   shell: |
     kops create cluster \
@@ -78,7 +83,7 @@
     --cloud-labels "k8s.io/cluster-autoscaler/{{ cluster_name }}.{{ dns_zone }}=Active,k8s.io/cluster-autoscaler/enabled=True" \
     --dns-zone "{{ dns_zone }}" \
     --encrypt-etcd-storage \
-    --master-size "{{ master_size }}" \
+    {{ master_size_string }} \
     --master-zones "{{ master_zones }}" \
     --master-count "{{ master_count }}" \
     --name "{{ cluster_name }}.{{ dns_zone }}" \
