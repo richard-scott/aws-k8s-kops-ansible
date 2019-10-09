@@ -6,15 +6,21 @@
 
 - name: "Create 'tiller' Service Account"
   shell: "{{ item }}"
+  args:
+    executable: /bin/bash
   with_items:
     - "kubectl -n kube-system create serviceaccount tiller"
     - "kubectl create clusterrolebinding tiller --clusterrole cluster-admin --serviceaccount=kube-system:tiller"
 
 - name: Install Helm
   shell: "helm init --service-account tiller --history-max 200"
+  args:
+    executable: /bin/bash
 
 - name: Waiting for Helm to start
   shell: "helm version"
+  args:
+    executable: /bin/bash
   ignore_errors: true
   register: cmd_result
   until: cmd_result.rc == 0
@@ -23,8 +29,12 @@
 
 - name: "Updating Helm repo's"
   shell: "helm repo update"
+  args:
+    executable: /bin/bash
 
 - name: "Add some Chart Repositories"
   shell: "helm repo add appscode {{ item }}"
+  args:
+    executable: /bin/bash
   with_items:
     - "https://charts.appscode.com/stable/"

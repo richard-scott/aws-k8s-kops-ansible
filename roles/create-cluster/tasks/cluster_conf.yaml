@@ -2,6 +2,8 @@
 
 - name: Fetch current cluster config
   shell: 'kops get cluster --name {{ cluster_name }}.{{ dns_zone }} -o yaml --state {{ state_store }} > /tmp/{{ cluster_name }}.{{ dns_zone }}-cluster-conf.yaml'
+  args:
+    executable: /bin/bash
   changed_when: false
 
 - name: Configure IAM ContainerRegistry 

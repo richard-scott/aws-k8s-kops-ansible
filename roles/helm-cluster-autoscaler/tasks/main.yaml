@@ -23,6 +23,8 @@
     --set rbac.pspEnabled=true \
     --set cloudProvider=aws \
     stable/cluster-autoscaler
+  args:
+    executable: /bin/bash
 
 - name: Configure node count variable
   set_fact:

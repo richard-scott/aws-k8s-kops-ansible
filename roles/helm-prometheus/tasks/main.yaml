@@ -10,3 +10,5 @@
     --name prometheus \
     --namespace kube-system \
     stable/prometheus
+  args:
+    executable: /bin/bash

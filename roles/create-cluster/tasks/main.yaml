@@ -97,9 +97,13 @@
     --state "{{ state_store }}" \
     --ssh-access "{{ ssh_access_cidr | join(',') | default('0.0.0.0/0') }}" \
     --zones "{{ aws_zones }}"
+  args:
+    executable: /bin/bash
 
 - name: Enable Kubelet options
   shell: "kops --name '{{ cluster_name }}.{{ dns_zone }}' --state '{{ state_store }}' set cluster '{{ item.name }}'='{{ item.value }}'"
+  args:
+    executable: /bin/bash
   environment:
     KOPS_FEATURE_FLAGS: SpecOverrideFlag
   with_items:
@@ -112,13 +116,19 @@
 
 - name: Create the physical cluster
   shell: "kops update cluster {{ cluster_name }}.{{ dns_zone }} --yes --state {{ state_store }}"
+  args:
+    executable: /bin/bash
 
 - name: Export configuration for kubectl
   shell: "kops export kubecfg {{ cluster_name }}.{{ dns_zone }} --state {{ state_store }}"
+  args:
+    executable: /bin/bash
 
 - name: "Waiting for DNS to update on api.{{ cluster_name }}.{{ dns_zone }}"
   shell: |
     dig +short api.{{ cluster_name }}.{{ dns_zone }} | egrep -v "^$"
+  args:
+    executable: /bin/bash
   register: cmd_result
   until: cmd_result.rc == 0
   retries: 30
@@ -127,6 +137,8 @@
 - name: Wait for all Kubernetes nodes to be available (This can take around 15 min to complete).
   shell: |
     kops --name '{{ cluster_name }}.{{ dns_zone }}' --state '{{ state_store }}' validate cluster
+  args:
+    executable: /bin/bash
   ignore_errors: true
   register: cmd_result
   until: cmd_result.rc == 0

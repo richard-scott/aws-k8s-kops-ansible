@@ -10,3 +10,5 @@
     --namespace kube-system \
     --name k8s-spot-termination-handler \
     stable/k8s-spot-termination-handler
+  args:
+    executable: /bin/bash

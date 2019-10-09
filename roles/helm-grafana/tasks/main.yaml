@@ -12,3 +12,5 @@
     --set service.type=LoadBalancer \    
     --set service.loadBalancerSourceRanges="{ {{ grafana_access_cidr | join(',') }} }" \
     stable/grafana
+  args:
+    executable: /bin/bash

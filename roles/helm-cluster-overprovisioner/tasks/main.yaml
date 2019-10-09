@@ -52,3 +52,5 @@
     --set deployments[0].replica_count="{{ replica_count }}" \
     --set deployments[0].resources.limits.cpu="{{ resources_limitss_cpu }}" \
     stable/cluster-overprovisioner
+  args:
+    executable: /bin/bash
