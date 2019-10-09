@@ -4,11 +4,13 @@
 dns_zone: rs.brainomix.com
 cluster_name: k8s
 
-# Where to store cluster state
+## Where to store cluster state
 state_store: "s3://rs-{{ cluster_name }}"
 
-# Which Kubernetes to install
-# Has to be equal to, or older than the current kops version installed.
+## Which Kubernetes to install
+# The verison of K8S you select has to be older 
+# than the current kops version installed.
+# If you want the latest supported, leave this on 'auto'.
 k8s_version: auto
 
 ## Remote access
@@ -18,10 +20,16 @@ ssh_access_cidr:
   - 62.30.202.70/32
   - 81.133.235.205/32
 
-## Region to use
+## AWS Region to use
+# London
 aws_region: eu-west-2
+# Ireland
+#aws_region: eu-west-1
 
 ## Availability zones to use
+# Select individual zones or to use ALL 
+# zones leave this as 'auto'.
+#aws_zones: "eu-west-2a,eu-west-2b"
 #aws_zones: "eu-west-2b"
 aws_zones: "auto"
 
@@ -45,40 +53,35 @@ grafana_access_cidr: "{{ ssh_access_cidr }}"
 
 ## EC2 host details
 #base_image: 595879546273/CoreOS-stable-2191.5.0-hvm
-#base_image: 075585003325/Flatcar-stable-2191.5.0-hvm
+base_image: 075585003325/Flatcar-stable-2191.5.0-hvm
 
-# Master configuration
+## Master configuration
 # Use master_zones if you want your masters in different zones than worker nodes.
 # Useful especially when you want 1 master in single zone but workers in several zones.
 # When not defined, aws_zones will be used instead
 #master_zones: "eu-west-2a"
-#master_zones: "auto"
-
+master_zones: "auto"
 # What size instance to create
 #master_size: t3.medium
-
+master_size: auto
 # How many instances to create
 # This has to be > master_zones count or will be set to = master_zones count.
 master_count: auto
-
 # Use master_max_price if you want to use spot instances.
 # Useful to reduce cost during testing
 #master_max_price: 0.05
-
 # Use master_profile if you want custom iam policies
 #master_profile: arn:aws:iam::1234567890108:instance-profile/kops-custom-master-role
 
-# Node configuration
+## Node configuration
 #node_size: t3.medium
 node_count: auto
-
 # Use node_max_price if you want to use spot instances.
 # Useful to reduce cost during testing
 #node_max_price: 0.05
-
+# Define min/max node counts for the Auto Scaling Group in AWS.
 node_autoscaler_min: 1
 node_autoscaler_max: 3
-
 # Use node_profile if you want custom iam policies
 #node_profile: arn:aws:iam::1234567890108:instance-profile/kops-custom-node-role
 
@@ -91,7 +94,7 @@ tag_product: ProductTag
 tag_confidentiality: ConfidentialityTag
 tag_environment: EnvironmentTag
 
-# IAM
+## IAM
 iam:
   allow_container_registry: false
 
