@@ -116,7 +116,7 @@
 
 - include: cluster_conf.yaml
 
-- name: Pushing the cluster configuration to the cloud.
+- name: Creating physical cluster.
   shell: "kops update cluster {{ cluster_name }}.{{ dns_zone }} --yes --state {{ state_store }}"
   args:
     executable: /bin/bash
