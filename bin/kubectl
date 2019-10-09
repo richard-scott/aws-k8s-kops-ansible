@@ -1,0 +1,12 @@
+#!/bin/bash
+cd $(dirname $(dirname ${0}))
+mkdir -p sbin
+cd sbin
+LATEST="$(curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt)"
+if [[ ! -e kubectl ]] || echo $(${PWD}/kubectl version | awk '{print $2}') | egrep -v -q "^${LATEST}$" ; then
+  echo "Downloading: kubectl-${LATEST}"
+  curl --silent -Lo kubectl https://storage.googleapis.com/kubernetes-release/release/$(curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt)/bin/linux/amd64/kubectl
+  chmod +x ./kubectl
+fi
+cd ..
+${PWD}/sbin/kubectl "${@}"
