@@ -52,7 +52,7 @@
 - name: Configure node count variable
   set_fact: 
     base_image_string: "--image {{ base_image }}"
-  when: base_image is defined and base_image | length > 1
+  when: base_image is defined and base_image != "auto"
 
 - name: Configure node sizeing
   set_fact: 
@@ -63,6 +63,11 @@
   set_fact: 
     master_size_string: "--master-size {{ master_size }}"
   when: master_size is defined and master_size != "auto"
+
+- name: Configure VPC Network CIDR
+  set_fact: 
+    network_cidr_string: "--network-cidr {{ network_cidr }}" 
+  when: network_cidr is defined and network_cidr != "auto"
 
 - name: Configure K8S version to be installed
   set_fact: 
@@ -84,7 +89,7 @@
     --master-zones "{{ master_zones }}" \
     --master-count "{{ master_count }}" \
     --name "{{ cluster_name }}.{{ dns_zone }}" \
-    --network-cidr "{{ network_cidr }}" \
+    {{ network_cidr_string }} \
     --networking "{{ kubernetes_networking }}" \
     {{ k8s_version_string }} \
     --node-count "{{ node_count }}" \

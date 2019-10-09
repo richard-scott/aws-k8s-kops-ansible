@@ -5,7 +5,7 @@ dns_zone: rs.brainomix.com
 cluster_name: k8s
 
 ## Where to store cluster state
-state_store: "s3://rs-{{ cluster_name }}"
+state_store: "s3://{{ cluster_name }}.{{ dns_zone }}"
 
 ## Which Kubernetes to install
 # The verison of K8S you select has to be older 
@@ -22,19 +22,20 @@ ssh_access_cidr:
 
 ## AWS Region to use
 # London
-aws_region: eu-west-2
+aws_region: "eu-west-2"
 # Ireland
-#aws_region: eu-west-1
+#aws_region: "eu-west-1"
 
 ## Availability zones to use
 # Select individual zones or to use ALL 
 # zones leave this as 'auto'.
-#aws_zones: "eu-west-2a,eu-west-2b"
-#aws_zones: "eu-west-2b"
-aws_zones: "auto"
+aws_zones: eu-west-2c
+#aws_zones: eu-west-2a,eu-west-2b
+#aws_zones: auto
 
 ## Network
-network_cidr: 10.10.0.0/16
+#network_cidr: 10.10.0.0/16
+network_cidr: auto
 kubernetes_networking: calico
 
 # Topology must be either public or private
@@ -52,18 +53,19 @@ dashboard_access_cidr: "{{ ssh_access_cidr }}"
 grafana_access_cidr: "{{ ssh_access_cidr }}"
 
 ## EC2 host details
+# The instances base_image has to be specific to the aws_region you plan to use.
 #base_image: 595879546273/CoreOS-stable-2191.5.0-hvm
-base_image: 075585003325/Flatcar-stable-2191.5.0-hvm
+base_image: auto
 
 ## Master configuration
 # Use master_zones if you want your masters in different zones than worker nodes.
 # Useful especially when you want 1 master in single zone but workers in several zones.
 # When not defined, aws_zones will be used instead
 #master_zones: "eu-west-2a"
-master_zones: "auto"
+master_zones: auto
 # What size instance to create
-#master_size: t3.medium
-master_size: auto
+master_size: t3.small
+#master_size: auto
 # How many instances to create
 # This has to be > master_zones count or will be set to = master_zones count.
 master_count: auto
@@ -74,7 +76,7 @@ master_count: auto
 #master_profile: arn:aws:iam::1234567890108:instance-profile/kops-custom-master-role
 
 ## Node configuration
-#node_size: t3.medium
+node_size: t3.small
 node_count: auto
 # Use node_max_price if you want to use spot instances.
 # Useful to reduce cost during testing
