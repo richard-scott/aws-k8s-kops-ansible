@@ -1,14 +1,15 @@
 ---
 ## Cluster details
-dns_zone: eu-west-1.brainomix.com
+#dns_zone: eu-west-1.brainomix.com
+dns_zone: rs.brainomix.com
 cluster_name: k8s
 
 # Where to store cluster state
-state_store: "s3://{{ cluster_name }}.{{ dns_zone }}"
+state_store: "s3://rs-{{ cluster_name }}"
 
 # Which Kubernetes to install
-k8s_version: latest
-#k8s_version: 1.15.4
+# Has to be equal to, or older than the current kops version installed.
+k8s_version: auto
 
 ## Remote access
 ssh_public_key: ~/.ssh/id_rsa.pub
@@ -18,7 +19,7 @@ ssh_access_cidr:
   - 81.133.235.205/32
 
 ## Region to use
-aws_region: eu-west-1
+aws_region: eu-west-2
 
 ## Availability zones to use
 #aws_zones: "eu-west-2b"
@@ -54,11 +55,11 @@ grafana_access_cidr: "{{ ssh_access_cidr }}"
 #master_zones: "auto"
 
 # What size instance to create
-master_size: t3.medium
+#master_size: t3.medium
 
 # How many instances to create
 # This has to be > master_zones count or will be set to = master_zones count.
-#master_count: auto
+master_count: auto
 
 # Use master_max_price if you want to use spot instances.
 # Useful to reduce cost during testing
@@ -68,7 +69,7 @@ master_size: t3.medium
 #master_profile: arn:aws:iam::1234567890108:instance-profile/kops-custom-master-role
 
 # Node configuration
-node_size: t3.medium
+#node_size: t3.medium
 node_count: auto
 
 # Use node_max_price if you want to use spot instances.

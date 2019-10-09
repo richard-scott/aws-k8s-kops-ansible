@@ -1,4 +1,5 @@
 ---
+k8s_version_string: ""
 base_image_string: ""
 master_size_string: ""
 node_size_string: ""

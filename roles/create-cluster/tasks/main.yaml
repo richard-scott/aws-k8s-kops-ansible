@@ -3,19 +3,6 @@
 ####################
 # Create Kubernetes cluster using Kops
 ####################
-- block:
-  - name: Find out the latest release version
-    register: url_content
-    uri:
-      url: "https://github.com/kubernetes/kubernetes/releases/latest"
-      return_content: yes
-
-  - name: Configure k8s_version  variable
-    set_fact:
-      k8s_version: "{{ url_content['url'] | basename }}"
-
-  when: k8s_version is undefined or k8s_version == "latest"
-
 - name: Configure topology variable
   set_fact:
     topology: "public"
@@ -77,6 +64,11 @@
     master_size_string: "--master-size {{ master_size }}"
   when: master_size is defined and master_size != "auto"
 
+- name: Configure K8S version to be installed
+  set_fact: 
+    k8s_version_string: "--kubernetes-version {{ k8s_version }}"
+  when: k8s_version is defined and k8s_version != "auto"
+
 - name: Create initial cluster configuration
   shell: |
     kops create cluster \
@@ -94,7 +86,7 @@
     --name "{{ cluster_name }}.{{ dns_zone }}" \
     --network-cidr "{{ network_cidr }}" \
     --networking "{{ kubernetes_networking }}" \
-    --kubernetes-version "{{ k8s_version }}" \
+    {{ k8s_version_string }} \
     --node-count "{{ node_count }}" \
     {{ node_size_string }} \
     --topology "{{ topology }}" \
