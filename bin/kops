@@ -2,11 +2,13 @@
 cd $(dirname $(dirname ${0}))
 mkdir -p sbin
 cd sbin
-LATEST="$(basename $(curl --silent --head https://github.com/kubernetes/kops/releases/latest  | egrep "^Location:\s" | awk '{print $2}' | awk -F '\r' '{print $1}'))"
-if [[ ! -e kops ]] || echo $(${PWD}/kops version | awk '{print $2}') | egrep -v -q "^${LATEST}$" ; then
-  echo "Downloading: kops-v${LATEST}"
-  curl --silent -Lo kops https://github.com/kubernetes/kops/releases/download/${LATEST}/kops-linux-amd64
-  chmod +x kops
+if [[ ! -e kops ]] || [[ $(($(date +%s)-$(stat ${PWD}/kops --format %Y))) -gt 43200 ]]; then
+  LATEST="$(basename $(curl --silent --head https://github.com/kubernetes/kops/releases/latest  | egrep "^Location:\s" | awk '{print $2}' | awk -F '\r' '{print $1}'))"
+  if [[ ! -e kops ]] || echo $(${PWD}/kops version | awk '{print $2}') | egrep -v -q "^${LATEST}$" ; then
+    echo "Downloading: kops-v${LATEST}"
+    curl --silent -Lo kops https://github.com/kubernetes/kops/releases/download/${LATEST}/kops-linux-amd64
+    chmod +x kops
+  fi
 fi
 cd ..
 ${PWD}/sbin/kops "${@}"
