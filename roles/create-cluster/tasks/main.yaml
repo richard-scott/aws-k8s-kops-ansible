@@ -67,6 +67,11 @@
     base_image_string: "--image {{ base_image }}"
   when: base_image is defined and base_image | length > 1
 
+- name: Configure node sizeing
+  set_fact: 
+    node_size_string: "--node-size {{ node_size }}"
+  when: node_size is defined and node_size != "auto"
+
 - name: Configure master node sizeing
   set_fact: 
     master_size_string: "--master-size {{ master_size }}"
@@ -91,7 +96,7 @@
     --networking "{{ kubernetes_networking }}" \
     --kubernetes-version "{{ k8s_version }}" \
     --node-count "{{ node_count }}" \
-    --node-size "{{ node_size }}" \
+    {{ node_size_string }} \
     --topology "{{ topology }}" \
     --ssh-public-key "{{ ssh_public_key }}" \
     --state "{{ state_store }}" \
