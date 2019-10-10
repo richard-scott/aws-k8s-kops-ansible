@@ -10,7 +10,6 @@
     --name kubernetes-dashboard \
     --namespace kube-system \
     stable/kubernetes-dashboard
-    --set controller.metrics.enabled=true \
 #    --set service.type=LoadBalancer \
 #    --set service.externalPort=80 \
 #    --set service.internalPort=9090 \

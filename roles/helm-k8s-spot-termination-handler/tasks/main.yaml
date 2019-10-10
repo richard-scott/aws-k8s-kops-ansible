@@ -9,7 +9,6 @@
     helm install --atomic --dep-up --timeout=600 \
     --namespace kube-system \
     --name k8s-spot-termination-handler \
-    --set controller.metrics.enabled=true \
     stable/k8s-spot-termination-handler
   args:
     executable: /bin/bash

@@ -9,7 +9,6 @@
     helm install --atomic --dep-up \
     --name prometheus \
     --namespace kube-system \
-    --set controller.metrics.enabled=true \
     stable/prometheus
   args:
     executable: /bin/bash
