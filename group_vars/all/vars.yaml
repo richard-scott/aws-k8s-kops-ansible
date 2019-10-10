@@ -64,7 +64,7 @@ base_image: auto
 #master_zones: "eu-west-2a"
 master_zones: auto
 # What size instance to create
-master_size: t3.small
+master_size: t3a.small
 #master_size: auto
 # How many instances to create
 # This has to be > master_zones count or will be set to = master_zones count.
