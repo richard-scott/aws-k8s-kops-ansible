@@ -74,6 +74,23 @@
     k8s_version_string: "--kubernetes-version {{ k8s_version }}"
   when: k8s_version is defined and k8s_version != "auto"
 
+- name: "Get a list of Elastic IP's in use"
+  ec2_eip_facts:
+    region: "{{ aws_region }}"
+  register: regional_eip_addresses
+
+- name: "See if we have enough capacity for our master nodes"
+  set_fact:
+    available_elastic_ips: "{{ lookup('flattened','{{ regional_eip_addresses | json_query(query) | length }}') | int - lookup('flattened','{{ regional_eip_addresses | json_query(query) | length }}') | int }}"
+  vars:
+    query: 'addresses[*]'
+
+- block:
+    - debug:
+        var: available_elastic_ips
+    - fail:
+  when: available_elastic_ips < master_count
+
 - name: Create initial cluster configuration
   shell: |
     kops create cluster \
@@ -117,9 +134,13 @@
 - include: cluster_conf.yaml
 
 - name: Creating physical cluster.
-  shell: "kops update cluster {{ cluster_name }}.{{ dns_zone }} --yes --state {{ state_store }}"
+  shell: "time kops update cluster {{ cluster_name }}.{{ dns_zone }} --yes --state {{ state_store }}"
+  register: cmd_result 
   args:
     executable: /bin/bash
+
+- debug:
+    var: cmd_result
 
 - name: Export configuration for kubectl
   shell: "kops export kubecfg {{ cluster_name }}.{{ dns_zone }} --state {{ state_store }}"

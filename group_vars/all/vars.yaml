@@ -22,16 +22,15 @@ ssh_access_cidr:
 
 ## AWS Region to use
 # London
-#aws_region: "eu-west-2"
+aws_region: "eu-west-2"
 # Ireland
-aws_region: "eu-west-1"
+#aws_region: "eu-west-1"
 
 ## Availability zones to use
 # Select individual zones or to use ALL 
 # zones leave this as 'auto'.
-#aws_zones: eu-west-2c
-#aws_zones: eu-west-2a,eu-west-2b
-aws_zones: auto
+aws_zones: eu-west-2a,eu-west-2b,eu-west-2c
+#aws_zones: auto
 
 ## Network
 #network_cidr: 10.10.0.0/16
@@ -76,7 +75,7 @@ master_count: auto
 #master_profile: arn:aws:iam::1234567890108:instance-profile/kops-custom-master-role
 
 ## Node configuration
-node_size: t3.small
+node_size: t3a.small
 node_count: auto
 # Use node_max_price if you want to use spot instances.
 # Useful to reduce cost during testing
