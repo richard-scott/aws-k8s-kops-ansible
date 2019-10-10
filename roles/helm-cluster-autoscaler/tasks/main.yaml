@@ -20,6 +20,7 @@
     --set extraArgs.expendable-pods-priority-cutoff="{{ expendable_pods_priority_cutoff }}" \
     --set awsRegion="{{ aws_region }}" \
     --set rbac.create=true \
+    --set serviceMonitor.enabled=true \
     --set rbac.pspEnabled=true \
     --set cloudProvider=aws \
     stable/cluster-autoscaler
