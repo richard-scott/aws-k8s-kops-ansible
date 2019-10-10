@@ -11,3 +11,8 @@
     - lambda-delete
     - delete-cluster
     - delete-state-store
+
+  tasks:
+    - file:
+        path: "{{ '~/.kube' | expanduser }}"
+        state: absent

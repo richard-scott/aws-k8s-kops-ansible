@@ -142,17 +142,8 @@
 
 - include: cluster_conf.yaml
 
-- name: Creating physical cluster.
-  shell: "time kops update cluster {{ cluster_name }}.{{ dns_zone }} --yes --state {{ state_store }}"
-  register: cmd_result 
-  args:
-    executable: /bin/bash
-
-- debug:
-    var: cmd_result
-
-- name: Export configuration for kubectl
-  shell: "kops export kubecfg {{ cluster_name }}.{{ dns_zone }} --state {{ state_store }}"
+- name: Creating physical cluster (This can take around 5min to complete)
+  shell: "kops update cluster {{ cluster_name }}.{{ dns_zone }} --state {{ state_store }} --yes --create-kube-config"
   args:
     executable: /bin/bash
 
