@@ -97,7 +97,7 @@
     - debug:
         var: free_eips
     - fail:
-        msg: "Not enough Elastic IP's available!"
+        msg: "Not enough Elastic IP's available in {{ aws_region }}!"
   when: free_eips < master_count
 
 - name: Create initial cluster configuration
