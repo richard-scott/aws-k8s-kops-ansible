@@ -9,7 +9,7 @@
     helm install --atomic --dep-up \
     --name grafana \
     --set ingress.enabled=true \
-    --set ingress.path=/grafana \
+    --set ingress.path=/grafana/ \
     stable/grafana
   args:
     executable: /bin/bash

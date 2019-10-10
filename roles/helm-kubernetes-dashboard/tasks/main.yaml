@@ -1,0 +1,17 @@
+---
+
+#####################################
+# Install Kubernetes Dashboard via Helm
+#####################################
+
+- name: Adding Kubernetes Dashboard via Helm
+  shell: |
+    helm install --atomic --dep-up \
+    --name kubernetes-dashboard \
+    --set ingress.enabled=true \
+    --set ingress.path=/dashboard/ \
+    --set enableInsecureLogin=yes \
+    --set enableSkipLogin=true \
+    stable/kubernetes-dashboard
+  args:
+    executable: /bin/bash
