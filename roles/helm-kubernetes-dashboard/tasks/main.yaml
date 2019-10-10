@@ -8,17 +8,17 @@
   shell: |
     helm install --atomic --dep-up \
     --name kubernetes-dashboard \
-    --namespace kube-system \
+    --namespace kubernetes-dashboard \
     stable/kubernetes-dashboard
   args:
     executable: /bin/bash
 
-- name: Add a Dashboard Admin user account
-  shell: |
-    kubectl apply -f {{ role_path }}/files/{{item}}.yaml
-  args:
-    executable: /bin/bash
-  with_items:
-    - ServiceAccount
-    - ClusterRoleBinding
+#- name: Add a Dashboard Admin user account
+#  shell: |
+#    kubectl apply -f {{ role_path }}/files/{{item}}.yaml
+#  args:
+#    executable: /bin/bash
+#  with_items:
+#    - ServiceAccount
+#    - ClusterRoleBinding
 
