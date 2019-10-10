@@ -74,22 +74,31 @@
     k8s_version_string: "--kubernetes-version {{ k8s_version }}"
   when: k8s_version is defined and k8s_version != "auto"
 
-- name: "Get a list of Elastic IP's in use"
+- name: "Get a list of Elastic IP's in use in {{ aws_region }}"
   ec2_eip_facts:
     region: "{{ aws_region }}"
   register: regional_eip_addresses
 
-- name: "See if we have enough capacity for our master nodes"
+- name: "Count IP's in use at {{ aws_region }}"
   set_fact:
-    available_elastic_ips: "{{ lookup('flattened','{{ regional_eip_addresses | json_query(query) | length }}') | int - lookup('flattened','{{ regional_eip_addresses | json_query(query) | length }}') | int }}"
+    used_eips: "{{ lookup('flattened','{{ regional_eip_addresses | json_query(query) | length }}') }}"
   vars:
     query: 'addresses[*]'
 
+- name: Find our Elastic IP limt for {{ aws_region }}"
+  set_fact:
+    max_eips: "{{ lookup('aws_account_attribute', wantlist='true', region=aws_region)['vpc-max-elastic-ips'][0] | int }}"
+
+- name: "Calculate free Elastic IP's"
+  set_fact:
+    free_eips: "{{ max_eips | int - used_eips | int }}"
+
 - block:
     - debug:
-        var: available_elastic_ips
+        var: free_eips
     - fail:
-  when: available_elastic_ips < master_count
+        msg: "Not enough Elastic IP's available!"
+  when: free_eips < master_count
 
 - name: Create initial cluster configuration
   shell: |

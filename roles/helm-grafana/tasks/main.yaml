@@ -9,6 +9,7 @@
     helm install --atomic --dep-up \
     --name grafana \
     --namespace kube-system \
+    --set controller.metrics.enabled=true \
     --set service.type=LoadBalancer \    
     --set service.loadBalancerSourceRanges="{ {{ grafana_access_cidr | join(',') }} }" \
     stable/grafana
