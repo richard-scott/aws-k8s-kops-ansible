@@ -8,7 +8,8 @@
   shell: |
     helm install --atomic --dep-up \
     --name grafana \
-    --namespace kube-system \
+    --set ingress.enabled=true \
+    --set ingress.path=/grafana \
     stable/grafana
   args:
     executable: /bin/bash

@@ -75,7 +75,7 @@ master_count: auto
 #master_profile: arn:aws:iam::1234567890108:instance-profile/kops-custom-master-role
 
 ## Node configuration
-node_size: t3a.small
+node_size: t3a.medium
 node_count: auto
 # Use node_max_price if you want to use spot instances.
 # Useful to reduce cost during testing

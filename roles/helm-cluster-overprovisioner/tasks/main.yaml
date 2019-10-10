@@ -46,7 +46,6 @@
 - name: Adding Cluster overprovisioner via Helm
   shell: |
     helm install --atomic --dep-up --timeout=600 \
-    --namespace kube-system \
     --name cluster-overprovisioner \
     --set deployments[0].name=node \
     --set deployments[0].replica_count="{{ replica_count }}" \

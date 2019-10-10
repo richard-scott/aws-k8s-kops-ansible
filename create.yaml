@@ -32,6 +32,9 @@
       name: helm-metrics-server
     tags: always
   - import_role:
+      name: helm-prometheus
+    tags: always
+  - import_role:
       name: helm-cluster-autoscaler
     tags: always
   - import_role:

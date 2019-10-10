@@ -8,7 +8,6 @@
   shell: |
     helm install --atomic --dep-up \
     --name nginx-ingress \
-    --namespace kube-system \
     --set controller.metrics.enabled=true \
     stable/nginx-ingress
   args:
