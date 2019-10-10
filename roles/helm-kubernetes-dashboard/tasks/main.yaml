@@ -9,6 +9,7 @@
     helm install --atomic --dep-up \
     --name kubernetes-dashboard \
     --namespace kubernetes-dashboard \
+    --set=resources.requests.cpu=0.5,resources.limits.cpu=1 \
     stable/kubernetes-dashboard
   args:
     executable: /bin/bash
