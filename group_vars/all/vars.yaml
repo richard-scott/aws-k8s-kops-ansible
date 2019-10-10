@@ -1,7 +1,7 @@
 ---
 ## Cluster details
-dns_zone: eu-west-1.brainomix.com
-#dns_zone: rs.brainomix.com
+#dns_zone: eu-west-1.brainomix.com
+dns_zone: rs.brainomix.com
 cluster_name: k8s
 
 ## Where to store cluster state

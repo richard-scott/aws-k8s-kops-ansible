@@ -5,7 +5,6 @@ cd sbin
 if [[ ! -e kubectl ]] || [[ $(($(date +%s)-$(stat ${PWD}/kubectl --format %Y))) -gt 43200 ]]; then
   LATEST="$(curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt)"
   if [[ ! -e kubectl ]] || echo $(${PWD}/kubectl version | awk '{print $2}') | egrep -v -q "^${LATEST}$" ; then
-    echo "Downloading: kubectl-${LATEST}"
     curl --silent -Lo kubectl https://storage.googleapis.com/kubernetes-release/release/$(curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt)/bin/linux/amd64/kubectl
     chmod +x ./kubectl
   fi
