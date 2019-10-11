@@ -4,12 +4,19 @@
 # Install Grafana via Helm
 #####################################
 
+- shell: |
+    kubectl get svc nginx-ingress-controller -o jsonpath="{.status.loadBalancer.ingress[0].hostname}"
+  register: cmd_result
+
+- set_fact:
+    fqdn: "{{ cmd_result.stdout }}"
+
 - name: Adding Grafana via Helm
   shell: |
     helm install --atomic --dep-up \
     --name grafana \
     --set ingress.enabled=true \
-    --set ingress.path=/grafana/ \
+    --set ingress.hosts[0]="grafana.{{ dns_zone }}" \
     stable/grafana
   args:
     executable: /bin/bash

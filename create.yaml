@@ -23,6 +23,9 @@
       name: create-cluster
     tags: always
   - import_role:
+      name: kubernetes-dashboard
+    tags: always
+  - import_role:
       name: helm-install
     tags: always
   - import_role:
@@ -40,9 +43,3 @@
   - import_role:
       name: helm-nginx-ingress
     tags: always
-#  - import_role:
-#      name: helm-kubernetes-dashboard
-#    tags: always
-#  - import_role:
-#      name: helm-grafana
-#    tags: always

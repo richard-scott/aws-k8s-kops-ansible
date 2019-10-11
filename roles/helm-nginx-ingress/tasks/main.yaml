@@ -9,6 +9,7 @@
     helm install --atomic --dep-up \
     --name nginx-ingress \
     --set controller.metrics.enabled=true \
+    --set podSecurityPolicy.enabled=true \
     stable/nginx-ingress
   args:
     executable: /bin/bash

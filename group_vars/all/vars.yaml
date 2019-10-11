@@ -29,7 +29,7 @@ aws_region: "eu-west-2"
 ## Availability zones to use
 # Select individual zones or to use ALL 
 # zones leave this as 'auto'.
-aws_zones: eu-west-2a,eu-west-2b,eu-west-2c
+aws_zones: eu-west-2a #, eu-west-2b, eu-west-2c
 #aws_zones: auto
 
 ## Network

@@ -29,6 +29,7 @@
   shell: |
     helm install --atomic --dep-up \
     --name cluster-autoscaler \
+    --namespace kube-system \
     --set autoDiscovery.clusterName=k8s.rs.brainomix.com \
     --set extraArgs.balance-similar-node-groups=true \
     --set extraArgs.scale-down-unneeded-time="{{ scale_down_unneeded_time }}" \
