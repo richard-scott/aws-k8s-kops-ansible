@@ -11,6 +11,9 @@
     --namespace "kubernetes-dashboard" \
     --set controller.metrics.enabled=true \
     --set podSecurityPolicy.enabled=true \
+    --set controller.autoscaling.enabled="true" \
+    --set controller.autoscaling.minReplicas=1 \
+    --set controller.autoscaling.maxReplicas=2 \
     --set controller.service.annotations."service\.beta\.kubernetes\.io/aws-load-balancer-type=nlb" \
     stable/nginx-ingress
   args:
