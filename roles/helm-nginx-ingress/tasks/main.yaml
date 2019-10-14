@@ -10,6 +10,8 @@
     --name nginx-ingress \
     --set controller.metrics.enabled=true \
     --set podSecurityPolicy.enabled=true \
+    --set controller.service.annotations."service\.beta\.kubernetes\.io/aws-load-balancer-type=nlb" \
     stable/nginx-ingress
   args:
     executable: /bin/bash
+
