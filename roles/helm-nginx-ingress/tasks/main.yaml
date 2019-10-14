@@ -4,14 +4,14 @@
 # Install Nginx-Ingress via Helm
 #####################################
 
-- name: Adding Nginx-Ingress via Helm
+- name: "Adding Nginx-Ingress via Helm to the 'default' namespace"
   shell: |
     helm install --atomic --dep-up \
     --name nginx-ingress \
+    --namespace default \
     --set controller.metrics.enabled=true \
     --set podSecurityPolicy.enabled=true \
     --set controller.service.annotations."service\.beta\.kubernetes\.io/aws-load-balancer-type=nlb" \
     stable/nginx-ingress
   args:
     executable: /bin/bash
-
