@@ -41,7 +41,7 @@
 
 - name: Check we have an odd count of masters
   set_fact:
-    master_count: "{{ master_count + 1 | int }}"
+    master_count: "{{ master_count | int + 1 }}"
   when: master_count | int is divisibleby 2
 
 - name: Configure node count variable
