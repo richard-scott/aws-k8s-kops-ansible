@@ -10,7 +10,7 @@
     iam_name: "nodes.{{ cluster_name }}.{{ dns_zone }}"
     policy_name: "ec2ClusterAutoscale"
     state: present
-    policy_json: " {{ lookup( 'template', 'cluster-overprovisioner.json.j2') }}"
+    policy_json: "{{ lookup( 'template', '{{ role_path }}/template/cluster-overprovisioner.json.j2') }}"
 
 - name: Wait for policy to be applied.
   iam_role_facts:
