@@ -1,18 +1,8 @@
 ---
 
 #####################################
-# Install Grafana via Helm
+# Install Kubernetes Dashboard Ingress via Helm
 #####################################
-
-- name: Adding Grafana via Helm
-  shell: |
-    helm install --atomic --dep-up \
-    --name grafana \
-    --set ingress.enabled=true \
-    --set ingress.hosts[0]="grafana.{{ dns_zone }}" \
-    stable/grafana
-  args:
-    executable: /bin/bash
 
 - route53_zone:
     zone: "{{ dns_zone }}"
@@ -46,8 +36,15 @@
 - route53:
     command: create
     zone: "{{ dns_zone }}"
-    record: "grafana.{{ dns_zone }}"
+    record: "dashboard.{{ dns_zone }}"
     type: A
     value: "{{ elb_fqdn }}"
     alias: True
     alias_hosted_zone_id: "{{ elb_hosted_zone_id }}"
+
+- name: "Setup Kubernetes Dashboard Ingress at dashboard.{{ dns_zone }}"
+  shell: |
+    kubectl apply -f {{ role_path }}/files/dashboard-ingress.yaml
+  args:
+    executable: /bin/bash
+
