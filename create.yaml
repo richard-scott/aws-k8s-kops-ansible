@@ -23,27 +23,27 @@
       name: create-cluster
     tags: always
   - import_role:
-      name: kubernetes-dashboard
-    tags: always
-  - import_role:
       name: helm-install
     tags: always
   - import_role:
       name: helm-metrics-server
     tags: always
   - import_role:
-      name: helm-cluster-autoscaler
+      name: kubernetes-dashboard
     tags: always
-  - import_role:
-      name: helm-cluster-overprovisioner
-    tags: always
-  - import_role:
-      name: helm-k8s-spot-termination-handler
-    tags: always
-  - import_role:
-      name: helm-nginx-ingress
-    tags: always
-  - import_role:
-      name: kubernetes-dashboard-ingress
-    tags: always
+#  - import_role:
+#      name: helm-cluster-autoscaler
+#    tags: always
+#  - import_role:
+#      name: helm-cluster-overprovisioner
+#    tags: always
+#  - import_role:
+#      name: helm-k8s-spot-termination-handler
+#    tags: always
+#  - import_role:
+#      name: helm-nginx-ingress
+#    tags: always
+#  - import_role:
+#      name: helm-grafana
+#    tags: always
 

@@ -23,7 +23,7 @@
     zone_id: "{{ output.result.zone_id }}"
 
 - shell: |
-    kubectl get svc nginx-ingress-controller -o jsonpath="{.status.loadBalancer.ingress[0].hostname}"
+    kubectl get svc nginx-ingress-namespace-kubernetes-dashboard-controller -n kubernetes-dashboard -o jsonpath="{.status.loadBalancer.ingress[0].hostname}"
   args:
     executable: /bin/bash
   ignore_errors: true
@@ -43,6 +43,24 @@
     elb_hosted_zone_id: "{{ elb_facts | json_query(query) | join }}"
   vars:
     query:  "elbs[?dns_name=='{{ elb_fqdn }}'].hosted_zone_id"
+
+- block:
+    - action:
+        module: elb_application_lb_facts
+      register: elb_facts
+
+    - set_fact:
+        elb_hosted_zone_id: "{{ elb_facts | json_query(query) | join }}"
+      vars:
+        query:  "load_balancers[?dns_name=='{{ elb_fqdn }}'].canonical_hosted_zone_id"
+
+  when: elb_hosted_zone_id | length | int == 0
+
+- debug:
+    var: elb_hosted_zone_id
+
+- fail:
+  when: elb_hosted_zone_id | length | int == 0
 
 - route53:
     command: create

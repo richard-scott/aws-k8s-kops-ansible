@@ -7,7 +7,7 @@
 - name: "Adding Nginx-Ingress via Helm to the 'default' namespace"
   shell: |
     helm install --atomic --dep-up \
-    --name nginx-ingress \
+    --name nginx-ingress-namespace-default \
     --namespace default \
     --set controller.metrics.enabled=true \
     --set podSecurityPolicy.enabled=true \
@@ -18,3 +18,60 @@
     stable/nginx-ingress
   args:
     executable: /bin/bash
+
+- route53_zone:
+    zone: "{{ dns_zone }}"
+  register: output
+
+- set_fact:
+    zone_id: "{{ output.result.zone_id }}"
+
+- shell: |
+    kubectl get svc nginx-ingress-namespace-default-controller -n default -o jsonpath="{.status.loadBalancer.ingress[0].hostname}"
+  args:
+    executable: /bin/bash
+  ignore_errors: true
+  register: cmd_result
+  until: cmd_result.rc == 0
+  retries: 30
+  delay: 60
+
+- set_fact:
+    elb_fqdn: "{{ cmd_result.stdout }}"
+
+- action:
+    module: ec2_elb_facts
+  register: elb_facts
+
+- set_fact:
+    elb_hosted_zone_id: "{{ elb_facts | json_query(query) | join }}"
+  vars:
+    query:  "elbs[?dns_name=='{{ elb_fqdn }}'].hosted_zone_id"
+
+- block:
+    - action:
+        module: elb_application_lb_facts
+      register: elb_facts
+  
+    - set_fact:
+        elb_hosted_zone_id: "{{ elb_facts | json_query(query) | join }}"
+      vars:
+        query:  "load_balancers[?dns_name=='{{ elb_fqdn }}'].canonical_hosted_zone_id"
+
+  when: elb_hosted_zone_id | length | int == 0
+
+- debug:
+    var: elb_hosted_zone_id
+
+- fail:
+  when: elb_hosted_zone_id | length | int == 0
+
+- route53:
+    command: create
+    zone: "{{ dns_zone }}"
+    record: "default.{{ dns_zone }}"
+    type: A
+    value: "{{ elb_fqdn }}"
+    overwrite: yes
+    alias: True
+    alias_hosted_zone_id: "{{ elb_hosted_zone_id }}"
