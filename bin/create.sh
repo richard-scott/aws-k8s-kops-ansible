@@ -1,3 +1,6 @@
 #!/bin/bash
 cd $(dirname $(dirname ${0}))
-ansible-playbook create.yaml
+$(bin/aws-export-profile brainomix)
+if [[ -n "${AWS_REGION}" ]]; then
+  ansible-playbook create.yaml
+fi
