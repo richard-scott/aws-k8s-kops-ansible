@@ -19,9 +19,8 @@
     - ServiceAccount
     - ClusterRoleBinding
 
-  - import_role:
-      name: helm-nginx-ingress
-    vars:
-      namespace: kubernetes-dashboard
-    tags: always
+- import_role:
+    name: helm-nginx-ingress
+  vars:
+    namespace: kubernetes-dashboard
 
