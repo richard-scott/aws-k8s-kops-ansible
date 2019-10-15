@@ -8,4 +8,7 @@
   shell: "kops delete cluster {{ cluster_name }}.{{ dns_zone }} --state {{ state_store }} --yes"
   args:
     executable: /bin/bash
-  #ignore_errors: true
+  register: cmd_result
+  until: cmd_result.rc == 0
+  retries: 30
+  delay: 60
