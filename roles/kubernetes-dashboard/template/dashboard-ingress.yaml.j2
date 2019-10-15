@@ -10,7 +10,7 @@ metadata:
 
 spec:
   rules:
-    - host: dashboard.{{ dns_zone }}
+    - host: {{ namespace }}.{{ dns_zone }}
       http:
         paths:
           - path: /
