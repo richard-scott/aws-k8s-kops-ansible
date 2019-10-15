@@ -41,9 +41,6 @@
       name: kubernetes-dashboard
     tags: always
 #  - import_role:
-#      name: helm-nginx-ingress
-#    tags: always
-#  - import_role:
 #      name: helm-grafana
 #    tags: always
 
