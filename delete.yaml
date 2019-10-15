@@ -8,7 +8,7 @@
   gather_facts: no
   connection: local
   roles:
-    - lambda-delete
+#    - lambda-delete
     - delete-cluster
     - delete-state-store
 
