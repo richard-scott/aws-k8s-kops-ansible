@@ -11,6 +11,8 @@
     --namespace "{{ namespace }}" \
     --set controller.metrics.enabled=true \
     --set podSecurityPolicy.enabled=true \
+    --set controller.service.annotations."service\.beta\.kubernetes\.io/aws-load-balancer-type=nlb" \
+    --set controller.service.annotations."service\.beta\.kubernetes\.io/aws-load-balancer-cross-zone-load-balancing-enabled=true" \
     stable/nginx-ingress
   args:
     executable: /bin/bash

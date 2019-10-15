@@ -24,3 +24,18 @@
   vars:
     namespace: kubernetes-dashboard
 
+- name: "Setup Kubernetes Dashboard Ingress at dashboard.{{ dns_zone }}"
+  shell: |
+    echo "{{ lookup( 'template', 'template/dashboard-ingress.yaml.j2') }}" | kubectl apply -f -
+  args:
+    executable: /bin/bash
+
+- name: "Waiting for DNS to update on dashboard.{{ dns_zone }}"
+  shell: |
+    dig +short kubernetes-dashboard.{{ dns_zone }} | egrep -v "^$"
+  args:
+    executable: /bin/bash
+  register: cmd_result
+  until: cmd_result.rc == 0
+  retries: 30
+  delay: 60
