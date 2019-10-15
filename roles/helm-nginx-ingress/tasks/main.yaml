@@ -1,33 +1,22 @@
 ---
 
-#####################################
+################################
 # Install Nginx-Ingress via Helm
-#####################################
+################################
 
-- name: "Adding Nginx-Ingress via Helm to the 'default' namespace"
+- name: "Adding Nginx-Ingress via Helm"
   shell: |
     helm install --atomic --dep-up \
-    --name nginx-ingress-namespace-default \
-    --namespace default \
+    --name "nginx-ingress-{{ namespace }}" \
+    --namespace {{ namespace }}" \
     --set controller.metrics.enabled=true \
-    --set podSecurityPolicy.enabled=true \
-    --set controller.autoscaling.enabled="true" \
-    --set controller.autoscaling.minReplicas=1 \
-    --set controller.autoscaling.maxReplicas=2 \
-    --set controller.service.annotations."service\.beta\.kubernetes\.io/aws-load-balancer-type=nlb" \
+   --set podSecurityPolicy.enabled=true \
     stable/nginx-ingress
   args:
     executable: /bin/bash
 
-- route53_zone:
-    zone: "{{ dns_zone }}"
-  register: output
-
-- set_fact:
-    zone_id: "{{ output.result.zone_id }}"
-
 - shell: |
-    kubectl get svc nginx-ingress-namespace-default-controller -n default -o jsonpath="{.status.loadBalancer.ingress[0].hostname}"
+    kubectl get svc nginx-ingress-{{ namespace }}-controller -o jsonpath="{.status.loadBalancer.ingress[0].hostname}"
   args:
     executable: /bin/bash
   ignore_errors: true
@@ -69,7 +58,7 @@
 - route53:
     command: create
     zone: "{{ dns_zone }}"
-    record: "default.{{ dns_zone }}"
+    record: "{{ namespace }}.{{ dns_zone }}"
     type: A
     value: "{{ elb_fqdn }}"
     overwrite: yes

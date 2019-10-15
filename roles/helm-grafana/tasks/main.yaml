@@ -23,7 +23,7 @@
     zone_id: "{{ output.result.zone_id }}"
 
 - shell: |
-    kubectl get svc nginx-ingress-namespace-kubernetes-dashboard-controller -n kubernetes-dashboard -o jsonpath="{.status.loadBalancer.ingress[0].hostname}"
+    kubectl get svc nginx-ingress-controller -o jsonpath="{.status.loadBalancer.ingress[0].hostname}"
   args:
     executable: /bin/bash
   ignore_errors: true
