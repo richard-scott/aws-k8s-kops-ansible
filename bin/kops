@@ -10,4 +10,5 @@ if [[ ! -e kops ]] || [[ $(($(date +%s)-$(stat ${PWD}/kops --format %Y))) -gt 43
   fi
 fi
 cd ..
+export $(/usr/bin/ansible -m shell -a "echo KOPS_STATE_STORE={{ state_store}}" localhost 2>&1 | tail -n 1)
 ${PWD}/sbin/kops "${@}"
