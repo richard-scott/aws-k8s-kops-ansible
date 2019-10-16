@@ -10,5 +10,5 @@
     executable: /bin/bash
   register: cmd_result
   until: cmd_result.rc == 0
-  retries: 30
-  delay: 60
+  retries: 3
+  delay: 10

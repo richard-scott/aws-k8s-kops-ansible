@@ -14,7 +14,7 @@
     utilisation_multiplier: 0.50
   when: utilisation_multiplier is undefined or utilisation_multiplier =="auto"
 
-- name: Set resources_limitss_cpu variable
+- name: Set resources_requests_cpu variable
   block: 
     - ec2_instance_facts:
         region: "{{ aws_region }}"
@@ -23,9 +23,9 @@
       register: ec2if
  
     - set_fact:
-        resources_limitss_cpu: "{{ ec2if.instances[0].cpu_options.core_count * ec2if.instances[0].cpu_options.threads_per_core * utilisation_multiplier }}"
+        resources_requests_cpu: "{{ ec2if.instances[0].cpu_options.core_count * ec2if.instances[0].cpu_options.threads_per_core * utilisation_multiplier }}"
 
-  when: resources_limitss_cpu is undefined or resources_limitss_cpu =="auto"
+  when: resources_requests_cpu is undefined or resources_requests_cpu =="auto"
 
 - name: Adding Cluster overprovisioner via Helm
   shell: |
@@ -34,7 +34,7 @@
     --namespace kube-system \
     --set deployments[0].name=node \
     --set deployments[0].replica_count="{{ replica_count }}" \
-    --set deployments[0].resources.limits.cpu="{{ resources_limitss_cpu }}" \
+    --set deployments[0].resources.requests.cpu="{{ resources_requests_cpu }}" \
     stable/cluster-overprovisioner
   args:
     executable: /bin/bash

@@ -25,23 +25,6 @@
     scale_down_unneeded_time: "5m"
   when: scale_down_unneeded_time is undefined
 
-- name: Adding Cluster Autoscaller via Helm
-  shell: |
-    helm install --atomic --dep-up \
-    --name cluster-autoscaler \
-    --namespace kube-system \
-    --set autoDiscovery.clusterName=k8s.rs.brainomix.com \
-    --set extraArgs.balance-similar-node-groups=true \
-    --set extraArgs.scale-down-unneeded-time="{{ scale_down_unneeded_time }}" \
-    --set extraArgs.expendable-pods-priority-cutoff="{{ expendable_pods_priority_cutoff }}" \
-    --set awsRegion="{{ aws_region }}" \
-    --set rbac.create=true \
-    --set rbac.pspEnabled=true \
-    --set cloudProvider=aws \
-    stable/cluster-autoscaler
-  args:
-    executable: /bin/bash
-
 - name: Configure node count variable
   set_fact:
     node_count: 1
@@ -68,9 +51,27 @@
     node_autoscaler_max: "{{ ( max_instances | int ) }}"
   when: node_autoscaler_max is not defined or ( node_autoscaler_max > max_instances or node_autoscaler_max < node_autoscaler_min )
 
-- name: "Update ASG to {{ node_autoscaler_min }}:{{ node_autoscaler_max }} Nodes"
-  ec2_asg:
-    region: "{{ aws_region }}"
-    name: "nodes.{{ cluster_name }}.{{ dns_zone }}"
-    min_size: "{{ node_autoscaler_min }}"
-    max_size: "{{ node_autoscaler_max }}"
+- name: Adding Cluster Autoscaller via Helm
+  shell: |
+    helm install --atomic --dep-up \
+    --name cluster-autoscaler \
+    --namespace kube-system \
+    --set autoDiscovery.clusterName="{{ cluster_name }}.{{ dns_zone }}" \
+    --set extraArgs.balance-similar-node-groups=true \
+    --set extraArgs.scale-down-unneeded-time="{{ scale_down_unneeded_time }}" \
+    --set extraArgs.expendable-pods-priority-cutoff="{{ expendable_pods_priority_cutoff }}" \
+    --set awsRegion="{{ aws_region }}" \
+    --set rbac.create=true \
+    --set rbac.pspEnabled=true \
+    --set cloudProvider=aws \
+    --set nodes="{{ node_autoscaler_min }}:{{ node_autoscaler_max }}:nodes.{{ cluster_name }}.{{ dns_zone }}" \
+    stable/cluster-autoscaler
+  args:
+    executable: /bin/bash
+
+#- name: "Update ASG to {{ node_autoscaler_min }}:{{ node_autoscaler_max }} Nodes"
+#  ec2_asg:
+#    region: "{{ aws_region }}"
+#    name: "nodes.{{ cluster_name }}.{{ dns_zone }}"
+#    min_size: "{{ node_autoscaler_min }}"
+#    max_size: "{{ node_autoscaler_max }}"
