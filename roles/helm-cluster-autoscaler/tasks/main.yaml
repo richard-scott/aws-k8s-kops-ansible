@@ -58,6 +58,7 @@
     --namespace kube-system \
     --set autoDiscovery.clusterName="{{ cluster_name }}.{{ dns_zone }}" \
     --set extraArgs.balance-similar-node-groups=true \
+    --set extraArgs.expander=least-waste \
     --set extraArgs.scale-down-unneeded-time="{{ scale_down_unneeded_time }}" \
     --set extraArgs.expendable-pods-priority-cutoff="{{ expendable_pods_priority_cutoff }}" \
     --set awsRegion="{{ aws_region }}" \
@@ -68,10 +69,3 @@
     stable/cluster-autoscaler
   args:
     executable: /bin/bash
-
-#- name: "Update ASG to {{ node_autoscaler_min }}:{{ node_autoscaler_max }} Nodes"
-#  ec2_asg:
-#    region: "{{ aws_region }}"
-#    name: "nodes.{{ cluster_name }}.{{ dns_zone }}"
-#    min_size: "{{ node_autoscaler_min }}"
-#    max_size: "{{ node_autoscaler_max }}"
