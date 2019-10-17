@@ -16,7 +16,6 @@
   args:
     executable: /bin/bash
 
-
 - shell: |
     kubectl get svc nginx-ingress-{{ namespace }}-controller -n {{ namespace }} -o jsonpath="{.status.loadBalancer.ingress[0].hostname}"
   args:

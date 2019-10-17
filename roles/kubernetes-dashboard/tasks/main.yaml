@@ -40,3 +40,13 @@
   until: cmd_result.rc == 0
   retries: 30
   delay: 60
+
+- name: "Waiting for Load Balancer to settle"
+  uri:
+    url: "https://kubernetes-dashboard.{{ dns_zone }}/"
+    validate_certs: no
+    timeout: 900
+  register: result
+  until: result.elapsed is defined
+  retries: 30
+  delay: 60  
