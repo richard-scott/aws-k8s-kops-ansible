@@ -1,3 +1,4 @@
 ---
 namespace: "default"
 elb_type: "classic"
+ssl_arn: ""
