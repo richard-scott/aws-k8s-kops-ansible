@@ -4,14 +4,6 @@
 # Install Nginx-Ingress via Helm
 ################################
 
-- name: Setting SSL cert"
-  set_fact:
-    ssl_arn_string: '--set controller.service.annotations."service\.beta\.kubernetes\.io/aws-load-balancer-ssl-cert: {{ ssl_arn }}"'
-  when: ssl_arn is defined and ssl_arn | length > 0
-
-- debug:
-    vars: ssl_arn_string
-
 - name: "Adding Nginx-Ingress via Helm"
   shell: |
     helm install --atomic --dep-up \
@@ -20,7 +12,7 @@
     --set controller.metrics.enabled=true \
     --set controller.service.annotations."service\.beta\.kubernetes\.io/aws-load-balancer-type={{ elb_type }}" \
     --set controller.service.annotations."service\.beta\.kubernetes\.io/aws-load-balancer-cross-zone-load-balancing-enabled=true" \
-    {{ ssl_arn_string }} \
+    --set controller.service.annotations."service\.beta\.kubernetes\.io/aws-load-balancer-ssl-cert={{ ssl_arn }}" \
     stable/nginx-ingress
   args:
     executable: /bin/bash
