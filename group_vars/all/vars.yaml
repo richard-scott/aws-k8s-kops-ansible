@@ -91,7 +91,7 @@ tag_environment: EnvironmentTag
 
 ## IAM
 iam:
-  allow_container_registry: false
+  allow_container_registry: true
 
 ## Cluster Overprovision
 replica_count: 1

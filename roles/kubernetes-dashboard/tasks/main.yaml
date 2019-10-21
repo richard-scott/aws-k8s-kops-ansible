@@ -20,23 +20,13 @@
     - ServiceAccount
     - ClusterRoleBinding
 
-- import_role:
-    name: helm-nginx-ingress
-  vars:
-    namespace: kubernetes-dashboard
-
 - name: "Setup Kubernetes Dashboard Ingress at kubernetes-dashboard.{{ dns_zone }}"
   shell: |
     echo "{{ lookup( 'template', 'template/dashboard-ingress.yaml.j2') }}" | kubectl apply -f -
   args:
     executable: /bin/bash
 
-- name: "Waiting for Load Balancer to settle"
-  uri:
-    url: "https://kubernetes-dashboard.{{ dns_zone }}/"
-    validate_certs: no
-    timeout: 900
-  register: result
-  until: result.elapsed is defined
-  retries: 30
-  delay: 60  
+- import_role:
+    name: helm-nginx-ingress
+  vars:
+    namespace: kubernetes-dashboard
