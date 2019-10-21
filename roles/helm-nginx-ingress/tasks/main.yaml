@@ -4,12 +4,14 @@
 # Install Nginx-Ingress via Helm
 ################################
 
+#    --set controller.autoscaling.enabled=true \
+#    --set controller.resources[0].requests.cpu="{{ resources_requests_cpu }}" \
+
 - name: "Adding Nginx-Ingress via Helm"
   shell: |
     helm install --atomic --dep-up \
     --name "nginx-ingress-{{ namespace }}" \
     --namespace "{{ namespace }}" \
-    --set controller.autoscaling.enabled=true \
     --set controller.metrics.enabled=true \
     --set controller.scope.enabled=true \
     --set controller.scope.namespace="{{ namespace }}" \

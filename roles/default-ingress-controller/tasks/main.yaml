@@ -8,4 +8,4 @@
     name: helm-nginx-ingress
   vars:
     namespace: default
-    elb_type: nlb
+    #elb_type: nlb
