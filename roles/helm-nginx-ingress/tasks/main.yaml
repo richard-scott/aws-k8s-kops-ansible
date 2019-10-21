@@ -5,34 +5,6 @@
 ################################
 
 - name: "Adding Nginx-Ingress via Helm"
-#  helm:
-#    host: localhost
-#    state: present
-#    name: "nginx-ingress-{{ namespace }}"
-#    namespace: "{{ namespace }}"
-#    chart:
-#      name: stable/nginx-ingress
-#      source:
-#        type: git
-#        location: https://github.com/user/helm-chart.git
-#    values:
-#      {{ annotations }}
-#      controller:
-#        autoscaling:
-#          enabled: true
-#        metrics:
-#          enabled: true
-#        scope:
-#          namespace: "{{ namespace }}" 
-#        ingressClass: "{{ namespace }}-nginx"
-#        service:
-#          annotations:
-#            service:
-#              beta:
-#                kubernetes:
-#                  io:
-#                    aws-load-balancer-type: "{{ elb_type }}"
-#                    aws-load-balancer-cross-zone-load-balancing-enabled: true           
   shell: |
     helm install --atomic --dep-up \
     --name "nginx-ingress-{{ namespace }}" \
