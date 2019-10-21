@@ -30,3 +30,4 @@
     name: helm-nginx-ingress
   vars:
     namespace: kubernetes-dashboard
+    ssl_arn: arn:aws:acm:eu-west-1:996394622990:certificate/9176394a-e720-4869-ac2a-f9f2c433fa3a
