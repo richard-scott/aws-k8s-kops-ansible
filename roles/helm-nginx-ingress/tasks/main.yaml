@@ -4,7 +4,7 @@
 # Install Nginx-Ingress via Helm
 ################################
 
-#- name: "Adding Nginx-Ingress via Helm"
+- name: "Adding Nginx-Ingress via Helm"
 #  helm:
 #    host: localhost
 #    state: present
@@ -32,8 +32,7 @@
 #                kubernetes:
 #                  io:
 #                    aws-load-balancer-type: "{{ elb_type }}"
-#                    aws-load-balancer-cross-zone-load-balancing-enabled: true
-            
+#                    aws-load-balancer-cross-zone-load-balancing-enabled: true           
   shell: |
     helm install --atomic --dep-up \
     --name "nginx-ingress-{{ namespace }}" \
