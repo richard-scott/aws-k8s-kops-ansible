@@ -4,15 +4,48 @@
 # Install Nginx-Ingress via Helm
 ################################
 
-- name: "Adding Nginx-Ingress via Helm"
+#- name: "Adding Nginx-Ingress via Helm"
+#  helm:
+#    host: localhost
+#    state: present
+#    name: "nginx-ingress-{{ namespace }}"
+#    namespace: "{{ namespace }}"
+#    chart:
+#      name: stable/nginx-ingress
+#      source:
+#        type: git
+#        location: https://github.com/user/helm-chart.git
+#    values:
+#      {{ annotations }}
+#      controller:
+#        autoscaling:
+#          enabled: true
+#        metrics:
+#          enabled: true
+#        scope:
+#          namespace: "{{ namespace }}" 
+#        ingressClass: "{{ namespace }}-nginx"
+#        service:
+#          annotations:
+#            service:
+#              beta:
+#                kubernetes:
+#                  io:
+#                    aws-load-balancer-type: "{{ elb_type }}"
+#                    aws-load-balancer-cross-zone-load-balancing-enabled: true
+            
   shell: |
     helm install --atomic --dep-up \
     --name "nginx-ingress-{{ namespace }}" \
     --namespace "{{ namespace }}" \
+    --set controller.autoscaling.enabled=true \
     --set controller.metrics.enabled=true \
+    --set controller.scope.enabled=true \
+    --set controller.scope.namespace="{{ namespace }}" \
+    --set controller.ingressClass="{{ namespace }}-nginx" \
     --set controller.service.annotations."service\.beta\.kubernetes\.io/aws-load-balancer-type={{ elb_type }}" \
     --set controller.service.annotations."service\.beta\.kubernetes\.io/aws-load-balancer-cross-zone-load-balancing-enabled=true" \
-    --set controller.service.annotations."service\.beta\.kubernetes\.io/aws-load-balancer-ssl-cert={{ ssl_arn }}" \
+    --set controller.service.annotations."service\.beta\.kubernetes\.io/aws-load-balancer-ssl-cert=arn:aws:acm:eu-west-1:996394622990:certificate/9176394a-e720-4869-ac2a-f9f2c433fa3a" \
     stable/nginx-ingress
   args:
     executable: /bin/bash
