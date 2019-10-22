@@ -7,6 +7,12 @@
 #    --set controller.autoscaling.enabled=true \
 #    --set controller.resources[0].requests.cpu="{{ resources_requests_cpu }}" \
 
+- name: "Create config map for nginx-ingress-{{ namespace }}-controller"
+  shell: |
+    echo "{{ lookup( 'template', 'template/configmap.yaml.j2') }}" | kubectl apply -f -
+  args:
+    executable: /bin/bash
+
 - name: "Adding Nginx-Ingress via Helm"
   shell: |
     helm install --atomic --dep-up \
