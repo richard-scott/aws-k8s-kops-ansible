@@ -19,8 +19,8 @@
     --set controller.service.targetPorts.http=http \
     --set controller.service.targetPorts.https=http \
     --set controller.service.annotations."service\.beta\.kubernetes\.io/aws-load-balancer-type={{ elb_type }}" \
-    --set controller.service.annotations."service\.beta\.kubernetes\.io/aws-load-balancer-cross-zone-load-balancing-enabled=\'true\'" \
-    --set controller.service.annotations."service\.beta\.kubernetes\.io/aws-load-balancer-proxy-protocol=\'*\'" \
+    --set controller.service.annotations."service\.beta\.kubernetes\.io/aws-load-balancer-cross-zone-load-balancing-enabled=true" \
+    --set controller.service.annotations."service\.beta\.kubernetes\.io/aws-load-balancer-proxy-protocol=*" \
     --set controller.service.annotations."service\.beta\.kubernetes\.io/aws-load-balancer-ssl-ports=https" \
     --set controller.service.annotations."service\.beta\.kubernetes\.io/aws-load-balancer-backend-protocol=http" \
     --set controller.service.annotations."service\.beta\.kubernetes\.io/aws-load-balancer-connection-idle-timeout=600" \
