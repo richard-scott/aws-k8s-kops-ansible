@@ -18,7 +18,7 @@
     --set controller.ingressClass="{{ namespace }}-nginx" \
     --set controller.service.annotations."service\.beta\.kubernetes\.io/aws-load-balancer-type={{ elb_type }}" \
     --set controller.service.annotations."service\.beta\.kubernetes\.io/aws-load-balancer-cross-zone-load-balancing-enabled='true'" \
-    --set controller.service.annotations."service\.beta\.kubernetes\.io/aws-load-balancer-proxy-protocol='*' \
+    --set controller.service.annotations."service\.beta\.kubernetes\.io/aws-load-balancer-proxy-protocol='*'" \
     --set controller.service.annotations."service\.beta\.kubernetes\.io/aws-load-balancer-ssl-ports=https" \
     --set controller.service.annotations."service\.beta\.kubernetes\.io/aws-load-balancer-ssl-cert=arn:aws:acm:eu-west-1:996394622990:certificate/9176394a-e720-4869-ac2a-f9f2c433fa3a" \
     stable/nginx-ingress
