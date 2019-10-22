@@ -1,9 +1,8 @@
-apiVersion: v1
-data:
-  force-ssl-redirect: "true"
-  use-forwarded-headers: "true"
 kind: ConfigMap
+apiVersion: v1
 metadata:
   name: nginx-ingress-{{ namespace }}-controller
   namespace: {{ namespace }}
-
+data:
+  force-ssl-redirect: "true"
+  use-forwarded-headers: "true"
