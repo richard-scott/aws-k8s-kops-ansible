@@ -16,6 +16,8 @@
     --set controller.scope.enabled=true \
     --set controller.scope.namespace="{{ namespace }}" \
     --set controller.ingressClass="{{ namespace }}-nginx" \
+    --set controller.service.targetPorts.http=http \
+    --set controller.service.targetPorts.https=http \
     --set controller.service.annotations."service\.beta\.kubernetes\.io/aws-load-balancer-type={{ elb_type }}" \
     --set controller.service.annotations."service\.beta\.kubernetes\.io/aws-load-balancer-cross-zone-load-balancing-enabled='true'" \
     --set controller.service.annotations."service\.beta\.kubernetes\.io/aws-load-balancer-proxy-protocol='*'" \
@@ -27,8 +29,6 @@
   args:
     executable: /bin/bash
 
-#    --set controller.service.targetPorts.http=80 \
-#    --set controller.service.targetPorts.https=80 \
 
 - shell: |
     kubectl get svc nginx-ingress-{{ namespace }}-controller -n {{ namespace }} -o jsonpath="{.status.loadBalancer.ingress[0].hostname}"
