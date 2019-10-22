@@ -1,5 +1,4 @@
 ---
-
 ################################
 # Install Nginx-Ingress via Helm
 ################################
@@ -7,11 +6,27 @@
 #    --set controller.autoscaling.enabled=true \
 #    --set controller.resources[0].requests.cpu="{{ resources_requests_cpu }}" \
 
+- name: Creating ConfigMap for the controller
+  tempfile:
+    state: file
+    suffix: temp
+  register: tempfile
+
 - name: "Create config map for nginx-ingress-{{ namespace }}-controller"
+  template:
+    src: configmap.yaml.j2
+    dest: "{{ tempfile.path }}"
+
+- name: Apply config to cluster
   shell: |
-    echo "{{ lookup( 'template', 'template/configmap.yaml.j2') }}" | kubectl apply -f -
+    cat {{ tempfile.path }} | kubectl create -f -
   args:
     executable: /bin/bash
+
+- name: Delete temp file
+  file:
+    path: "{{ tempfile.path }}"
+    state: absent
 
 - name: "Adding Nginx-Ingress via Helm"
   shell: |
