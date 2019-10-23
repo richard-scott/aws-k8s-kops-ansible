@@ -27,16 +27,17 @@
   retries: 30
   delay: 60
 
-- name: "Updating Helm repo's"
-  shell: "helm repo update"
-  args:
-    executable: /bin/bash
-
 - name: "Add some Chart Repositories"
   shell: "helm repo add appscode {{ item }}"
   args:
     executable: /bin/bash
   with_items:
-    - "https://charts.appscode.com/stable/"
-    - "https://charts.jetstack.io"
-    - "https://kiwigrid.github.io"
+    - { name: "appscode", url: "https://charts.appscode.com/stable/" }
+    - { name: "jetstack", url: "https://charts.jetstack.io" }
+    - { name: "kiwigrid", url: "https://kiwigrid.github.io" }
+
+- name: "Updating Helm repo's"
+  shell: "helm repo update"
+  args:
+    executable: /bin/bash
+
