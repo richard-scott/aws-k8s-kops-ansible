@@ -39,3 +39,4 @@
   with_items:
     - "https://charts.appscode.com/stable/"
     - "https://charts.jetstack.io"
+    - "https://kiwigrid.github.io"

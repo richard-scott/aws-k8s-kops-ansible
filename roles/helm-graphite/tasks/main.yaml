@@ -1,0 +1,24 @@
+---
+
+#####################################
+# Install Graphite via Helm
+#####################################
+
+- name: Adding Graphite via Helm
+  shell: |
+    helm install --atomic --dep-up \
+    --name graphite \
+    --namespace graphite \
+    --set ingress.enabled=true \
+    --set ingress.hosts[0]="graphite.{{ dns_zone }}" \
+    --set ingress.annotations."kubernetes\.io/ingress\.class=nginx" \
+    --set ingress.path="/" \
+    --set ingress.annotations."nginx\.ingress\.kubernetes\.io/rewrite-target=/" \
+    stable/graphite
+  args:
+    executable: /bin/bash
+
+- import_role:
+    name: helm-nginx-ingress
+  vars:
+    namespace: graphite
