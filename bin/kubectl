@@ -6,7 +6,8 @@ if [[ ! -e kubectl ]] || [[ $(($(date +%s)-$(stat ${PWD}/kubectl --format %Y))) 
   LATEST="$(curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt)"
   if [[ ! -e kubectl ]] || echo $(${PWD}/kubectl version | awk '{print $2}') | egrep -v -q "^${LATEST}$" ; then
     curl --silent -Lo kubectl https://storage.googleapis.com/kubernetes-release/release/$(curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt)/bin/linux/amd64/kubectl
-    chmod +x ./kubectl
+    sudo chmod +x ./kubectl
+    sudo setcap CAP_NET_BIND_SERVICE=+eip ./kubectl
   fi
 fi
 cd ..

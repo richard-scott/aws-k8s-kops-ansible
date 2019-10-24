@@ -28,7 +28,7 @@
   delay: 60
 
 - name: "Add some Chart Repositories"
-  shell: "helm repo add appscode {{ item }}"
+  shell: "helm repo add {{ item.name }} {{ item.url }}"
   args:
     executable: /bin/bash
   with_items:
