@@ -18,7 +18,7 @@
     dest: "{{ tempfile.path }}"
 
 - name: Apply config to cluster
-  shell: |
+  shell: >-
     cat {{ tempfile.path }} | kubectl create -f -
   args:
     executable: /bin/bash
@@ -50,7 +50,7 @@
     executable: /bin/bash
 
 
-- shell: |
+- shell: >-
     kubectl get svc nginx-ingress-{{ namespace }}-controller -n {{ namespace }} -o jsonpath="{.status.loadBalancer.ingress[0].hostname}"
   args:
     executable: /bin/bash
@@ -101,7 +101,7 @@
     alias_hosted_zone_id: "{{ elb_hosted_zone_id }}"
 
 - name: "Waiting for DNS to update on {{ namespace }}.{{ dns_zone }}"
-  shell: |
+  shell: >-
     dig +short {{ namespace }}.{{ dns_zone }} | egrep -v "^$"
   args:
     executable: /bin/bash

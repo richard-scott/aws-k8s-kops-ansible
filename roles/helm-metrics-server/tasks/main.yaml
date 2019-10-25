@@ -5,20 +5,21 @@
 #################################
 
 - name: Adding Metrics-Server via Helm
-  shell: |
-    helm install --atomic --dep-up \
-    --name metrics-server \
-    --namespace kube-system \
-    --set rbac.create=true \
-    --set args[0]="--kubelet-insecure-tls=true" \
-    --set args[1]="--kubelet-preferred-address-types=InternalIP" \
-    --set args[2]="--v=4" \
+  shell: >-
+    helm install --atomic --dep-up
+    --name metrics-server
+    --namespace kube-system
+    --set rbac.create=true
+    --set args[0]="--kubelet-insecure-tls=true"
+    --set args[1]="--kubelet-preferred-address-types=InternalIP"
+    --set args[2]="--v=4"
     stable/metrics-server
   args:
     executable: /bin/bash
 
 - name: "Waiting for the Metrics Server be ready."
-  shell: kubectl get --raw "/apis/metrics.k8s.io/v1beta1/nodes"
+  shell: >-
+    kubectl get --raw "/apis/metrics.k8s.io/v1beta1/nodes"
   args:
     executable: /bin/bash
   ignore_errors: true

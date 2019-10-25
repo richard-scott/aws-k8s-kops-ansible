@@ -5,7 +5,8 @@
 ####################
 
 - name: Delete the cluster
-  shell: "kops delete cluster {{ cluster_name }}.{{ dns_zone }} --state {{ state_store }} --yes"
+  shell: >- 
+    kops delete cluster {{ cluster_name }}.{{ dns_zone }} --state {{ state_store }} --yes
   args:
     executable: /bin/bash
   register: cmd_result

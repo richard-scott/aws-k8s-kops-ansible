@@ -101,35 +101,36 @@
   when: free_eips < master_count
 
 - name: Create initial cluster configuration
-  shell: |
-    kops create cluster \
-    --admin-access "{{ api_access_cidr | join(',') | default('0.0.0.0/0') }}" \
-    --api-loadbalancer-type "{{ api_loadbalancer_type }}" \
-    --associate-public-ip=false \
-    {{ base_image_string }} \
-    --cloud aws \
-    --cloud-labels "k8s.io/cluster-autoscaler/{{ cluster_name }}.{{ dns_zone }}=Active,k8s.io/cluster-autoscaler/enabled=True" \
-    --dns-zone "{{ dns_zone }}" \
-    --encrypt-etcd-storage \
-    {{ master_size_string }} \
-    --master-zones "{{ master_zones }}" \
-    --master-count "{{ master_count }}" \
-    --name "{{ cluster_name }}.{{ dns_zone }}" \
-    {{ network_cidr_string }} \
-    --networking "{{ kubernetes_networking }}" \
-    {{ k8s_version_string }} \
-    --node-count "{{ node_count }}" \
-    {{ node_size_string }} \
-    --topology "{{ topology }}" \
-    --ssh-public-key "{{ ssh_public_key }}" \
-    --state "{{ state_store }}" \
-    --ssh-access "{{ ssh_access_cidr | join(',') | default('0.0.0.0/0') }}" \
+  shell: >-
+    kops create cluster
+    --admin-access "{{ api_access_cidr | join(',') | default('0.0.0.0/0') }}"
+    --api-loadbalancer-type "{{ api_loadbalancer_type }}"
+    --associate-public-ip=false
+    {{ base_image_string }}
+    --cloud aws
+    --cloud-labels "k8s.io/cluster-autoscaler/{{ cluster_name }}.{{ dns_zone }}=Active,k8s.io/cluster-autoscaler/enabled=True"
+    --dns-zone "{{ dns_zone }}"
+    --encrypt-etcd-storage
+    {{ master_size_string }}
+    --master-zones "{{ master_zones }}"
+    --master-count "{{ master_count }}"
+    --name "{{ cluster_name }}.{{ dns_zone }}"
+    {{ network_cidr_string }}
+    --networking "{{ kubernetes_networking }}"
+    {{ k8s_version_string }}
+    --node-count "{{ node_count }}"
+    {{ node_size_string }}
+    --topology "{{ topology }}"
+    --ssh-public-key "{{ ssh_public_key }}"
+    --state "{{ state_store }}"
+    --ssh-access "{{ ssh_access_cidr | join(',') | default('0.0.0.0/0') }}"
     --zones "{{ aws_zones }}"
   args:
     executable: /bin/bash
 
 - name: Enable Kubelet options
-  shell: "kops --name '{{ cluster_name }}.{{ dns_zone }}' --state '{{ state_store }}' set cluster '{{ item.name }}'='{{ item.value }}'"
+  shell: >-
+    kops --name '{{ cluster_name }}.{{ dns_zone }}' --state '{{ state_store }}' set cluster '{{ item.name }}'='{{ item.value }}'
   args:
     executable: /bin/bash
   environment:
@@ -143,12 +144,13 @@
 - include: cluster_conf.yaml
 
 - name: Creating physical cluster (This can take around 5 min to complete)
-  shell: "kops update cluster {{ cluster_name }}.{{ dns_zone }} --state {{ state_store }} --yes --create-kube-config"
+  shell: >-
+    kops update cluster {{ cluster_name }}.{{ dns_zone }} --state {{ state_store }} --yes --create-kube-config
   args:
     executable: /bin/bash
 
 - name: "Waiting for DNS to update on api.{{ cluster_name }}.{{ dns_zone }}"
-  shell: |
+  shell: >-
     dig +short api.{{ cluster_name }}.{{ dns_zone }} | egrep -v "^$"
   args:
     executable: /bin/bash
@@ -158,7 +160,7 @@
   delay: 60
 
 - name: Wait for all Kubernetes nodes to be available (This can take around 15 min to complete).
-  shell: |
+  shell: >-
     kops --name '{{ cluster_name }}.{{ dns_zone }}' --state '{{ state_store }}' validate cluster
   args:
     executable: /bin/bash

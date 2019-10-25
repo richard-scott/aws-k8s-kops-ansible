@@ -28,13 +28,13 @@
   when: resources_requests_cpu is undefined or resources_requests_cpu =="auto"
 
 - name: Adding Cluster overprovisioner via Helm
-  shell: |
-    helm install --atomic --dep-up --timeout=600 \
-    --name cluster-overprovisioner \
-    --namespace kube-system \
-    --set deployments[0].name=node \
-    --set deployments[0].replica_count="{{ replica_count }}" \
-    --set deployments[0].resources.requests.cpu="{{ resources_requests_cpu }}" \
+  shell: >-
+    helm install --atomic --dep-up --timeout=600
+    --name cluster-overprovisioner
+    --namespace kube-system
+    --set deployments[0].name=node
+    --set deployments[0].replica_count="{{ replica_count }}"
+    --set deployments[0].resources.requests.cpu="{{ resources_requests_cpu }}"
     stable/cluster-overprovisioner
   args:
     executable: /bin/bash

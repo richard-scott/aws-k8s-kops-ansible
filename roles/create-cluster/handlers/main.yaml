@@ -1,11 +1,13 @@
 ---
 
 - name: Push instance groups config
-  shell: 'kops replace --name {{ cluster_name }}.{{ dns_zone }} -f /tmp/{{ cluster_name }}.{{ dns_zone }}-ig-conf.yaml --state {{ state_store }}'
+  shell: >-
+    kops replace --name {{ cluster_name }}.{{ dns_zone }} -f /tmp/{{ cluster_name }}.{{ dns_zone }}-ig-conf.yaml --state {{ state_store }}
   args:
     executable: /bin/bash
 
 - name: Push cluster config
-  shell: 'kops replace --name {{ cluster_name }}.{{ dns_zone }} -f /tmp/{{ cluster_name }}.{{ dns_zone }}-cluster-conf.yaml --state {{ state_store }}'
+  shell: >-
+    kops replace --name {{ cluster_name }}.{{ dns_zone }} -f /tmp/{{ cluster_name }}.{{ dns_zone }}-cluster-conf.yaml --state {{ state_store }}
   args:
     executable: /bin/bash

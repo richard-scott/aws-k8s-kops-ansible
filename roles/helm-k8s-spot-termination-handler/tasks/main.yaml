@@ -1,13 +1,15 @@
 ---
 
-#####################################
+###############################################
 # Install k8s-spot-termination-handler via helm
-#####################################
+###############################################
+
+    #--timeout=600
 
 - name: Adding k8s-spot-termination-handler via Helm
-  shell: |
-    helm install --atomic --dep-up --timeout=600 \
-    --name k8s-spot-termination-handler \
+  shell: >-
+    helm install --atomic --dep-up
+    --name k8s-spot-termination-handler
     stable/k8s-spot-termination-handler
   args:
     executable: /bin/bash

@@ -1,7 +1,8 @@
 ---
 
 - name: Fetch current instance groups config
-  shell: 'kops get instancegroups --name {{ cluster_name }}.{{ dns_zone }} -o yaml --state {{ state_store }} > /tmp/{{ cluster_name }}.{{ dns_zone }}-ig-conf.yaml'
+  shell: >- 
+    kops get instancegroups --name {{ cluster_name }}.{{ dns_zone }} -o yaml --state {{ state_store }} > /tmp/{{ cluster_name }}.{{ dns_zone }}-ig-conf.yaml
   args:
     executable: /bin/bash
   changed_when: false
@@ -25,7 +26,8 @@
   notify: "Push instance groups config"
 
 - name: Change Machine type
-  shell: "sed -i -e 's/^  machineType:.*/  machineType:  {{ machineType_worker }}  /g' /tmp/{{ cluster_name }}.{{ dns_zone }}-ig-conf.yaml"
+  shell: >-
+    sed -i -e 's/^  machineType:.*/  machineType:  {{ machineType_worker }}  /g' /tmp/{{ cluster_name }}.{{ dns_zone }}-ig-conf.yaml
   args:
     executable: /bin/bash
   when: machineType_worker is defined

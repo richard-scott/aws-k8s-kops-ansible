@@ -5,7 +5,8 @@
 ####################
 
 - name: "Create 'tiller' Service Account"
-  shell: "{{ item }}"
+  shell: >-
+    {{ item }}
   args:
     executable: /bin/bash
   with_items:
@@ -13,12 +14,14 @@
     - "kubectl create clusterrolebinding tiller --clusterrole cluster-admin --serviceaccount=kube-system:tiller"
 
 - name: Install Helm
-  shell: "helm init --service-account tiller --history-max 200"
+  shell: >-
+    helm init --service-account tiller --history-max 200
   args:
     executable: /bin/bash
 
 - name: Waiting for Helm to start
-  shell: "helm version"
+  shell: >-
+    helm version
   args:
     executable: /bin/bash
   ignore_errors: true
@@ -28,7 +31,8 @@
   delay: 60
 
 - name: "Add some Chart Repositories"
-  shell: "helm repo add {{ item.name }} {{ item.url }}"
+  shell: >-
+    helm repo add {{ item.name }} {{ item.url }}
   args:
     executable: /bin/bash
   with_items:
@@ -37,7 +41,8 @@
     - { name: "kiwigrid", url: "https://kiwigrid.github.io" }
 
 - name: "Updating Helm repo's"
-  shell: "helm repo update"
+  shell: >-
+    helm repo update
   args:
     executable: /bin/bash
 
