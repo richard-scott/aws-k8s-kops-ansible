@@ -20,13 +20,13 @@
     - ServiceAccount
     - ClusterRoleBinding
 
+- import_role:
+    name: helm-nginx-ingress
+  vars:
+    namespace: kubernetes-dashboard
+
 - name: "Setup Kubernetes Dashboard Ingress at kubernetes-dashboard.{{ dns_zone }}"
   shell: >-
     echo "{{ lookup( 'template', 'template/dashboard-ingress.yaml.j2') }}" | kubectl apply -f -
   args:
     executable: /bin/bash
-
-- import_role:
-    name: helm-nginx-ingress
-  vars:
-    namespace: kubernetes-dashboard

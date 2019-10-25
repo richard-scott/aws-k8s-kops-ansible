@@ -1,0 +1,16 @@
+---
+
+###############################
+# Install Jetstack Cert Manager
+###############################
+
+- name: Adding Jetstack Cert Manager via Helm
+  shell: >-
+    helm install --atomic --dep-up
+    --name cert-manager
+    --namespace kube-system
+    --set ingressShim.defaultIssuerName=letsencrypt-prod
+    --set ingressShim.defaultIssuerKind=ClusterIssuer
+    jetstack/cert-manager
+  args:
+    executable: /bin/bash

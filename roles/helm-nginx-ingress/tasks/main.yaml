@@ -51,18 +51,17 @@
     --set controller.scope.enabled=true
     --set controller.scope.namespace="{{ namespace }}"
     --set controller.ingressClass="{{ namespace }}-nginx"
-    --set controller.service.targetPorts.http=http
-    --set controller.service.targetPorts.https=http
+    --set controller.service.targetPorts.http="http"
+    --set controller.service.targetPorts.https="http"
     --set controller.service.annotations."service.beta.kubernetes.io/aws-load-balancer-type={{ elb_type }}"
     --set controller.service.annotations."service.beta.kubernetes.io/aws-load-balancer-cross-zone-load-balancing-enabled=true"
-    --set controller.service.annotations."service.beta.kubernetes.io/aws-load-balancer-ssl-ports=https"
+    --set controller.service.annotations."service.beta.kubernetes.io/aws-load-balancer-ssl-ports=443"
     --set controller.service.annotations."service.beta.kubernetes.io/aws-load-balancer-backend-protocol=http"
     --set controller.service.annotations."service.beta.kubernetes.io/aws-load-balancer-connection-idle-timeout=600"
     --set controller.service.annotations."service.beta.kubernetes.io/aws-load-balancer-ssl-cert='{{ certificate_arn }}'"
     stable/nginx-ingress
   args:
     executable: /bin/bash
-
 
 - shell: >-
     kubectl get svc nginx-ingress-{{ namespace }}-controller -n {{ namespace }} -o jsonpath="{.status.loadBalancer.ingress[0].hostname}"
