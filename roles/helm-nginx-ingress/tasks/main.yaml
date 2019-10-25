@@ -28,13 +28,19 @@
     path: "{{ tempfile.path }}"
     state: absent
 
-- name: "Checking SSL for *.{{ aws_region }}.{{ dns_zone }}"
+- name: "Checking SSL for *.{{ dns_zone }}"
   aws_acm_facts:
-    domain_name: >-
-      *.{{ aws_region }}.{{ dns_zone }}
+    domain_name: "*.{{ dns_zone }}"
     region: "{{ aws_region }}"
     statuses: ISSUED
   register: acm
+
+- name: Extract Certificate ARN
+  set_fact:
+    certificate_arn: "{{ acm.certificates[0].certificate_arn }}"
+  
+- debug:
+    var: certificate_arn
 
 - name: "Adding Nginx-Ingress via Helm"
   shell: >-
@@ -52,7 +58,7 @@
     --set controller.service.annotations."service.beta.kubernetes.io/aws-load-balancer-ssl-ports=https"
     --set controller.service.annotations."service.beta.kubernetes.io/aws-load-balancer-backend-protocol=http"
     --set controller.service.annotations."service.beta.kubernetes.io/aws-load-balancer-connection-idle-timeout=600"
-    --set controller.service.annotations."service.beta.kubernetes.io/aws-load-balancer-ssl-cert={{  acm.certificates[0].certificate_arn  }}"
+    --set controller.service.annotations."service.beta.kubernetes.io/aws-load-balancer-ssl-cert='{{ certificate_arn }}'"
     stable/nginx-ingress
   args:
     executable: /bin/bash

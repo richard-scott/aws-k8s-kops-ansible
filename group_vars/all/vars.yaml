@@ -1,7 +1,17 @@
 ---
+## AWS Region to use
+#aws_region: "eu-west-1" # Ireland
+aws_region: "eu-west-2" # London
+
+## Availability zones to use
+# Select individual zones or to use ALL 
+# zones leave this as 'auto'.
+#aws_zones: eu-west-2a #, eu-west-2b, eu-west-2c
+aws_zones: auto
+
 ## Cluster details
-#dns_zone: eu-west-1.brainomix.com
-dns_zone: rs.brainomix.com
+domain_name: "brainomix.com"
+dns_zone: "{{ aws_region }}.{{ domain_name }}"
 cluster_name: k8s
 
 ## Where to store cluster state
@@ -19,18 +29,6 @@ ssh_access_cidr:
   - 80.6.82.34/32
   - 62.30.202.70/32
   - 81.133.235.205/32
-
-## AWS Region to use
-### London
-aws_region: "eu-west-2"
-### Ireland
-#aws_region: "eu-west-1"
-
-## Availability zones to use
-# Select individual zones or to use ALL 
-# zones leave this as 'auto'.
-#aws_zones: eu-west-2a #, eu-west-2b, eu-west-2c
-aws_zones: auto
 
 ## Network
 #network_cidr: 10.10.0.0/16
