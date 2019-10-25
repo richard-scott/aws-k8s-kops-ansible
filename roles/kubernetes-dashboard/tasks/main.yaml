@@ -5,13 +5,13 @@
 ########################################
 
 - name: Install Kubernetes Dashboard
-  shell: >-
+  shell: >
     kubectl apply -f https://raw.githubusercontent.com/kubernetes/dashboard/master/aio/deploy/recommended.yaml
   args:
     executable: /bin/bash
 
 - name: Add a Dashboard Admin user account
-  shell: >-
+  shell: >
     kubectl create -f {{ role_path }}/files/{{item}}.yaml
   args:
     executable: /bin/bash
@@ -21,7 +21,7 @@
     - ClusterRoleBinding
 
 - name: "Setup Kubernetes Dashboard Ingress at kubernetes-dashboard.{{ dns_zone }}"
-  shell: >-
+  shell: >
     echo "{{ lookup( 'template', 'template/dashboard-ingress.yaml.j2') }}" | kubectl apply -f -
   args:
     executable: /bin/bash

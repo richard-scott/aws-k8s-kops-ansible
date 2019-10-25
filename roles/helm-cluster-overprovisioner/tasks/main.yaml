@@ -28,7 +28,7 @@
   when: resources_requests_cpu is undefined or resources_requests_cpu =="auto"
 
 - name: Adding Cluster overprovisioner via Helm
-  shell: >-
+  shell: >
     helm install --atomic --dep-up --timeout=600
     --name cluster-overprovisioner
     --namespace kube-system

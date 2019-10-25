@@ -15,11 +15,11 @@
     latest_release: "{{ url_content['url'] | basename | regex_replace('^v(.*)$', '\\1') }}"
 
 - name: Create some CRDs for cert-manager
-  shell: >-
+  shell: >
     kubectl apply -f https://raw.githubusercontent.com/jetstack/cert-manager/v{{ latest_release }}/deploy/manifests/00-crds.yaml
 
 - name: Adding Jetstack Cert Manager via Helm
-  shell: >-
+  shell: >
     helm install --atomic --dep-up
     --name cert-manager
     --namespace kube-system

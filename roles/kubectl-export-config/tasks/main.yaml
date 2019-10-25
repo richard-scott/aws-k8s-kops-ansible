@@ -5,7 +5,7 @@
 ##############################
 
 - name: Configure kubectl using kops
-  shell: >-
+  shell: >
     kops export kubecfg --name {{ cluster_name }}.{{ dns_zone }} --state {{ state_store }}
   args:
     executable: /bin/bash

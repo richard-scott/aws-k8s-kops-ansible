@@ -101,7 +101,7 @@
   when: free_eips < master_count
 
 - name: Create initial cluster configuration
-  shell: >-
+  shell: >
     kops create cluster
     --admin-access "{{ api_access_cidr | join(',') | default('0.0.0.0/0') }}"
     --api-loadbalancer-type "{{ api_loadbalancer_type }}"
@@ -129,7 +129,7 @@
     executable: /bin/bash
 
 - name: Enable Kubelet options
-  shell: >-
+  shell: >
     kops --name '{{ cluster_name }}.{{ dns_zone }}' --state '{{ state_store }}' set cluster '{{ item.name }}'='{{ item.value }}'
   args:
     executable: /bin/bash
@@ -144,13 +144,13 @@
 - include: cluster_conf.yaml
 
 - name: Creating physical cluster (This can take around 5 min to complete)
-  shell: >-
+  shell: >
     kops update cluster {{ cluster_name }}.{{ dns_zone }} --state {{ state_store }} --yes --create-kube-config
   args:
     executable: /bin/bash
 
 - name: "Waiting for DNS to update on api.{{ cluster_name }}.{{ dns_zone }}"
-  shell: >-
+  shell: >
     dig +short api.{{ cluster_name }}.{{ dns_zone }} | egrep -v "^$"
   args:
     executable: /bin/bash
@@ -160,7 +160,7 @@
   delay: 60
 
 - name: Wait for all Kubernetes nodes to be available (This can take around 15 min to complete).
-  shell: >-
+  shell: >
     kops --name '{{ cluster_name }}.{{ dns_zone }}' --state '{{ state_store }}' validate cluster
   args:
     executable: /bin/bash

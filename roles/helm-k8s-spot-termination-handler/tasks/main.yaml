@@ -7,7 +7,7 @@
     #--timeout=600
 
 - name: Adding k8s-spot-termination-handler via Helm
-  shell: >-
+  shell: >
     helm install --atomic --dep-up
     --name k8s-spot-termination-handler
     stable/k8s-spot-termination-handler

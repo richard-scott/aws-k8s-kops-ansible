@@ -52,7 +52,7 @@
   when: node_autoscaler_max is not defined or ( node_autoscaler_max > max_instances or node_autoscaler_max < node_autoscaler_min )
 
 - name: Adding Cluster Autoscaller via Helm
-  shell: >-
+  shell: >
     helm install --atomic --dep-up
     --name cluster-autoscaler
     --namespace kube-system

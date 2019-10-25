@@ -15,7 +15,7 @@
     dest: "{{ tempfile.path }}"
 
 - name: Apply config to cluster
-  shell: >-
+  shell: >
     cat {{ tempfile.path }} | kubectl create -f -
   args:
     executable: /bin/bash
@@ -40,34 +40,18 @@
     var: certificate_arn
 
 - name: "Adding Nginx-Ingress via Helm"
-  shell: >-
-    helm install --atomic --dep-up
-    --name "nginx-ingress-{{ namespace }}"
-    --namespace "{{ namespace }}"
-    --set controller.autoscaling.enabled=true
-    --set controller.kind="DaemonSet"
-    --set controller.daemonset.useHostPort=true
-    --set controller.service.enabled=false
-    --set controller.defaultBackendService=false
-    --set controller.metrics.enabled=true
-    --set controller.scope.enabled=true
-    --set controller.scope.namespace="{{ namespace }}"
-    --set controller.ingressClass="{{ namespace }}-nginx"
-    --set controller.service.targetPorts.http="http"
-    --set controller.service.targetPorts.https="http"
-    --set controller.service.annotations."service.beta.kubernetes.io/aws-load-balancer-proxy-protocol=*"
-    --set controller.service.annotations."service.beta.kubernetes.io/aws-load-balancer-type={{ elb_type }}"
-    --set controller.service.annotations."service.beta.kubernetes.io/aws-load-balancer-cross-zone-load-balancing-enabled=true"
-    --set controller.service.annotations."service.beta.kubernetes.io/aws-load-balancer-ssl-ports=https"
-    --set controller.service.annotations."service.beta.kubernetes.io/aws-load-balancer-backend-protocol=http"
-    --set controller.service.annotations."service.beta.kubernetes.io/aws-load-balancer-ssl-cert={{ certificate_arn | quote }}"
-    stable/nginx-ingress
+  shell: >
+    {{ lookup( 'template', 'helm.yaml.j2') }}
+  register: cmd
   args:
     executable: /bin/bash
 
-- name: Wait for the Daemon Set to be deployed.
-  shell: >-
-    kubectl get daemonset nginx-ingress-{{ namespace }}-controller -n {{ namespace }} -o jsonpath="{.status.loadBalancer.ingress[0].hostname}"
+- debug:
+    var: cmd
+
+- name: Wait for the Controller to be deployed.
+  shell: >
+    kubectl get svc nginx-ingress-{{ namespace }}-controller -n {{ namespace }} -o jsonpath="{.status.loadBalancer.ingress[0].hostname}"
   args:
     executable: /bin/bash
   ignore_errors: true
@@ -117,7 +101,7 @@
     alias_hosted_zone_id: "{{ elb_hosted_zone_id }}"
 
 - name: "Waiting for DNS to update on {{ namespace }}.{{ dns_zone }}"
-  shell: >-
+  shell: >
     dig +short {{ namespace }}.{{ dns_zone }} | egrep -v "^$"
   args:
     executable: /bin/bash
