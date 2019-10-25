@@ -28,6 +28,14 @@
     path: "{{ tempfile.path }}"
     state: absent
 
+- name: "Checking SSL for *.{{ aws_region }}.{{ dns_zone }}"
+  aws_acm_facts:
+    domain_name: >-
+      *.{{ aws_region }}.{{ dns_zone }}
+    region: "{{ aws_region }}"
+    statuses: ISSUED
+  register: acm
+
 - name: "Adding Nginx-Ingress via Helm"
   shell: >-
     helm install --atomic --dep-up
@@ -44,7 +52,7 @@
     --set controller.service.annotations."service.beta.kubernetes.io/aws-load-balancer-ssl-ports=https"
     --set controller.service.annotations."service.beta.kubernetes.io/aws-load-balancer-backend-protocol=http"
     --set controller.service.annotations."service.beta.kubernetes.io/aws-load-balancer-connection-idle-timeout=600"
-    --set controller.service.annotations."service.beta.kubernetes.io/aws-load-balancer-ssl-cert=arn:aws:acm:eu-west-1:996394622990:certificate/9176394a-e720-4869-ac2a-f9f2c433fa3a"
+    --set controller.service.annotations."service.beta.kubernetes.io/aws-load-balancer-ssl-cert={{  acm.certificates[0].certificate_arn  }}"
     stable/nginx-ingress
   args:
     executable: /bin/bash
