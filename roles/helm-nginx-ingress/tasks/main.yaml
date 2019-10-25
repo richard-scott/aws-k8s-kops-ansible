@@ -42,12 +42,8 @@
 - name: "Adding Nginx-Ingress via Helm"
   shell: >
     {{ lookup( 'template', 'helm.yaml.j2') }}
-  register: cmd
   args:
     executable: /bin/bash
-
-- debug:
-    var: cmd
 
 - name: Wait for the Controller to be deployed.
   shell: >
