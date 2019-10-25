@@ -4,6 +4,20 @@
 # Install Jetstack Cert Manager
 ###############################
 
+- name: "Find out the latest verison number."
+  register: url_content
+  uri:
+    url: "https://github.com/jetstack/cert-manager/releases/latest"
+    return_content: yes
+
+- name: Set 'latest_release' fact.
+  set_fact:
+    latest_release: "{{ url_content['url'] | basename | regex_replace('^v(.*)$', '\\1') }}"
+
+- name: Create some CRDs for cert-manager
+  shell: >-
+    kubectl apply -f https://raw.githubusercontent.com/jetstack/cert-manager/v{{ latest_release }}/deploy/manifests/00-crds.yaml
+
 - name: Adding Jetstack Cert Manager via Helm
   shell: >-
     helm install --atomic --dep-up
