@@ -37,6 +37,6 @@
   - import_role:
       name: helm-k8s-spot-termination-handler
     tags: always
-  - import_role:
-      name: kubernetes-dashboard
-    tags: always
+#  - import_role:
+#      name: kubernetes-dashboard
+#    tags: always
