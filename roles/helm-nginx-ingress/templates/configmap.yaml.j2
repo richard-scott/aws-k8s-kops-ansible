@@ -1,10 +1,10 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: nginx-ingress-{{ namespace }}
+  name: nginx-ingress-{{ namespace }}-controller
   namespace: {{ namespace }}
   labels:
-    app.kubernetes.io/name: nginx-ingress-{{ namespace }}
+    app.kubernetes.io/name: nginx-ingress-{{ namespace }}-controller
     app.kubernetes.io/part-of: nginx-ingress-{{ namespace }}
 data:
   use-forwarded-headers: "true"
