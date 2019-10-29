@@ -12,7 +12,7 @@ kind: Ingress apiVersion: extensions/v1beta1 metadata:
     nginx.ingress.kubernetes.io/server-alias: test.brainomix.com
     nginx.ingress.kubernetes.io/ssl-redirect: 'true'
     service.beta.kubernetes.io/aws-load-balancer-backend-protocol: http
-    service.beta.kubernetes.io/aws-load-balancer-ssl-ports: https
+    service.beta.kubernetes.io/aws-load-balancer-ssl-ports: 443
 spec:
   rules:
     - host: dev-website.eu-west-1.brainomix.com

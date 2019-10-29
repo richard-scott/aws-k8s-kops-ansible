@@ -8,7 +8,7 @@ metadata:
     app.kubernetes.io/part-of: "nginx-ingress-{{ namespace }}-controller"
 data:
   use-forwarded-headers: "true"
-#  compute-full-forwarded-for: "true"
-#  use-proxy-protocol: "true"
-#  proxy-real-ip-cidr: "0.0.0.0/0"
-#  hsts: "true"
+  compute-full-forwarded-for: "true"
+  use-proxy-protocol: "true"
+  proxy-real-ip-cidr: "0.0.0.0/0"
+  hsts: "true"
