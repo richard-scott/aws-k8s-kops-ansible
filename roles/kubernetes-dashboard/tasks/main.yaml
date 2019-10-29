@@ -16,6 +16,8 @@
   args:
     executable: /bin/bash
   ignore_errors: true
+  vars:
+    namespace: kubernetes-dashboard
   with_items:
     - ServiceAccount
     - ClusterRoleBinding
@@ -28,7 +30,9 @@
 - name: "Setup Kubernetes Dashboard Ingress at kubernetes-dashboard.{{ dns_zone }}"
   shell: >
     echo "{{ lookup( 'template', 'dashboard-ingress.yaml.j2') }}" | kubectl apply -f -
+  ignore_errors: true
   vars:
     namespace: kubernetes-dashboard
   args:
     executable: /bin/bash
+

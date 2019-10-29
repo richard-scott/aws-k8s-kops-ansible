@@ -17,6 +17,7 @@
 - name: Apply config to cluster
   shell: >
     cat {{ tempfile.path }} | kubectl create -f -
+  ignore_errors: true
   args:
     executable: /bin/bash
 
