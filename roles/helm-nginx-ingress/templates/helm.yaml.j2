@@ -1,8 +1,8 @@
 helm install --atomic --dep-up \
---name "nginx-ingress-{{ namespace }}" \
---namespace "{{ namespace }}" \
---set controller.metrics.enabled="true" \
---set controller.scope.enabled="true" \
+--name nginx-ingress-{{ namespace }} \
+--namespace {{ namespace }} \
+--set rbac.create=false \
+--set controller.metrics.enabled=true \
 --set controller.scope.namespace={{ namespace }} \
 --set controller.ingressClass={{ namespace }}-nginx \
 --set controller.service.targetPorts.http=80 \
@@ -13,3 +13,6 @@ helm install --atomic --dep-up \
 --set controller.service.annotations."{{ "service.beta.kubernetes.io/aws-load-balancer-cross-zone-load-balancing-enabled" | regex_escape() }}='true'" \
 stable/nginx-ingress
 
+#
+#--set controller.scope.enabled=true \
+#

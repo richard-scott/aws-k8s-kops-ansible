@@ -4,35 +4,35 @@
 # Install Kubernetes Dashboard & Ingress
 ########################################
 
+- name: setting namespace
+  set_fact:
+    namespace: kubernetes-dashboard
+
+- name: Add a Dashboard Admin user account
+  shell: >
+    echo "{{ lookup( 'template', '{{ item }}.yaml.j2') }}" | kubectl create -f -
+  args:
+    executable: /bin/bash
+  ignore_errors: true
+  with_items:
+    - ServiceAccount
+    - ClusterRoleBinding
+
 - name: Install Kubernetes Dashboard
   shell: >
     kubectl apply -f https://raw.githubusercontent.com/kubernetes/dashboard/master/aio/deploy/recommended.yaml
   args:
     executable: /bin/bash
 
-- name: Add a Dashboard Admin user account
-  shell: >
-    kubectl create -f {{ role_path }}/files/{{item}}.yaml
-  args:
-    executable: /bin/bash
-  ignore_errors: true
-  vars:
-    namespace: kubernetes-dashboard
-  with_items:
-    - ServiceAccount
-    - ClusterRoleBinding
-
 - import_role:
     name: helm-nginx-ingress
   vars:
-    namespace: kubernetes-dashboard
+    namespace: "{{ namespace }}"
 
 - name: "Setup Kubernetes Dashboard Ingress at kubernetes-dashboard.{{ dns_zone }}"
   shell: >
     echo "{{ lookup( 'template', 'dashboard-ingress.yaml.j2') }}" | kubectl apply -f -
   ignore_errors: true
-  vars:
-    namespace: kubernetes-dashboard
   args:
     executable: /bin/bash
 
