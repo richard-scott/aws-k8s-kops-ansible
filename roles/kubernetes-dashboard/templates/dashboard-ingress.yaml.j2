@@ -5,8 +5,7 @@ metadata:
   namespace: {{ k8s_namespace }}
   annotations:
     kubernetes.io/ingress.class: {{ k8s_namespace }}-nginx
-    ingress.kubernetes.io/ssl-redirect: "true"
-    nginx.ingress.kubernetes.io/backend-protocol: https
+    nginx.ingress.kubernetes.io/backend-protocol: "https"
 
 spec:
   rules:

@@ -29,10 +29,9 @@
 
 - name: "Setup Kubernetes Dashboard Ingress at kubernetes-dashboard.{{ dns_zone }}"
   shell: >
-    echo "{{ lookup( 'template', 'dashboard-ingress.yaml.j2') }}" | kubectl apply -f -
+    echo "{{ lookup( 'template', 'dashboard-ingress.yaml.j2') }}" | kubectl create -f -
   vars:
     k8s_namespace: kubernetes-dashboard
   ignore_errors: true
   args:
     executable: /bin/bash
-
