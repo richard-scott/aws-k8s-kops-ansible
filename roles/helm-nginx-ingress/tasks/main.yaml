@@ -9,12 +9,10 @@
     suffix: temp
   register: tempfile
 
-- name: "Create config map for nginx-ingress-{{ namespace }}-controller"
+- name: "Create config map for nginx-ingress-{{ k8s_namespace }}-controller"
   template:
     src: configmap.yaml.j2
     dest: "{{ tempfile.path }}"
-  vars:
-    name_space: "{{ namespace }}"
   
 - name: Apply config to cluster
   shell: >
@@ -45,8 +43,8 @@
 - name: "Adding Nginx-Ingress via Helm"
   shell: >-
     helm install --atomic --dep-up
-    --name 'nginx-ingress-{{ namespace }}'
-    --namespace '{{ namespace }}'
+    --name 'nginx-ingress-{{ k8s_namespace }}'
+    --namespace '{{ k8s_namespace }}'
     --set controller.service.targetPorts.https=80
     --set controller.metrics.enabled=true
     --set controller.service.annotations."{{ "service.beta.kubernetes.io/aws-load-balancer-type" | regex_escape() }}={{ elb_type }}"
@@ -60,7 +58,7 @@
 
 - name: Wait for the Controller to be deployed.
   shell: >
-    kubectl get svc nginx-ingress-{{ namespace }}-controller -n {{ namespace }} -o jsonpath="{.status.loadBalancer.ingress[0].hostname}"
+    kubectl get svc nginx-ingress-{{ k8s_namespace }}-controller -n {{ k8s_namespace }} -o jsonpath="{.status.loadBalancer.ingress[0].hostname}"
   args:
     executable: /bin/bash
   ignore_errors: true
@@ -102,16 +100,16 @@
 - route53:
     command: create
     zone: "{{ dns_zone }}"
-    record: "{{ namespace }}.{{ dns_zone }}"
+    record: "{{ k8s_namespace }}.{{ dns_zone }}"
     type: A
     value: "{{ elb_fqdn }}"
     overwrite: yes
     alias: True
     alias_hosted_zone_id: "{{ elb_hosted_zone_id }}"
 
-- name: "Waiting for DNS to update on {{ namespace }}.{{ dns_zone }}"
+- name: "Waiting for DNS to update on {{ k8s_namespace }}.{{ dns_zone }}"
   shell: >
-    dig +short {{ namespace }}.{{ dns_zone }} | egrep -v "^$"
+    dig +short {{ k8s_namespace }}.{{ dns_zone }} | egrep -v "^$"
   args:
     executable: /bin/bash
   register: cmd_result
