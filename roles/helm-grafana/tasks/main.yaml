@@ -21,4 +21,4 @@
 - import_role:
     name: helm-nginx-ingress
   vars:
-    namespace: grafana
+    k8s_namespace: grafana

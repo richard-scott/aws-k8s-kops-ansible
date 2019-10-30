@@ -2,15 +2,15 @@ kind: Ingress
 apiVersion: extensions/v1beta1
 metadata:
   name: kubernetes-dashboard
-  namespace: {{ namespace }}
+  namespace: {{ k8s_namespace }}
   annotations:
-    kubernetes.io/ingress.class: {{ namespace }}-nginx
+    kubernetes.io/ingress.class: {{ k8s_namespace }}-nginx
     ingress.kubernetes.io/ssl-redirect: "true"
     nginx.ingress.kubernetes.io/backend-protocol: https
 
 spec:
   rules:
-    - host: {{ namespace }}.{{ dns_zone }}
+    - host: {{ k8s_namespace }}.{{ dns_zone }}
       http:
         paths:
           - path: /
