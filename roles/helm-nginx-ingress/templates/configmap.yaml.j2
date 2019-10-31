@@ -5,3 +5,6 @@ metadata:
   namespace: {{ k8s_namespace }}
 data:
   use-forwarded-headers: "true"
+  use-proxy-protocol: "true"
+  ssl-redirect: "false"
+  hsts: "false"
