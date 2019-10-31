@@ -13,6 +13,8 @@
 - name: Add a Dashboard Admin user account
   shell: >
     echo "{{ lookup( 'template', '{{ item }}.yaml.j2') }}" | kubectl create -f -
+  vars:
+    k8s_namespace: kubernetes-dashboard
   args:
     executable: /bin/bash
   ignore_errors: true
@@ -23,12 +25,14 @@
 - import_role:
     name: helm-nginx-ingress
   vars:
-    k8s_namespace: "{{ k8s_namespace }}"
+    k8s_namespace: kubernetes-dashboard
 
 - name: "Setup Kubernetes Dashboard Ingress at kubernetes-dashboard.{{ dns_zone }}"
   shell: |
     cat <<EOF | kubectl create -f -
     {{ lookup( 'template', 'dashboard-ingress.yaml.j2') }}
     EOF
+  vars:
+    k8s_namespace: kubernetes-dashboard
   args:
     executable: /bin/bash

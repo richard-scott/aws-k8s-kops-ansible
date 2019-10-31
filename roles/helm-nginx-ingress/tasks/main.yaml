@@ -39,7 +39,6 @@
     --set controller.service.targetPorts.https=80
     --set controller.ingressClass="{{ k8s_namespace }}-nginx"
     --set defaultBackend.name="{{ k8s_namespace }}-default-backend"
-    --set controller.service.annotations."{{ "service.beta.kubernetes.io/aws-load-balancer-proxy-protocol" | regex_escape() }}={{ "*" | regex_escape() }}"
     --set controller.service.annotations."{{ "service.beta.kubernetes.io/aws-load-balancer-type" | regex_escape() }}={{ elb_type }}"
     --set controller.service.annotations."{{ "service.beta.kubernetes.io/aws-load-balancer-ssl-ports" | regex_escape() }}=443"
     --set controller.service.annotations."{{ "service.beta.kubernetes.io/aws-load-balancer-ssl-cert" | regex_escape() }}={{ certificate_arn | regex_escape() }}"
