@@ -7,6 +7,7 @@
 - name: Install Kubernetes Dashboard
   shell: >
     kubectl apply -f https://raw.githubusercontent.com/kubernetes/dashboard/master/aio/deploy/recommended.yaml
+  ignore_errors: true
   args:
     executable: /bin/bash
 
@@ -26,6 +27,58 @@
     name: helm-nginx-ingress
   vars:
     k8s_namespace: kubernetes-dashboard
+
+#- name: "Checking SSL for *.{{ dns_zone }}"
+#  aws_acm_facts:
+#    domain_name: "*.{{ dns_zone }}"
+#    region: "{{ aws_region }}"
+#    statuses: ISSUED
+#  register: acm
+
+#- name: Extract Certificate ARN
+#  set_fact:
+#    certificate_arn: "{{ acm.certificates[0].certificate_arn }}"
+
+#- debug:
+#    var: certificate_arn
+
+#- fail:
+#  when: not certificate_arn | length >= 0
+
+#- name: create temporary file
+#  tempfile:
+#    state: file
+#    suffix: temp
+#  register: temp_file
+
+- name: Dump the current kubernetes-dashboard service configuration.
+  shell: >
+    kubectl get service -n kubernetes-dashboard kubernetes-dashboard -o yaml > {{ temp_file.path }} 
+  args:
+    executable: /bin/bash
+
+- lineinfile:
+    path: "{{ temp_file.path }}"
+    insertafter: '^  annotations:$'
+    line: "    {{ item.name }}: '{{ item.value }}'"
+  with_items:
+    - { name: "service.beta.kubernetes.io/aws-load-balancer-proxy-protocol", value: "*" }
+    - { name: "service.beta.kubernetes.io/aws-load-balancer-type", value: "{{ elb_type }}" }
+    - { name: "service.beta.kubernetes.io/aws-load-balancer-cross-zone-load-balancing-enabled", value: "true" }
+    - { name: "service.beta.kubernetes.io/aws-load-balancer-connection-idle-timeout", value: "3600" }
+    - { name: "service.beta.kubernetes.io/aws-load-balancer-ssl-ports", value: "https" }
+    - { name: "service.beta.kubernetes.io/aws-load-balancer-ssl-cert", value: "{{ certificate_arn }}" }
+
+#- shell: >
+#    kubectl apply -f {{ temp_file.path }} 
+#  args:
+#    executable: /bin/bash
+
+- name: use the registered var and the file module to remove the temporary file
+  file:
+    path: "{{ temp_file.path }}"
+    state: absent
+  when: temp_file.path is defined
 
 - name: "Setup Kubernetes Dashboard Ingress at kubernetes-dashboard.{{ dns_zone }}"
   shell: |
