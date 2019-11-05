@@ -11,7 +11,6 @@
   ignore_errors: true
   args:
     executable: /bin/bash
-  tags: never
 
 - name: "Checking SSL for *.{{ dns_zone }}"
   aws_acm_info:
