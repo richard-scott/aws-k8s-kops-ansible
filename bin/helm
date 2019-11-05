@@ -1,4 +1,5 @@
 #!/bin/bash
+START="${PWD}"
 cd $(dirname ${0})
 cd ..
 mkdir -p sbin
@@ -14,5 +15,6 @@ if [[ ! -e ${CMD} ]] || [[ $(($(date +%s)-$(stat ${PWD}/${CMD} --format %Y))) -g
     fi
   fi
 fi
-cd ..
-${PWD}/sbin/${CMD} "${@}"
+BINARY="${PWD}/${CMD}"
+cd ${START}
+${BINARY} "${@}"

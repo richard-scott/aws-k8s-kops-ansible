@@ -1,4 +1,5 @@
 #!/bin/bash
+STARt="${PWD}"
 cd $(dirname $(dirname ${0}))
 mkdir -p sbin
 cd sbin
@@ -9,6 +10,7 @@ if [[ ! -e kops ]] || [[ $(($(date +%s)-$(stat ${PWD}/kops --format %Y))) -gt 43
     chmod +x kops
   fi
 fi
-cd ..
+KOPS="${PWD}/kops"
+cd ${START}
 export $(/usr/bin/ansible -m shell -a "echo KOPS_STATE_STORE={{ state_store}}" localhost 2>&1 | tail -n 1)
-${PWD}/sbin/kops "${@}"
+${KOPS} "${@}"
