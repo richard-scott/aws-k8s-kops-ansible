@@ -15,7 +15,7 @@
 
 - block:
   - name: "Gathering facts about all availability zones in {{ aws_region }}"
-    aws_az_facts:
+    aws_az_info:
       region: "{{ aws_region }}"
     register: aws_az_list
 

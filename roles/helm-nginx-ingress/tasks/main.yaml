@@ -67,10 +67,10 @@
 
 - action:
     module: ec2_elb_info
-  register: elb_facts
+  register: elb_info
 
 - set_fact:
-    elb_hosted_zone_id: "{{ elb_facts | json_query(query) | join }}"
+    elb_hosted_zone_id: "{{ elb_info | json_query(query) | join }}"
   vars:
     query:  "elbs[?dns_name=='{{ elb_fqdn }}'].hosted_zone_id"
 

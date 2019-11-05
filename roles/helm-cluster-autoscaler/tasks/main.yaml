@@ -13,7 +13,7 @@
     policy_json: "{{ lookup( 'template', 'cluster-overprovisioner.json.j2') }}"
 
 - name: Wait for policy to be applied.
-  iam_role_facts:
+  iam_role_info:
     name: "nodes.{{ cluster_name }}.{{ dns_zone }}"
   register: result
   until: result.iam_roles[0].inline_policies | length > 1
@@ -36,7 +36,7 @@
   when: node_autoscaler_min is not defined or ( node_count is defined and node_autoscaler_min is defined and node_autoscaler_min < node_count )
 
 - name: "See how many instances are pending/running in {{ aws_region }}"
-  ec2_instance_facts:
+  ec2_instance_info:
     region: "{{ aws_region }}"
     filters:
       instance-state-name: [ "pending", "running" ]

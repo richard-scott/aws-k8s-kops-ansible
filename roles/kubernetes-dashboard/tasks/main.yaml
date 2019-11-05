@@ -29,7 +29,7 @@
     k8s_namespace: kubernetes-dashboard
 
 - name: "Checking SSL for *.{{ dns_zone }}"
-  aws_acm_facts:
+  aws_acm_info:
     domain_name: "*.{{ dns_zone }}"
     region: "{{ aws_region }}"
     statuses: ISSUED

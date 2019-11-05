@@ -16,14 +16,14 @@
 
 - name: Set resources_requests_cpu variable
   block: 
-    - ec2_instance_facts:
+    - ec2_instance_info:
         region: "{{ aws_region }}"
         filters:
           "tag:Name": "nodes.{{ cluster_name }}.{{ dns_zone }}"
-      register: ec2if
+      register: instance_info
  
     - set_fact:
-        resources_requests_cpu: "{{ ec2if.instances[0].cpu_options.core_count * ec2if.instances[0].cpu_options.threads_per_core * utilisation_multiplier }}"
+        resources_requests_cpu: "{{ instance_info.instances[0].cpu_options.core_count * instance_info.instances[0].cpu_options.threads_per_core * utilisation_multiplier }}"
 
   when: resources_requests_cpu is undefined or resources_requests_cpu =="auto"
 
