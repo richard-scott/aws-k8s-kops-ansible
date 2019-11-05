@@ -1,4 +1,4 @@
-#!/bin/bash -x
+#!/bin/bash
 STAR="$(pwd)"
 cd $(dirname $(dirname ${0}))
 mkdir -p sbin
