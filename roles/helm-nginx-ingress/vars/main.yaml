@@ -1,3 +1,7 @@
 ---
 k8s_namespace: default
 elb_type: classic
+backend_protocol: http
+ssl_ports: https
+target_ports_http: "{{ backend_protocol }}"
+target_ports_https: "{{ backend_protocol }}"

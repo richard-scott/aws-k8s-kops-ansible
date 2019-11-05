@@ -42,4 +42,4 @@
     tags: always
   - import_role:
       name: kubernetes-dashboard
-    tags: never
+    tags: always

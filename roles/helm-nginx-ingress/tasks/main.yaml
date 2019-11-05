@@ -36,20 +36,18 @@
     --namespace {{ k8s_namespace }}
     --set controller.metrics.enabled=true
     --set controller.ingressClass="{{ k8s_namespace }}-nginx"
-    --set controller.service.annotations."{{ "service.beta.kubernetes.io/aws-load-balancer-backend-protocol" | regex_escape() }}=http"
+    --set controller.service.annotations."{{ "service.beta.kubernetes.io/aws-load-balancer-backend-protocol" | regex_escape() }}= {{ backend_protocol }}"
     --set controller.service.annotations."{{ "service.beta.kubernetes.io/aws-load-balancer-proxy-protocol" | regex_escape() }}={{ "*" | regex_escape() }}"
     --set controller.service.annotations."{{ "service.beta.kubernetes.io/aws-load-balancer-type" | regex_escape() }}={{ elb_type }}"
     --set controller.service.annotations."{{ "service.beta.kubernetes.io/aws-load-balancer-cross-zone-load-balancing-enabled" | regex_escape() }}={{ "true" | regex_escape() }}"
     --set controller.service.annotations."{{ "service.beta.kubernetes.io/aws-load-balancer-connection-idle-timeout" | regex_escape() }}=3600"
-    --set controller.service.annotations."{{ "service.beta.kubernetes.io/aws-load-balancer-ssl-ports" | regex_escape() }}=https"
+    --set controller.service.annotations."{{ "service.beta.kubernetes.io/aws-load-balancer-ssl-ports" | regex_escape() }}= {{ ssl_ports }}"
     --set controller.service.annotations."{{ "service.beta.kubernetes.io/aws-load-balancer-ssl-cert" | regex_escape() }}={{ certificate_arn | regex_escape() }}"
-    --set controller.service.targetPorts.http=http
-    --set controller.service.targetPorts.https=http
+    --set controller.service.targetPorts.http={{ target_ports_http }}
+    --set controller.service.targetPorts.https={{ target_ports_https }}
     stable/nginx-ingress
   args:
     executable: /bin/bash
-
-
 
 - name: Wait for the Controller to be deployed.
   shell: >
