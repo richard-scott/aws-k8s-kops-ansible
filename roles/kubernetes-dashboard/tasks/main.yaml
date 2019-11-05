@@ -45,11 +45,11 @@
 #- fail:
 #  when: not certificate_arn | length >= 0
 
-#- name: create temporary file
-#  tempfile:
-#    state: file
-#    suffix: temp
-#  register: temp_file
+- name: create temporary file
+  tempfile:
+    state: file
+    suffix: temp
+  register: temp_file
 
 - name: Dump the current kubernetes-dashboard service configuration.
   shell: >
@@ -74,11 +74,11 @@
 #  args:
 #    executable: /bin/bash
 
-- name: use the registered var and the file module to remove the temporary file
-  file:
-    path: "{{ temp_file.path }}"
-    state: absent
-  when: temp_file.path is defined
+#- name: use the registered var and the file module to remove the temporary file
+#  file:
+#    path: "{{ temp_file.path }}"
+#    state: absent
+#  when: temp_file.path is defined
 
 - name: "Setup Kubernetes Dashboard Ingress at kubernetes-dashboard.{{ dns_zone }}"
   shell: |

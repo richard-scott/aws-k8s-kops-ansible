@@ -75,7 +75,7 @@
   when: k8s_version is defined and k8s_version != "auto"
 
 - name: "Get a list of Elastic IP's in use in {{ aws_region }}"
-  ec2_eip_facts:
+  ec2_eip_info:
     region: "{{ aws_region }}"
   register: regional_eip_addresses
 
