@@ -10,9 +10,7 @@ if [[ ! -e ${CMD} ]] || [[ $(($(date +%s)-$(stat ${PWD}/${CMD} --format %Y))) -g
   if [[ ! -e ${CMD} ]] || echo $(${PWD}/${CMD} version | awk '{print $2}') | egrep -v -q "^${LATEST}$" ; then
     curl --silent -L https://get.helm.sh/helm-${LATEST}-linux-amd64.tar.gz | tar xz --strip=1 "linux-amd64/${CMD}"
     chmod +x "${CMD}"
-    if [[ ${CMD} = "tiller" ]]; then
-      helm init --upgrade
-    fi
+    helm init --upgrade >dev.null 2>&1
   fi
 fi
 BINARY="${PWD}/${CMD}"
