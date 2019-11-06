@@ -29,21 +29,28 @@
 - fail:
   when: not certificate_arn | length >= 0
 
+- name: Create ARN setting
+  set_fact:
+    certificate_arn_string: |
+      --set controller.service.annotations."{{ "service.beta.kubernetes.io/aws-load-balancer-ssl-cert" | regex_escape() }}={{ certificate_arn | regex_escape() }}"
+  when: use_ssl != false
+
 - name: "Adding Nginx-Ingress via Helm"
   shell: >-
     helm install --atomic --dep-up
     --name nginx-ingress-{{ k8s_namespace }}
     --namespace {{ k8s_namespace }}
     --set controller.metrics.enabled=true
+    --set defaultBackend.enabled="{{ use_default_backend }}"
     --set controller.ingressClass="{{ k8s_namespace }}-nginx"
-    --set controller.service.annotations."{{ "service.beta.kubernetes.io/aws-load-balancer-backend-protocol" | regex_escape() }}= {{ backend_protocol }}"
+    --set controller.service.annotations."{{ "service.beta.kubernetes.io/aws-load-balancer-backend-protocol" | regex_escape() }}={{ backend_protocol }}"
     --set controller.service.annotations."{{ "service.beta.kubernetes.io/aws-load-balancer-proxy-protocol" | regex_escape() }}={{ "*" | regex_escape() }}"
     --set controller.service.annotations."{{ "service.beta.kubernetes.io/aws-load-balancer-type" | regex_escape() }}={{ elb_type }}"
     --set controller.service.annotations."{{ "service.beta.kubernetes.io/aws-load-balancer-cross-zone-load-balancing-enabled" | regex_escape() }}={{ "true" | regex_escape() }}"
-    --set controller.service.annotations."{{ "service.beta.kubernetes.io/aws-load-balancer-ssl-ports" | regex_escape() }}= {{ ssl_ports }}"
-    --set controller.service.annotations."{{ "service.beta.kubernetes.io/aws-load-balancer-ssl-cert" | regex_escape() }}={{ certificate_arn | regex_escape() }}"
-    --set controller.service.targetPorts.http={{ target_ports_http }}
-    --set controller.service.targetPorts.https={{ target_ports_https }}
+    --set controller.service.annotations."{{ "service.beta.kubernetes.io/aws-load-balancer-ssl-ports" | regex_escape() }}={{ ssl_ports }}"
+    {{ certificate_arn_string }} 
+    --set controller.service.targetPorts.http="{{ target_ports_http }}"
+    --set controller.service.targetPorts.https="{{ target_ports_https }}"
     stable/nginx-ingress
   args:
     executable: /bin/bash
