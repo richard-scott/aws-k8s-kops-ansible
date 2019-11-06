@@ -27,9 +27,9 @@
     name: helm-nginx-ingress
   vars:
     k8s_namespace: kubernetes-dashboard
-    use_ssl: false
     use_default_backend: false
     backend_protocol: tcp
+    use_ssl: false
     ssl_ports: 443
     target_ports_http: 80
     target_ports_https: 443
