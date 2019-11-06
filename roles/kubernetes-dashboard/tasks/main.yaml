@@ -30,9 +30,9 @@
     use_default_backend: false
     backend_protocol: tcp
     use_ssl: false
-    ssl_ports: 443
-    target_ports_http: 80
-    target_ports_https: 443
+    ssl_ports: https
+    target_ports_http: http
+    target_ports_https: https
 
 - name: "Checking SSL for *.{{ dns_zone }}"
   aws_acm_info:
