@@ -7,6 +7,10 @@ metadata:
     kubernetes.io/ingress.class: {{ k8s_namespace }}-nginx
     nginx.ingress.kubernetes.io/backend-protocol: "https"
     nginx.ingress.kubernetes.io/ssl-passthrough: "true"
+    nginx.ingress.kubernetes.io/server-snippet: |
+      if (\$http_x_forwarded_proto = "http") {
+        return 301 https://\$host\$request_uri;
+      }
 spec:
   rules:
     - host: {{ k8s_namespace }}.{{ dns_zone }}
