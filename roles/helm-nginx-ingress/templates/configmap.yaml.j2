@@ -10,3 +10,7 @@ data:
   use-forwarded-headers: "true"
   use-proxy-protocol: "true"
   hsts: "false"
+  configuration-snippet: >
+    if (\$http_x_forwarded_proto = 'http') { 
+      return 301 https://\$host\$request_uri;
+    }
