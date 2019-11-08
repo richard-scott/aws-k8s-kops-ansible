@@ -68,10 +68,6 @@
     insertafter: '^  annotations:$'
     line: "    {{ item.name }}: '{{ item.value }}'"
   with_items:
-#    - { name: "service.beta.kubernetes.io/aws-load-balancer-proxy-protocol", value: "*" }
-#    - { name: "service.beta.kubernetes.io/aws-load-balancer-type", value: "{{ elb_type }}" }
-#    - { name: "service.beta.kubernetes.io/aws-load-balancer-cross-zone-load-balancing-enabled", value: "true" }
-#    - { name: "service.beta.kubernetes.io/aws-load-balancer-connection-idle-timeout", value: "3600" }
     - { name: "service.beta.kubernetes.io/aws-load-balancer-backend-protocol", value: "https" }
     - { name: "service.beta.kubernetes.io/aws-load-balancer-ssl-ports", value: "https" }
     - { name: "service.beta.kubernetes.io/aws-load-balancer-ssl-cert", value: "{{ certificate_arn }}" }
