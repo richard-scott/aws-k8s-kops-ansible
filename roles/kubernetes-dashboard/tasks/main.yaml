@@ -90,7 +90,7 @@
 - name: "Setup Kubernetes Dashboard Ingress at kubernetes-dashboard.{{ dns_zone }}"
   shell: |
     cat <<EOF | kubectl create -f -
-    {{ lookup( 'template', 'dashboard-ingress.yaml.j2') }}
+    {{ lookup( 'template', 'ingress.yaml.j2') }}
     EOF
   vars:
     k8s_namespace: kubernetes-dashboard
