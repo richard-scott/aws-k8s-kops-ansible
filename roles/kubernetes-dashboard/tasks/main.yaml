@@ -51,38 +51,6 @@
 - fail:
   when: not certificate_arn | length >= 0
 
-- name: create temporary file
-  tempfile:
-    state: file
-    suffix: temp
-  register: temp_file
-
-- name: Dump the current kubernetes-dashboard service configuration.
-  shell: >
-    kubectl get service -n kubernetes-dashboard kubernetes-dashboard -o yaml > {{ temp_file.path }} 
-  args:
-    executable: /bin/bash
-
-- lineinfile:
-    path: "{{ temp_file.path }}"
-    insertafter: '^  annotations:$'
-    line: "    {{ item.name }}: '{{ item.value }}'"
-  with_items:
-    - { name: "service.beta.kubernetes.io/aws-load-balancer-backend-protocol", value: "https" }
-    - { name: "service.beta.kubernetes.io/aws-load-balancer-ssl-ports", value: "https" }
-    - { name: "service.beta.kubernetes.io/aws-load-balancer-ssl-cert", value: "{{ certificate_arn }}" }
-
-- shell: >
-    kubectl apply -f {{ temp_file.path }} 
-  args:
-    executable: /bin/bash
-
-- name: use the registered var and the file module to remove the temporary file
-  file:
-    path: "{{ temp_file.path }}"
-    state: absent
-  when: temp_file.path is defined
-
 - name: "Setup Kubernetes Dashboard Ingress at kubernetes-dashboard.{{ dns_zone }}"
   shell: |
     cat <<EOF | kubectl create -f -

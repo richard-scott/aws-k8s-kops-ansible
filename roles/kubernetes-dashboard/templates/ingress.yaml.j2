@@ -9,7 +9,7 @@ metadata:
     nginx.ingress.kubernetes.io/ssl-passthrough: "true"
     nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
     nginx.ingress.kubernetes.io/affinity: "cookie"
-    nginx.ingress.kubernetes.io/session-cookie-name: "_S_A"
+    nginx.ingress.kubernetes.io/session-cookie-name: "affinityToken"
     nginx.ingress.kubernetes.io/session-cookie-hash: "sha1"
     nginx.ingress.kubernetes.io/affinity-mode: "persistent"
     nginx.ingress.kubernetes.io/session-cookie-change-on-failure: "true"
