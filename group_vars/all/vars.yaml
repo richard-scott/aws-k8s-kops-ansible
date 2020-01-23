@@ -44,6 +44,9 @@ bastion: false
 api_loadbalancer_type: public
 api_access_cidr: "{{ ssh_access_cidr }}"
 
+# Dashboard ACL
+dashboard_access_cidr: "{{ api_access_cidr }}"
+
 ## EC2 host details
 # The instances base_image has to be specific to the aws_region you plan to use.
 #base_image: 595879546273/CoreOS-stable-2191.5.0-hvm

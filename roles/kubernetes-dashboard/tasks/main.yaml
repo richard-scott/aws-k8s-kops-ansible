@@ -33,6 +33,7 @@
     ssl_ports: https
     target_ports_http: http
     target_ports_https: https
+    load_balancer_source_ranges: "{{ dashboard_access_cidr }}"
 
 - name: "Checking SSL for *.{{ dns_zone }}"
   aws_acm_info:
