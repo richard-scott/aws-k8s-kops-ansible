@@ -12,3 +12,4 @@ data:
   use-proxy-protocol: 'true'
   compute-full-forwarded-for: "true"
   hsts: "false"
+  whitelist-source-range: {{ load_balancer_source_ranges | join(",") }}

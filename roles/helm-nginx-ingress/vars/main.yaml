@@ -7,3 +7,5 @@ ssl_ports: https
 target_ports_http: http
 target_ports_https: http
 use_default_backend: true
+load_balancer_source_ranges:
+  - 0.0.0.0/0

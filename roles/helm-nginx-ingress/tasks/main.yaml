@@ -32,13 +32,7 @@
 - name: Create ARN setting
   set_fact:
     certificate_arn_string: '--set controller.service.annotations."{{ "service.beta.kubernetes.io/aws-load-balancer-ssl-cert" | regex_escape() }}={{ certificate_arn | regex_escape() }}"'
-  when: use_ssl != false
-
-- name: Create loadBalancerSourceRanges setting
-  set_fact:
-    load_balancer_source_ranges_string: |
-      --set controller.service.loadBalancerSourceRanges={{ load_balancer_source_ranges }}
-  when: load_balancer_source_ranges | default(false,true)
+  when: use_ssl
 
 - name: "Adding Nginx-Ingress via Helm"
   shell: >-
@@ -56,7 +50,6 @@
     --set controller.service.annotations."{{ "service.beta.kubernetes.io/aws-load-balancer-cross-zone-load-balancing-enabled" | regex_escape() }}={{ "true" | regex_escape() }}"
     --set controller.service.annotations."{{ "service.beta.kubernetes.io/aws-load-balancer-ssl-ports" | regex_escape() }}={{ ssl_ports }}"
     {{ certificate_arn_string }}
-    {{ load_balancer_source_ranges_string }}
   args:
     executable: /bin/bash
 
