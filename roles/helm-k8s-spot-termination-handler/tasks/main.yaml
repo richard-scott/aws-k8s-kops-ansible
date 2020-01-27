@@ -10,6 +10,7 @@
   shell: >
     helm install --atomic --dep-up
     --name k8s-spot-termination-handler
+    --namespace kube-system
     stable/k8s-spot-termination-handler
   args:
     executable: /bin/bash

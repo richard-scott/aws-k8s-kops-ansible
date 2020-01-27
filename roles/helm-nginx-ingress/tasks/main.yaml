@@ -45,14 +45,15 @@
     --set controller.service.targetPorts.http="{{ target_ports_http }}"
     --set controller.service.targetPorts.https="{{ target_ports_https }}"
     --set controller.service.annotations."{{ "service.beta.kubernetes.io/aws-load-balancer-backend-protocol" | regex_escape() }}={{ backend_protocol }}"
-    --set controller.service.annotations."{{ "service.beta.kubernetes.io/aws-load-balancer-proxy-protocol" | regex_escape() }}={{ "*" | regex_escape() }}"
     --set controller.service.annotations."{{ "service.beta.kubernetes.io/aws-load-balancer-type" | regex_escape() }}={{ elb_type }}"
-    --set controller.service.annotations."{{ "service.beta.kubernetes.io/aws-load-balancer-cross-zone-load-balancing-enabled" | regex_escape() }}={{ "true" | regex_escape() }}"
     --set controller.service.annotations."{{ "service.beta.kubernetes.io/aws-load-balancer-ssl-ports" | regex_escape() }}={{ ssl_ports }}"
     {{ certificate_arn_string }}
   args:
     executable: /bin/bash
 
+
+#    --set controller.service.annotations."{{ "service.beta.kubernetes.io/aws-load-balancer-proxy-protocol" | regex_escape() }}={{ "*" | regex_escape() }}"
+#    --set controller.service.annotations."{{ "service.beta.kubernetes.io/aws-load-balancer-cross-zone-load-balancing-enabled" | regex_escape() }}={{ "true" | regex_escape() }}"
 
 - name: Wait for the Controller to be deployed.
   shell: >
@@ -96,9 +97,19 @@
   when: elb_hosted_zone_id | length | int == 0
 
 - route53:
-    command: create
+    state: present
     zone: "{{ dns_zone }}"
     record: "{{ k8s_namespace }}.{{ dns_zone }}"
+    type: A
+    value: "{{ elb_fqdn }}"
+    overwrite: yes
+    alias: True
+    alias_hosted_zone_id: "{{ elb_hosted_zone_id }}"
+
+- route53:
+    state: present
+    zone: "{{ dns_zone }}"
+    record: "*.{{ k8s_namespace }}.{{ dns_zone }}"
     type: A
     value: "{{ elb_fqdn }}"
     overwrite: yes

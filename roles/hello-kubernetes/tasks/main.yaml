@@ -1,0 +1,14 @@
+---
+################################
+# Install Nginx-Ingress via Helm
+################################
+
+- name: Setup Hello-Kubernetes App
+  shell: |
+    kubectl apply -f {{ role_path }}/templates/{{ item }}
+  args:
+    executable: /bin/bash
+  with_items:
+    - "deployment.yaml"
+    - "service.yaml"
+    - "ingress.yaml"
