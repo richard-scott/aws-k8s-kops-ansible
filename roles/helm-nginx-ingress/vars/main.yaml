@@ -9,3 +9,4 @@ target_ports_https: http
 use_default_backend: true
 load_balancer_source_ranges:
   - 0.0.0.0/0
+use_proxy_protocol: false

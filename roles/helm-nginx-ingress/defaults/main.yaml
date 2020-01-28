@@ -1,2 +1,3 @@
 ---
 certificate_arn_string: ""
+use_proxy_protocol_string: "use-proxy-protocol: 'true'"

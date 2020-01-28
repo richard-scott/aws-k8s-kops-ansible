@@ -13,4 +13,4 @@ spec:
           - path: /
             backend:
               serviceName: hello-kubernetes
-              servicePort: 8000
+              servicePort: 8080

@@ -3,12 +3,16 @@
 # Install Nginx-Ingress via Helm
 ################################
 
+- name: Adjust Proxy Protocol String
+  set_fact:
+    use_proxy_protocol_string: ""
+  when: not use_proxy_protocol
+
 - name: Creating ConfigMap for the controller
   shell: |
     cat <<EOF | kubectl create -f -
-    {{ lookup( 'template', 'configmap.yaml.j2') }}
+    {{ lookup( 'template', 'configmap.yaml.j2') | trim }}
     EOF
-  ignore_errors: true
   args:
     executable: /bin/bash
 
@@ -45,6 +49,8 @@
     --set controller.service.targetPorts.http="{{ target_ports_http }}"
     --set controller.service.targetPorts.https="{{ target_ports_https }}"
     --set controller.service.annotations."{{ "service.beta.kubernetes.io/aws-load-balancer-backend-protocol" | regex_escape() }}={{ backend_protocol }}"
+    --set controller.service.annotations."{{ "service.beta.kubernetes.io/aws-load-balancer-cross-zone-load-balancing-enabled" | regex_escape() }}={{ "true" | regex_escape() }}"
+    --set controller.service.annotations."{{ "service.beta.kubernetes.io/aws-load-balancer-proxy-protocol" | regex_escape() }}={{ "*" | regex_escape() }}"
     --set controller.service.annotations."{{ "service.beta.kubernetes.io/aws-load-balancer-type" | regex_escape() }}={{ elb_type }}"
     --set controller.service.annotations."{{ "service.beta.kubernetes.io/aws-load-balancer-ssl-ports" | regex_escape() }}={{ ssl_ports }}"
     {{ certificate_arn_string }}
@@ -52,8 +58,6 @@
     executable: /bin/bash
 
 
-#    --set controller.service.annotations."{{ "service.beta.kubernetes.io/aws-load-balancer-proxy-protocol" | regex_escape() }}={{ "*" | regex_escape() }}"
-#    --set controller.service.annotations."{{ "service.beta.kubernetes.io/aws-load-balancer-cross-zone-load-balancing-enabled" | regex_escape() }}={{ "true" | regex_escape() }}"
 
 - name: Wait for the Controller to be deployed.
   shell: >
