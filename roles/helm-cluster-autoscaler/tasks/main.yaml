@@ -44,7 +44,7 @@
 
 - name: Adjust max_instances to take into account pending/running instances.
   set_fact:
-    max_instances: "{{ ( max_instances | int ) - (  eif.instances | length ) }}"
+    max_instances: "{{ ( region_max_instances | int ) - (  eif.instances | length ) }}"
 
 - name: Check we have a valid Maximum ASG Node count setting
   set_fact:
