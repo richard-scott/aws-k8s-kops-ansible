@@ -28,10 +28,10 @@
   vars:
     k8s_namespace: kubernetes-dashboard
     use_default_backend: false
-    backend_protocol: tcp
-    use_ssl: false
+    backend_protocol: http
+    use_ssl: true
     ssl_ports: https
-    target_ports_http: http
+    target_ports_http: https
     target_ports_https: https
     load_balancer_source_ranges: "{{ dashboard_access_cidr }}"
     use_proxy_protocol: true

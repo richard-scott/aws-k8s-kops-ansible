@@ -10,7 +10,3 @@ data:
   compute-full-forwarded-for: 'true'
   hsts: 'false'
   whitelist-source-range: {{ load_balancer_source_ranges | join(",") }}
-  configuration-snippet: |
-    if ( \$http_x_forwarded_proto = http ) {
-      rewrite ^(.*) https://\$host\$1 permanent;
-    }
