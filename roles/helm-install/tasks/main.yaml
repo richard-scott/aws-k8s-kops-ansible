@@ -39,6 +39,7 @@
     - { name: "appscode", url: "https://charts.appscode.com/stable/" }
     - { name: "jetstack", url: "https://charts.jetstack.io" }
     - { name: "kiwigrid", url: "https://kiwigrid.github.io" }
+    - { name: "bitnami",  url: "https://charts.bitnami.com/bitnami" }
 
 - name: "Updating Helm repo's"
   shell: >
