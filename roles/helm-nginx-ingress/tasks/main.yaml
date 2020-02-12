@@ -57,8 +57,6 @@
   args:
     executable: /bin/bash
 
-
-
 - name: Wait for the Controller to be deployed.
   shell: >
     kubectl get svc nginx-ingress-{{ k8s_namespace }}-controller -n {{ k8s_namespace }} -o jsonpath="{.status.loadBalancer.ingress[0].hostname}"
@@ -129,3 +127,7 @@
   until: cmd_result.rc == 0
   retries: 30
   delay: 60
+
+- import_role:
+    name: hello-kubernetes
+

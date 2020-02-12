@@ -12,9 +12,11 @@
         name: helm-nginx-ingress
       vars:
         k8s_namespace: default
-        use_default_backend: true
-        backend_protocol: http
-        use_ssl: true
-        ssl_ports: https
-        target_ports_http: http
-        target_ports_https: https
+        load_balancer_source_ranges:
+          - 62.30.202.70/32
+          - 81.133.235.205/32
+
+    - import_role:
+        name: hello-kubernetes
+      vars:
+        k8s_namespace: default

@@ -4,11 +4,11 @@ metadata:
   name: hello-kubernetes-ingress
   namespace: default
   annotations:
-    kubernetes.io/ingress.class: default-nginx
+    kubernetes.io/ingress.class: {{ k8s_namespace }}-nginx
     nginx.ingress.kubernetes.io/force-ssl-redirect: 'true'
 spec:
   rules:
-    - host: hello.{{ k8s_namespace }}.{{ dns_zone }}
+    - host: {{ k8s_namespace }}.{{ dns_zone }}
       http:
         paths:
           - path: /
