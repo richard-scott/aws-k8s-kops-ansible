@@ -16,21 +16,24 @@
   args:
     executable: /bin/bash
 
-- name: "Checking SSL for *.{{ dns_zone }}"
-  aws_acm_info:
-    domain_name: "*.{{ dns_zone }}"
-    region: "{{ aws_region }}"
-    statuses: ISSUED
-  register: acm
+- block:
+    - name: "Checking SSL for {{ ssl_cert_fqdn }}"
+      aws_acm_info:
+        domain_name: "{{ ssl_cert_fqdn }}"
+        region: "{{ aws_region }}"
+        statuses: ISSUED
+      register: acm
 
-- name: Extract Certificate ARN
-  set_fact:
-    certificate_arn: "{{ acm.certificates[0].certificate_arn }}"
+    - name: Extract Certificate ARN
+      set_fact:
+        certificate_arn: "{{ acm.certificates[0].certificate_arn }}"
 
-- debug:
-    var: certificate_arn
+    - debug:
+        var: certificate_arn
 
-- fail:
+    - fail:
+      when: not certificate_arn | length >= 0
+
   when: not certificate_arn | length >= 0
 
 - name: Create ARN setting
@@ -40,7 +43,8 @@
 
 - name: "Adding Nginx-Ingress via Helm"
   shell: >-
-    helm install --atomic --dep-up stable/nginx-ingress
+    helm install --atomic --dep-up
+    stable/nginx-ingress
     --name nginx-ingress-{{ k8s_namespace }}
     --namespace {{ k8s_namespace }}
     --set controller.metrics.enabled=true

@@ -1,5 +1,6 @@
 ---
 k8s_namespace: default
+ssl_cert_fqdn: "*.{{ dns_zone }}"
 use_ssl: true
 elb_type: classic
 backend_protocol: http
