@@ -1,3 +1,4 @@
 ---
 certificate_arn_string: ""
+certificate_arn: ""
 use_proxy_protocol_string: "use-proxy-protocol: 'true'"
