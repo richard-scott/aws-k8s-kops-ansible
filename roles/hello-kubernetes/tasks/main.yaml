@@ -17,8 +17,7 @@
 
 - name: "Wait for {{ k8s_namespace }}.{{ dns_zone }} to be reachable"
   uri:
-    url: |
-      http://{{ k8s_namespace }}.{{ dns_zone }}
+    url: "http://{{ k8s_namespace }}.{{ dns_zone }}"
   register: _result
   until: _result.status == 200
   retries: 720 # 720 * 5 seconds = 1hour (60*60/5)
