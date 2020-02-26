@@ -2,8 +2,6 @@
 #########################
 # Install Default Ingress
 #########################
-
-
 - hosts: localhost
   gather_facts: no
   connection: local
