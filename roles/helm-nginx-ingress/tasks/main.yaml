@@ -132,6 +132,17 @@
   retries: 30
   delay: 60
 
-- import_role:
-    name: hello-kubernetes
-  when: use_default_backend == "true"
+- block:
+  - import_role:
+      name: hello-kubernetes
+
+#  - name: "Wait for {{ k8s_namespace }}.{{ dns_zone }} to be reachable"
+#    uri:
+#      url: |
+#        http://{{ k8s_namespace }}.{{ dns_zone }}
+#    register: _result
+#    until: _result.status == 200
+#    retries: 720 # 720 * 5 seconds = 1hour (60*60/5)
+#    delay: 5 # Every 5 seconds
+
+  when: use_default_backend == "false"

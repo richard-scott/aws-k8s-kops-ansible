@@ -10,11 +10,16 @@
     EOF
   args:
     executable: /bin/bash
-#  shell: |
-#    kubectl apply -f {{ role_path }}/templates/{{ item }}
-#  args:
-#    executable: /bin/bash
   with_items:
     - "deployment.yaml.j2"
     - "service.yaml.j2"
     - "ingress.yaml.j2"
+
+- name: "Wait for {{ k8s_namespace }}.{{ dns_zone }} to be reachable"
+  uri:
+    url: |
+      http://{{ k8s_namespace }}.{{ dns_zone }}
+  register: _result
+  until: _result.status == 200
+  retries: 720 # 720 * 5 seconds = 1hour (60*60/5)
+  delay: 5 # Every 5 seconds

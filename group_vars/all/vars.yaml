@@ -59,7 +59,7 @@ base_image: auto
 #master_zones: "eu-west-2a"
 master_zones: auto
 # What size instance to create
-master_size: t3a.small
+master_size: t3a.medium
 #master_size: auto
 # How many instances to create
 # This has to be > master_zones count or will be set to = master_zones count.
@@ -71,7 +71,7 @@ master_count: auto
 #master_profile: arn:aws:iam::1234567890108:instance-profile/kops-custom-master-role
 
 ## Node configuration
-node_size: t3a.medium
+node_size: t3a.large
 node_count: auto
 # Use node_max_price if you want to use spot instances.
 # Useful to reduce cost during testing
