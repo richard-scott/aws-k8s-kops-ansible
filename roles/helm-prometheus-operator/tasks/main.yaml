@@ -1,0 +1,12 @@
+---
+
+######################################
+# Install Prometheus Operator via Helm
+######################################
+
+- name: Adding Prometheus Operator via Helm
+  shell: >-
+    helm install --atomic --dep-up
+    stable/prometheus-operator
+  args:
+    executable: /bin/bash
