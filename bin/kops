@@ -4,7 +4,12 @@ cd $(dirname $(dirname ${0}))
 mkdir -p sbin
 cd sbin
 if [[ ! -e kops ]] || [[ $(($(date +%s)-$(stat ${PWD}/kops --format %Y))) -gt 43200 ]]; then
-  LATEST="$(basename $(curl --silent --head https://github.com/kubernetes/kops/releases/latest  | egrep '^Location:\s' | awk '{print $2}' | awk -F '\r' '{print $1}'))"
+  LATEST="$(basename $(lynx -dump https://github.com/kubernetes/kops/tags --hiddenlinks=merge -nonumbers -listonly \
+  | grep "releases/" \
+  | egrep -ve "(alpha|beta)" \
+  | sort -rn \
+  | egrep "/v${V}" \
+  | head -n 1))"
   if [[ ! -e kops ]] || echo $(${PWD}/kops version | awk '{print $2}') | egrep -v -q "^${LATEST}$" ; then
     curl --silent -Lo kops https://github.com/kubernetes/kops/releases/download/${LATEST}/kops-linux-amd64
     chmod +x kops
