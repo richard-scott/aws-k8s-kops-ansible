@@ -134,4 +134,4 @@
 
 - import_role:
     name: hello-kubernetes
-  when: not use_default_backend
+  when: not use_default_backend and use_hello_kubernetes_backend
