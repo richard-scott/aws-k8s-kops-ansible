@@ -16,24 +16,24 @@ case ${CMD} in
   ;;
 esac
 if [[ ! -e ${CMD} ]] || [[ $(($(date +%s)-$(stat ${PWD}/${CMD} --format %Y))) -gt 43200 ]]; then
-  LATEST="$(wget -q https://github.com/helm/helm/tags -O /dev/stdout \
-  | grep "/helm/helm/releases/tag/v" \
-  | grep -v class \
-  | awk -F '\"' '{print $2}' \
-  | awk -F '/v' '{print $2}' \
+  LATEST="$(basename $(lynx -dump https://github.com/helm/helm/tags --hiddenlinks=merge -nonumbers -listonly \
+  | grep "releases/" \
   | grep -v "rc" \
   | sort -rn \
-  | egrep "^${V}" \
-  | head -n 1)"
+  | egrep "/v${V}" \
+  | head -n 1))"
   if [[ ! -e ${CMD} ]] || echo $(${PWD}/${CMD} version 2>/dev/null | awk '{print $2}') | egrep -v -q "^${LATEST}$" ; then
-    curl --silent -L https://get.helm.sh/helm-v${LATEST}-linux-amd64.tar.gz | tar xz --strip=1 "linux-amd64/helm" --to-stdout >${CMD}
-    chmod +x "${CMD}"
-    if [[ -L helm ]]; then
-      if readlink helm | egrep -q "^${CMD}" ; then
+    if curl --silent -L https://get.helm.sh/helm-${LATEST}-linux-amd64.tar.gz | tar xz --strip=1 "linux-amd64/helm" --to-stdout >${CMD} ; then
+      chmod +x "${CMD}"
+      if [[ -L helm ]]; then
+        if readlink helm | egrep -q "^${CMD}" ; then
+          ln -fs "${CMD}" helm
+        fi
+      else
         ln -fs "${CMD}" helm
       fi
     else
-      ln -fs "${CMD}" helm
+      exit 1
     fi
   fi
 fi
