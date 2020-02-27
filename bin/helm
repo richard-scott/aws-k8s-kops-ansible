@@ -2,19 +2,46 @@
 START="${PWD}"
 cd $(dirname ${0})
 cd ..
+
 mkdir -p sbin
 cd sbin
 CMD="$(basename ${0})"
-#if [[ ! -e ${CMD} ]] || [[ $(($(date +%s)-$(stat ${PWD}/${CMD} --format %Y))) -gt 43200 ]]; then
-#  LATEST="$(basename $(curl --silent --head https://github.com/helm/helm/releases/latest  | egrep "^Location:\s" | awk '{print $2}' | awk -F '\r' '{print $1}'))"
-#  if [[ ! -e ${CMD} ]] || echo $(${PWD}/${CMD} version 2>/dev/null | awk '{print $2}') | egrep -v -q "^${LATEST}$" ; then
-#    curl --silent -L https://get.helm.sh/helm-${LATEST}-linux-amd64.tar.gz | tar xz --strip=1 "linux-amd64/${CMD}"
-#    chmod +x "${CMD}"
-#    if ./helm version >/dev/null 2>&1 ; then
-#      ./helm init --upgrade >/dev/null 2>&1
-#    fi
-#  fi
-#fi
+
+case ${CMD} in
+  helm|helm2)
+    CMD="helm2"
+    V=2
+  ;;
+  helm3)
+    CMD="helm3"
+    V=3
+  ;;
+esac
+
+if [[ ! -e ${CMD} ]] || [[ $(($(date +%s)-$(stat ${PWD}/${CMD} --format %Y))) -gt 43200 ]]; then
+
+  LATEST="$(wget -q https://github.com/helm/helm/tags -O /dev/stdout \
+  | grep "/helm/helm/releases/tag/v" \
+  | grep -v class \
+  | awk -F '\"' '{print $2}' \
+  | awk -F '/v' '{print $2}' \
+  | grep -v "rc" \
+  | sort -rn \
+  | egrep "^${V}" \
+  | head -n 1)"
+
+  if [[ ! -e ${CMD} ]] || echo $(${PWD}/${CMD} version 2>/dev/null | awk '{print $2}') | egrep -v -q "^${LATEST}$" ; then
+    curl --silent -L https://get.helm.sh/helm-v${LATEST}-linux-amd64.tar.gz | tar xz --strip=1 "linux-amd64/helm" --to-stdout >${CMD}
+    chmod +x "${CMD}"
+    if [[ -L helm ]]; then
+      if readlink helm | egrep -q "^${CMD}" ; then
+        ln -fs "${CMD}" helm
+      fi
+    else
+      ln -fs "${CMD}" helm
+    fi
+  fi
+fi
 BINARY="${PWD}/${CMD}"
 cd ${START}
 ${BINARY} "${@}"
