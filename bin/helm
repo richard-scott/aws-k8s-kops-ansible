@@ -2,11 +2,9 @@
 START="${PWD}"
 cd $(dirname ${0})
 cd ..
-
 mkdir -p sbin
 cd sbin
 CMD="$(basename ${0})"
-
 case ${CMD} in
   helm|helm2)
     CMD="helm2"
@@ -17,9 +15,7 @@ case ${CMD} in
     V=3
   ;;
 esac
-
 if [[ ! -e ${CMD} ]] || [[ $(($(date +%s)-$(stat ${PWD}/${CMD} --format %Y))) -gt 43200 ]]; then
-
   LATEST="$(wget -q https://github.com/helm/helm/tags -O /dev/stdout \
   | grep "/helm/helm/releases/tag/v" \
   | grep -v class \
@@ -29,7 +25,6 @@ if [[ ! -e ${CMD} ]] || [[ $(($(date +%s)-$(stat ${PWD}/${CMD} --format %Y))) -g
   | sort -rn \
   | egrep "^${V}" \
   | head -n 1)"
-
   if [[ ! -e ${CMD} ]] || echo $(${PWD}/${CMD} version 2>/dev/null | awk '{print $2}') | egrep -v -q "^${LATEST}$" ; then
     curl --silent -L https://get.helm.sh/helm-v${LATEST}-linux-amd64.tar.gz | tar xz --strip=1 "linux-amd64/helm" --to-stdout >${CMD}
     chmod +x "${CMD}"
