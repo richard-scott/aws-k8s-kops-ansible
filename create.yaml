@@ -22,6 +22,9 @@
   - import_role: 
       name: create-cluster
     tags: always
+
+  - fail:
+
   - import_role:
       name: helm-install
     tags: always

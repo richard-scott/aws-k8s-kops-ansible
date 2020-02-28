@@ -140,7 +140,7 @@
     - { 'name': 'spec.kubelet.authorizationMode', 'value': 'Webhook' }
 
 - include: ig_conf.yaml
-
+- include: in_conf.yaml
 - include: cluster_conf.yaml
 
 - name: Creating physical cluster (This can take around 5 min to complete)

@@ -7,9 +7,9 @@
 - name: Adding Prometheus Operator via Helm
   shell: >-
     helm install --atomic --dep-up
-    --name prometheus-operator
-    --namespace kube-system
     stable/prometheus-operator
+    --name prometheus-operator
+    --namespace monitoring
     --set coreDns.enabled=false
     --set kubeDns.enabled=true
   args:
