@@ -10,5 +10,7 @@
     --name prometheus-operator
     --namespace kube-system
     stable/prometheus-operator
+    --set coreDns.enabled=false
+    --set kubeDns.enabled=true
   args:
     executable: /bin/bash
