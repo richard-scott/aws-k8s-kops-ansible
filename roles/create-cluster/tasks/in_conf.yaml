@@ -1,0 +1,24 @@
+---
+
+- name: Fetch current 'nodes' instance group config
+  shell: > 
+    kops get instancegroup nodes --name {{ cluster_name }}.{{ dns_zone }} -o yaml --state {{ state_store }} > /tmp/{{ cluster_name }}.{{ dns_zone }}-in-conf.yaml
+  args:
+    executable: /bin/bash
+  changed_when: false
+
+- name: Configure node Min/Max instances pool
+  replace:
+    path: /tmp/{{ cluster_name }}.{{ dns_zone }}-in-conf.yaml
+    regexp:  '  {{ item.name }}: ([0-9.]*)?'
+    replace: '  {{ item.name }}: {{ item.value }}'
+    after: 'spec:'
+  loop:
+    - { name: "maxSize", value: "{{ node_autoscaler_max }}" }
+    - { name: "minSize", value: "{{ node_autoscaler_min }}" }
+  notify: "Push instance nodes config"
+  when: node_autoscaler_min is defined and node_autoscaler_min != "auto" and node_autoscaler_max is defined and node_autoscaler_max != "auto"
+
+- name: Run handlers
+  meta: flush_handlers
+

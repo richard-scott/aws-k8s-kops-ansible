@@ -1,0 +1,3 @@
+#!/bin/bash
+helm3 plugin install https://github.com/helm/helm-2to3
+helm3 plugin list

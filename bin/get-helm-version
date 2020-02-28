@@ -1,0 +1,11 @@
+#!/bin/bash
+V="${1:-2}"
+wget -q https://github.com/helm/helm/tags -O /dev/stdout \
+| grep "/helm/helm/releases/tag/v" \
+| grep -v class \
+| awk -F '"' '{print $2}' \
+| awk -F '/v' '{print $2}' \
+| grep -v "rc" \
+| sort -rn \
+| egrep "^${V}" \
+| head -n 1
