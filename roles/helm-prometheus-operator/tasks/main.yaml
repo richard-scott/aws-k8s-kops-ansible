@@ -8,6 +8,7 @@
   shell: >-
     helm install --atomic --dep-up
     --name prometheus-operator
+    --namespace kube-system
     stable/prometheus-operator
   args:
     executable: /bin/bash

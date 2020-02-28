@@ -45,6 +45,6 @@
     vars:
       use_hello_kubernetes_backend: true
     tags: always
-#  - import_role:
-#      name: helm-prometheus-operator
-#    tags: always
+  - import_role:
+      name: helm-prometheus-operator
+    tags: always
