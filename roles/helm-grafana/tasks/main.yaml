@@ -18,11 +18,11 @@
   vars:
     k8s_namespace: monitoring
     use_default_backend: false
-    backend_protocol: http
-    use_ssl: false
-    ssl_ports: https
-    target_ports_http: http
-    target_ports_https: https
+#    backend_protocol: http
+#    use_ssl: true
+#    ssl_ports: https
+#    target_ports_http: http
+#    target_ports_https: https
     load_balancer_source_ranges: "{{ dashboard_access_cidr }}"
 #    use_proxy_protocol: true
 
