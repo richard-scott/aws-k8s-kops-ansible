@@ -9,11 +9,36 @@
   connection: local
   roles:
     - create-state-store
-#    - lambda-delete
+    - lambda-delete
     - delete-cluster
     - delete-state-store
 
   tasks:
+
+    - name: grab zone id
+      route53_zone:
+        zone: "{{ dns_zone }}"
+      register: AWSINFO
+
+    - name: grab Route53 record information
+      route53_info:
+        type: A
+        query: record_sets
+        hosted_zone_id: "{{ AWSINFO.zone_id }}"
+        start_record_name: "{{ dns_zone }}"
+      register: RECORDS
+
+    - route53:
+        state: absent
+        zone: "{{ dns_zone }}"
+        record: "{{ item.Name | regex_replace('^\\\\052','*') }}"
+        type: "{{ item.Type }}"
+        value: "{{ item.AliasTarget.DNSName }}"
+        alias: true
+        alias_hosted_zone_id: "{{ item.AliasTarget.HostedZoneId }}"
+      when: item.Type == "A"
+      loop: "{{ RECORDS['ResourceRecordSets']|flatten(levels=1) }}"
+
     - file:
         path: "{{ '~/.kube' | expanduser }}"
         state: absent

@@ -12,5 +12,6 @@
     --namespace monitoring
     --set coreDns.enabled=false
     --set kubeDns.enabled=true
+    --set kubeProxy.enabled=false
   args:
     executable: /bin/bash

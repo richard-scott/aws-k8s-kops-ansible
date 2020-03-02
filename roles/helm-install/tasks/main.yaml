@@ -37,9 +37,10 @@
     executable: /bin/bash
   with_items:
     - { name: "appscode", url: "https://charts.appscode.com/stable/" }
+    - { name: "bitnami",  url: "https://charts.bitnami.com/bitnami" }
     - { name: "jetstack", url: "https://charts.jetstack.io" }
     - { name: "kiwigrid", url: "https://kiwigrid.github.io" }
-    - { name: "bitnami",  url: "https://charts.bitnami.com/bitnami" }
+    - { name: "loki",     url: "https://grafana.github.io/loki/charts" }
 
 - name: "Updating Helm repo's"
   shell: >

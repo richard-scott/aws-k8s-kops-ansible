@@ -22,9 +22,6 @@
   - import_role: 
       name: create-cluster
     tags: always
-
-  - fail:
-
   - import_role:
       name: helm-install
     tags: always
@@ -48,6 +45,6 @@
     vars:
       use_hello_kubernetes_backend: true
     tags: always
-  - import_role:
-      name: helm-prometheus-operator
-    tags: always
+#  - import_role:
+#      name: helm-prometheus-operator
+#    tags: always
