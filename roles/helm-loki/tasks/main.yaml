@@ -1,0 +1,13 @@
+---
+
+#######################
+# Install loki via Helm
+#######################
+- name: Adding loki via Helm
+  shell: >
+    helm install --atomic --dep-up
+    --name loki
+    --namespace monitoring
+    loki/loki
+  args:
+    executable: /bin/bash

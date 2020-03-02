@@ -1,0 +1,13 @@
+---
+
+###########################
+# Install promtail via Helm
+###########################
+- name: Adding promtail via Helm
+  shell: >
+    helm install --atomic --dep-up
+    --name promtail
+    --namespace monitoring
+    loki/promtail
+  args:
+    executable: /bin/bash
