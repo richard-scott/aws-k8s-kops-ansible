@@ -4,15 +4,6 @@
 # Install Grafana via Helm
 #####################################
 
-- name: Adding Grafana via Helm
-  shell: >
-    helm install --atomic --dep-up
-    --name grafana
-    --namespace monitoring
-    stable/grafana
-  args:
-    executable: /bin/bash
-
 - import_role:
     name: helm-nginx-ingress
   vars:
@@ -26,3 +17,11 @@
     load_balancer_source_ranges: "{{ dashboard_access_cidr }}"
 #    use_proxy_protocol: true
 
+- name: Adding Grafana via Helm
+  shell: >
+    helm install --atomic --dep-up
+    --name grafana
+    --namespace monitoring
+    stable/grafana
+  args:
+    executable: /bin/bash
