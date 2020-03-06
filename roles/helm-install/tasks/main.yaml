@@ -37,7 +37,7 @@
     executable: /bin/bash
   with_items:
     - { name: "appscode", url: "https://charts.appscode.com/stable/" }
-#    - { name: "bitnami",  url: "https://charts.bitnami.com/bitnami" }
+    - { name: "bitnami",  url: "https://charts.bitnami.com/bitnami" }
     - { name: "jetstack", url: "https://charts.jetstack.io" }
     - { name: "kiwigrid", url: "https://kiwigrid.github.io" }
     - { name: "loki",     url: "https://grafana.github.io/loki/charts" }
