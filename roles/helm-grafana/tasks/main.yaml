@@ -16,7 +16,6 @@
 #    target_ports_https: https
     load_balancer_source_ranges: "{{ dashboard_access_cidr }}"
 #    use_proxy_protocol: true
-  tags: never
 
 - name: Adding Grafana via Helm
   shell: >-
