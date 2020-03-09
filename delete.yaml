@@ -30,6 +30,7 @@
 
     - route53:
         state: absent
+        wait: yes
         zone: "{{ dns_zone }}"
         record: "{{ item.Name | regex_replace('^\\\\052','*') }}"
         type: "{{ item.Type }}"

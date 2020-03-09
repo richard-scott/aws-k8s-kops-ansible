@@ -104,6 +104,7 @@
 
 - route53:
     state: present
+    wait: yes
     zone: "{{ dns_zone }}"
     record: "{{ k8s_namespace }}.{{ dns_zone }}"
     type: A
@@ -114,6 +115,7 @@
 
 - route53:
     state: present
+    wait: yes
     zone: "{{ dns_zone }}"
     record: "*.{{ k8s_namespace }}.{{ dns_zone }}"
     type: A
