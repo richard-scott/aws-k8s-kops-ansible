@@ -5,7 +5,6 @@
 - import_role:
     name: helm-nginx-ingress
   vars:
-    k8s_namespace: monitoring
     use_default_backend: true
     use_hello_kubernetes_backend: true
     load_balancer_source_ranges: "{{ dashboard_access_cidr }}"
@@ -21,7 +20,7 @@
     helm install --atomic --dep-up
     stable/prometheus-operator
     --name prometheus-operator
-    --namespace monitoring
+    --namespace "{{ k8s_namespace }}"
     --set coreDns.enabled=false
     --set kubeDns.enabled=true
     --set kubeProxy.enabled=false

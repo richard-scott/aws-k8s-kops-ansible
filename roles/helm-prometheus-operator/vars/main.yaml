@@ -1,0 +1,3 @@
+---
+# K8S Defaults
+k8s_namespace: monitoring
