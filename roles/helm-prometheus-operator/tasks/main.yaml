@@ -5,6 +5,7 @@
 - import_role:
     name: helm-nginx-ingress
   vars:
+    k8s_namespace: monitoring
     use_default_backend: true
     use_hello_kubernetes_backend: true
     load_balancer_source_ranges: "{{ dashboard_access_cidr }}"
@@ -20,21 +21,21 @@
     helm install --atomic --dep-up
     stable/prometheus-operator
     --name prometheus-operator
-    --namespace "{{ k8s_namespace }}"
+    --namespace "monitoring"
     --set coreDns.enabled=false
     --set kubeDns.enabled=true
     --set kubeProxy.enabled=false
     --set prometheus.ingress.enabled=true
     --set prometheus.ingress.paths[0]="/prometheus"
-    --set prometheus.ingress.hosts[0]="{{ k8s_namespace }}.{{ dns_zone }}"
+    --set prometheus.ingress.hosts[0]="monitoring.{{ dns_zone }}"
     --set prometheus.ingress.annotations."{{ "kubernetes.io/ingress.class" | regex_escape() }}={{ k8s_namespace }}-nginx"
     --set alertmanager.ingress.enabled=true
     --set alertmanager.ingress.paths[0]="/alertmanager"
-    --set alertmanager.ingress.hosts[0]="{{ k8s_namespace }}.{{ dns_zone }}"
+    --set alertmanager.ingress.hosts[0]="monitoring.{{ dns_zone }}"
     --set alertmanager.ingress.annotations."{{ "kubernetes.io/ingress.class" | regex_escape() }}={{ k8s_namespace }}-nginx"
     --set grafana.ingress.enabled=true
     --set grafana.ingress.paths[0]="/grafana"
-    --set grafana.ingress.hosts[0]="{{ k8s_namespace }}.{{ dns_zone }}"
+    --set grafana.ingress.hosts[0]=".{{ dns_zone }}"
     --set grafana.ingress.annotations."{{ "kubernetes.io/ingress.class" | regex_escape() }}={{ k8s_namespace }}-nginx"
   args:
     executable: /bin/bash
