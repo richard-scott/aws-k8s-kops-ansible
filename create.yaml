@@ -67,5 +67,5 @@
 #      name: helm-nginx-ingress
 #    vars:
 #      use_hello_kubernetes_backend: true
-#      dns_wildcard: true
+#      dns_zone_wildcard: true
 #    tags: always

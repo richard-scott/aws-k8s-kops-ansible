@@ -38,26 +38,22 @@
 
 - name: Create ARN setting
   set_fact:
-    certificate_arn_string: '--set controller.service.annotations."{{ "service.beta.kubernetes.io/aws-load-balancer-ssl-cert" | regex_escape() }}={{ certificate_arn | regex_escape() }}"'
+    certificate_arn_string:
+      '--set controller.service.annotations."{{ "service.beta.kubernetes.io/aws-load-balancer-ssl-cert" | regex_escape() }}={{ certificate_arn | regex_escape()
+      }}"'
   when: use_ssl
 
 - name: "Adding Nginx-Ingress via Helm"
   shell: >-
-    helm install --atomic --dep-up
-    stable/nginx-ingress
-    --name nginx-ingress-{{ k8s_namespace }}
-    --namespace {{ k8s_namespace }}
-    --set controller.metrics.enabled=true
-    --set defaultBackend.enabled="{{ use_default_backend }}"
-    --set controller.ingressClass="{{ k8s_namespace }}-nginx"
-    --set controller.service.targetPorts.http="{{ target_ports_http }}"
-    --set controller.service.targetPorts.https="{{ target_ports_https }}"
-    --set controller.service.annotations."{{ "service.beta.kubernetes.io/aws-load-balancer-backend-protocol" | regex_escape() }}={{ backend_protocol }}"
-    --set controller.service.annotations."{{ "service.beta.kubernetes.io/aws-load-balancer-cross-zone-load-balancing-enabled" | regex_escape() }}={{ "true" | regex_escape() }}"
-    --set controller.service.annotations."{{ "service.beta.kubernetes.io/aws-load-balancer-proxy-protocol" | regex_escape() }}={{ "*" | regex_escape() }}"
-    --set controller.service.annotations."{{ "service.beta.kubernetes.io/aws-load-balancer-type" | regex_escape() }}={{ elb_type }}"
-    --set controller.service.annotations."{{ "service.beta.kubernetes.io/aws-load-balancer-ssl-ports" | regex_escape() }}={{ ssl_ports }}"
-    {{ certificate_arn_string }}
+    helm install --atomic --dep-up stable/nginx-ingress --name nginx-ingress-{{ k8s_namespace }} --namespace {{ k8s_namespace }} --set
+    controller.metrics.enabled=true --set defaultBackend.enabled="{{ use_default_backend }}" --set controller.ingressClass="{{ k8s_namespace }}-nginx" --set
+    controller.service.targetPorts.http="{{ target_ports_http }}" --set controller.service.targetPorts.https="{{ target_ports_https }}" --set
+    controller.service.annotations."{{ "service.beta.kubernetes.io/aws-load-balancer-backend-protocol" | regex_escape() }}={{ backend_protocol }}" --set
+    controller.service.annotations."{{ "service.beta.kubernetes.io/aws-load-balancer-cross-zone-load-balancing-enabled" | regex_escape() }}={{ "true" |
+    regex_escape() }}" --set controller.service.annotations."{{ "service.beta.kubernetes.io/aws-load-balancer-proxy-protocol" | regex_escape() }}={{ "*" |
+    regex_escape() }}" --set controller.service.annotations."{{ "service.beta.kubernetes.io/aws-load-balancer-type" | regex_escape() }}={{ elb_type }}" --set
+    controller.service.annotations."{{ "service.beta.kubernetes.io/aws-load-balancer-ssl-ports" | regex_escape() }}={{ ssl_ports }}" {{ certificate_arn_string
+    }}
   args:
     executable: /bin/bash
 
@@ -82,7 +78,7 @@
 - set_fact:
     elb_hosted_zone_id: "{{ elb_info | json_query(query) | join }}"
   vars:
-    query:  "elbs[?dns_name=='{{ elb_fqdn }}'].hosted_zone_id"
+    query: "elbs[?dns_name=='{{ elb_fqdn }}'].hosted_zone_id"
 
 - block:
     - action:
@@ -92,7 +88,7 @@
     - set_fact:
         elb_hosted_zone_id: "{{ elb_facts | json_query(query) | join }}"
       vars:
-        query:  "load_balancers[?dns_name=='{{ elb_fqdn }}'].canonical_hosted_zone_id"
+        query: "load_balancers[?dns_name=='{{ elb_fqdn }}'].canonical_hosted_zone_id"
 
   when: elb_hosted_zone_id | length | int == 0
 
@@ -112,21 +108,8 @@
     overwrite: yes
     alias: True
     alias_hosted_zone_id: "{{ elb_hosted_zone_id }}"
-  when: not dns_wildcard
 
-- route53:
-    state: present
-    wait: yes
-    zone: "{{ dns_zone }}"
-    record: "*.{{ dns_zone }}"
-    type: A
-    value: "{{ elb_fqdn }}"
-    overwrite: yes
-    alias: True
-    alias_hosted_zone_id: "{{ elb_hosted_zone_id }}"
-  when: dns_wildcard
-
-- name: "Waiting for DNS to update on {{ k8s_namespace }}.{{ dns_zone }}"
+- name: "Waiting for DNS to update on '{{ k8s_namespace }}.{{ dns_zone }}'"
   shell: >
     dig +short {{ k8s_namespace }}.{{ dns_zone }} | egrep -v "^$"
   args:
@@ -135,6 +118,54 @@
   until: cmd_result.rc == 0
   retries: 30
   delay: 60
+
+- block:
+    - route53:
+        state: present
+        wait: yes
+        zone: "{{ dns_zone }}"
+        record: "*.{{ k8s_namespace }}.{{ dns_zone }}"
+        type: A
+        value: "{{ elb_fqdn }}"
+        overwrite: yes
+        alias: True
+        alias_hosted_zone_id: "{{ elb_hosted_zone_id }}"
+
+    - name: "Waiting for DNS to update on '*.{{ k8s_namespace }}.{{ dns_zone }}'"
+      shell: >
+        dig +short {{ k8s_namespace }}.{{ dns_zone }} | egrep -v "^$"
+      args:
+        executable: /bin/bash
+      register: cmd_result
+      until: cmd_result.rc == 0
+      retries: 30
+      delay: 60
+
+  when: dns_namespace_wildcard
+
+- block:
+    - route53:
+        state: present
+        wait: yes
+        zone: "{{ dns_zone }}"
+        record: "*.{{ dns_zone }}"
+        type: A
+        value: "{{ elb_fqdn }}"
+        overwrite: yes
+        alias: True
+        alias_hosted_zone_id: "{{ elb_hosted_zone_id }}"
+
+    - name: "Waiting for DNS to update on '*.{{ dns_zone }}'"
+      shell: >
+        dig +short waiting.{{ dns_zone }} | egrep -v "^$"
+      args:
+        executable: /bin/bash
+      register: cmd_result
+      until: cmd_result.rc == 0
+      retries: 30
+      delay: 60
+
+  when: dns_wildcard
 
 - import_role:
     name: hello-kubernetes
