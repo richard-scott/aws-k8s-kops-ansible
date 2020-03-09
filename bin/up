@@ -3,5 +3,5 @@ cd $(dirname $(dirname ${0}))
 $(bin/aws-export-profile brainomix)
 if [[ -n "${AWS_REGION}" ]]; then
   mkdir -p logs
-  ansible-playbook "${1:-create.yaml}" 2>&1 | tee logs/output.log
+  time ansible-playbook "${1:-create.yaml}" 2>&1 | tee logs/output.log
 fi
