@@ -88,7 +88,7 @@
     - action:
         module: elb_application_lb_facts
       register: elb_facts
-  
+
     - set_fact:
         elb_hosted_zone_id: "{{ elb_facts | json_query(query) | join }}"
       vars:
@@ -121,6 +121,7 @@
     overwrite: yes
     alias: True
     alias_hosted_zone_id: "{{ elb_hosted_zone_id }}"
+  when: dns_wildcard
 
 - name: "Waiting for DNS to update on {{ k8s_namespace }}.{{ dns_zone }}"
   shell: >

@@ -1,0 +1,3 @@
+[submodule "tools/tools/aws-export-profile"]
+	path = tools/tools/aws-export-profile
+	url = https://github.com/cytopia/aws-export-profile

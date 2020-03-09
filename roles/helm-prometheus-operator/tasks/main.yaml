@@ -1,22 +1,20 @@
 ---
-
 ######################################
 # Install Prometheus Operator via Helm
 ######################################
-
 - import_role:
     name: helm-nginx-ingress
   vars:
     k8s_namespace: monitoring
-    use_default_backend: false
+    use_default_backend: true
+    use_hello_kubernetes_backend: true
+    load_balancer_source_ranges: "{{ dashboard_access_cidr }}"
 #    backend_protocol: http
 #    use_ssl: true
 #    ssl_ports: https
 #    target_ports_http: http
 #    target_ports_https: https
-    load_balancer_source_ranges: "{{ dashboard_access_cidr }}"
 #    use_proxy_protocol: true
-
 
 - name: Adding Prometheus Operator via Helm
   shell: >-
@@ -39,17 +37,15 @@
     --set grafana.ingress.paths[0]="/grafana"
     --set grafana.ingress.hosts[0]="{{ k8s_namespace }}.{{ dns_zone }}"
     --set grafana.ingress.annotations."{{ "kubernetes.io/ingress.class" | regex_escape() }}={{ k8s_namespace }}-nginx"
-
   args:
     executable: /bin/bash
 
-- name: Adding Grafana via Helm
-  shell: >-
-    helm install --atomic --dep-up
-    --namespace monitoring
-    stable/grafana
-  args:
-    executable: /bin/bash
-  vars:
-    k8s_namespace: monitoring
-
+#- name: Adding Grafana via Helm
+#  shell: >-
+#    helm install --atomic --dep-up
+#    --namespace monitoring
+#    stable/grafana
+#  args:
+#    executable: /bin/bash
+#  vars:
+#    k8s_namespace: monitoring

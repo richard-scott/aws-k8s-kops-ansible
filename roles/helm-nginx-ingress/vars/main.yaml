@@ -1,14 +1,24 @@
 ---
+# K8S Defaults
 k8s_namespace: default
 ssl_cert_fqdn: "*.{{ dns_zone }}"
+
+# ELB Settings
 use_ssl: true
 elb_type: classic
-backend_protocol: http
-ssl_ports: https
 target_ports_http: http
 target_ports_https: http
-use_default_backend: false
-use_hello_kubernetes_backend: false
+use_proxy_protocol: false
 load_balancer_source_ranges:
   - 0.0.0.0/0
-use_proxy_protocol: false
+
+# Service Settings
+backend_protocol: http
+ssl_ports: https
+
+# Backend Settings
+use_default_backend: false
+use_hello_kubernetes_backend: false
+
+# DNS Settings
+dns_wildcard: false
