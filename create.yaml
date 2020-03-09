@@ -7,53 +7,65 @@
   gather_facts: no
   connection: local
   tasks:
+
   - import_role: 
       name: lambda-delete
     tags: [use_lambda,never]
+
   - import_role: 
       name: lambda-install
     tags: [use_lambda,never]
+
   - set_fact:
       lambda_tags: true
     tags: [use_lambda,never]
+
   - import_role: 
       name: create-state-store
     tags: always
+
   - import_role: 
       name: create-cluster
     tags: always
+
   - import_role:
       name: helm-install
     tags: always
+
   - import_role:
       name: helm-metrics-server
     tags: always
+
   - import_role:
       name: helm-cluster-autoscaler
     tags: always
+
   - import_role:
       name: helm-cluster-overprovisioner
     tags: always
+
   - import_role:
       name: helm-k8s-spot-termination-handler
-    tags: always
+
   - import_role:
       name: kubernetes-dashboard
     tags: always
+
+  - import_role:
+      name: helm-loki
+    tags: always
+
+  - import_role:
+      name: helm-promtail
+    tags: always
+
+  - import_role:
+      name: helm-prometheus-operator
+    tags: always
+
   - import_role:
       name: helm-nginx-ingress
     vars:
       use_hello_kubernetes_backend: true
     tags: always
-  - import_role:
-      name: helm-prometheus-operator
-    tags: always
-  - import_role:
-      name: helm-promtail
-    tags: always
-  - import_role:
-      name: helm-loki
-    tags: always
-  - import_role:
-      name: helm-grafana
-    tags: always
+
