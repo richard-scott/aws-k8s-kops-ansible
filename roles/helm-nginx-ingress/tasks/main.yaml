@@ -112,7 +112,7 @@
     overwrite: yes
     alias: True
     alias_hosted_zone_id: "{{ elb_hosted_zone_id }}"
-when: not dns_wildcard
+  when: not dns_wildcard
 
 - route53:
     state: present
