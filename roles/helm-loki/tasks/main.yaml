@@ -7,7 +7,7 @@
   shell: >
     helm install --atomic --dep-up
     --name loki
-    --namespace monitoring
+    --namespace {{ local_k8s_namespace }}
     loki/loki
   args:
     executable: /bin/bash

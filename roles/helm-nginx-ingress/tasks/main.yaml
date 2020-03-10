@@ -98,7 +98,8 @@
 - fail:
   when: elb_hosted_zone_id | length | int == 0
 
-- route53:
+- name: "Adding {{ k8s_namespace }}.{{ dns_zone }} to route53"
+  route53:
     state: present
     wait: yes
     zone: "{{ dns_zone }}"
@@ -120,7 +121,8 @@
   delay: 60
 
 - block:
-    - route53:
+    - name: "Adding *.{{ k8s_namespace }}.{{ dns_zone }} to route53"
+      route53:
         state: present
         wait: yes
         zone: "{{ dns_zone }}"
@@ -144,7 +146,8 @@
   when: dns_namespace_wildcard
 
 - block:
-    - route53:
+    - name: "Adding *.{{ dns_zone }} to route53"
+      route53:
         state: present
         wait: yes
         zone: "{{ dns_zone }}"
@@ -165,7 +168,7 @@
       retries: 30
       delay: 60
 
-  when: dns_wildcard
+  when: dns_zone_wildcard
 
 - import_role:
     name: hello-kubernetes
