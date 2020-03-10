@@ -17,19 +17,33 @@
 #    use_proxy_protocol: true
 
 - name: Adding Prometheus Operator via Helm
-  shell: >-
-    helm install --atomic --dep-up stable/prometheus-operator --name prometheus-operator --namespace "{{ local_k8s_namespace }}" --set coreDns.enabled=false
-    --set kubeDns.enabled=true --set kubeProxy.enabled=false --set prometheus.ingress.enabled=true --set prometheus.ingress.paths[0]="/prometheus" --set
-    prometheus.ingress.hosts[0]="{{ local_k8s_namespace }}.{{ dns_zone }}" --set prometheus.ingress.annotations."{{ "kubernetes.io/ingress.class" |
-    regex_escape() }}={{ local_k8s_namespace }}-nginx" --set alertmanager.ingress.enabled=true --set alertmanager.ingress.paths[0]="/alertmanager" --set
-    alertmanager.ingress.hosts[0]="{{ local_k8s_namespace }}.{{ dns_zone }}" --set alertmanager.ingress.annotations."{{ "kubernetes.io/ingress.class" |
-    regex_escape() }}={{ local_k8s_namespace }}-nginx" --set grafana.ingress.enabled=true --set grafana.ingress.paths[0]="/grafana" --set
-    grafana.ingress.hosts[0]="{{ local_k8s_namespace }}.{{ dns_zone }}" --set grafana.ingress.annotations."{{ "kubernetes.io/ingress.class" | regex_escape()
-    }}={{ local_k8s_namespace }}-nginx"
+  shell: |-
+    helm install --atomic --dep-up
+    stable/prometheus-operator
+    --name prometheus-operator
+    --namespace "{{ local_k8s_namespace }}"
+    --set coreDns.enabled=false
+    --set kubeDns.enabled=true
+    --set kubeProxy.enabled=false
+    --set prometheus.ingress.enabled=true
+    --set prometheus.ingress.paths[0]="/prometheus"
+    --set prometheus.ingress.hosts[0]="{{ local_k8s_namespace }}.{{ dns_zone }}"
+    --set prometheus.ingress.annotations."{{ "kubernetes.io/ingress.class" | regex_escape() }}={{ local_k8s_namespace }}-nginx"
+    --set prometheus.ingress.annotations."{{ "nginx.ingress.kubernetes.io/rewrite-target" | regex_escape() }}=/"
+    --set alertmanager.ingress.enabled=true
+    --set alertmanager.ingress.paths[0]="/alertmanager"
+    --set alertmanager.ingress.hosts[0]="{{ local_k8s_namespace }}.{{ dns_zone }}"
+    --set alertmanager.ingress.annotations."{{ "kubernetes.io/ingress.class" | regex_escape() }}={{ local_k8s_namespace }}-nginx"
+    --set alertmanager.ingress.annotations."{{ "nginx.ingress.kubernetes.io/rewrite-target" | regex_escape() }}=/"
+    --set grafana.ingress.enabled=true
+    --set grafana.ingress.paths[0]="/grafana"
+    --set grafana.ingress.hosts[0]="{{ local_k8s_namespace }}.{{ dns_zone }}"
+    --set grafana.ingress.annotations."{{ "kubernetes.io/ingress.class" | regex_escape() }}={{ local_k8s_namespace }}-nginx"
+    --set grafana.ingress.annotations."{{ "nginx.ingress.kubernetes.io/rewrite-target" | regex_escape() }}=/"
   args:
     executable: /bin/bash
 #- name: Adding Grafana via Helm
-#  shell: >-
+#  shell: |-
 #    helm install --atomic --dep-up
 #    --namespace "{{ local_k8s_namespace }}"
 #    stable/grafana
