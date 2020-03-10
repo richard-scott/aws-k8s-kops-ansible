@@ -1,8 +1,8 @@
 ---
 
-####################
+#######################
 # Install Storage Class
-####################
+#######################
 
 - name: Add Storage Class configuration
   template:

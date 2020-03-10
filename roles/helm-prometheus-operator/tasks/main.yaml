@@ -16,8 +16,9 @@
 #    target_ports_https: https
 #    use_proxy_protocol: true
 
+
 - name: Adding Prometheus Operator via Helm
-  shell: |-
+  shell: >-
     helm install --atomic --dep-up
     stable/prometheus-operator
     --name prometheus-operator
@@ -26,20 +27,23 @@
     --set kubeDns.enabled=true
     --set kubeProxy.enabled=false
     --set prometheus.ingress.enabled=true
-    --set prometheus.ingress.paths[0]="/prometheus"
+    --set prometheus.ingress.paths[0]="{{ "/prometheus/(.+)" | regex_escape() }}"
     --set prometheus.ingress.hosts[0]="{{ local_k8s_namespace }}.{{ dns_zone }}"
     --set prometheus.ingress.annotations."{{ "kubernetes.io/ingress.class" | regex_escape() }}={{ local_k8s_namespace }}-nginx"
-    --set prometheus.ingress.annotations."{{ "nginx.ingress.kubernetes.io/rewrite-target" | regex_escape() }}=/"
+    --set prometheus.ingress.annotations."{{ "nginx.ingress.kubernetes.io/rewrite-target" | regex_escape() }}={{ "/$1" | regex_escape() }}"
+    --set prometheus.ingress.annotations."{{ "nginx.ingress.kubernetes.io/use-regex" | regex_escape() }}=true"
     --set alertmanager.ingress.enabled=true
-    --set alertmanager.ingress.paths[0]="/alertmanager"
+    --set alertmanager.ingress.paths[0]="{{ "/alertmanager/(.+)" | regex_escape() }}"
     --set alertmanager.ingress.hosts[0]="{{ local_k8s_namespace }}.{{ dns_zone }}"
     --set alertmanager.ingress.annotations."{{ "kubernetes.io/ingress.class" | regex_escape() }}={{ local_k8s_namespace }}-nginx"
-    --set alertmanager.ingress.annotations."{{ "nginx.ingress.kubernetes.io/rewrite-target" | regex_escape() }}=/"
+    --set alertmanager.ingress.annotations."{{ "nginx.ingress.kubernetes.io/rewrite-target" | regex_escape() }}={{ "/$1" | regex_escape() }}"
+    --set alertmanager.ingress.annotations."{{ "nginx.ingress.kubernetes.io/use-regex" | regex_escape() }}=true"
     --set grafana.ingress.enabled=true
-    --set grafana.ingress.paths[0]="/grafana"
+    --set grafana.ingress.paths[0]="{{ "^(?!.*prometheus|.*alertmanager).*$" | regex_escape() }}"
     --set grafana.ingress.hosts[0]="{{ local_k8s_namespace }}.{{ dns_zone }}"
     --set grafana.ingress.annotations."{{ "kubernetes.io/ingress.class" | regex_escape() }}={{ local_k8s_namespace }}-nginx"
-    --set grafana.ingress.annotations."{{ "nginx.ingress.kubernetes.io/rewrite-target" | regex_escape() }}=/"
+    --set grafana.ingress.annotations."{{ "nginx.ingress.kubernetes.io/rewrite-target" | regex_escape() }}={{ "/$1" | regex_escape() }}"
+    --set grafana.ingress.annotations."{{ "nginx.ingress.kubernetes.io/use-regex" | regex_escape() }}=true"
   args:
     executable: /bin/bash
 #- name: Adding Grafana via Helm
@@ -51,3 +55,4 @@
 #    executable: /bin/bash
 #  vars:
 #    k8s_namespace: "{{ k8s_namespace }}"
+  when: false
