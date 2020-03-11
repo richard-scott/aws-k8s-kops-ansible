@@ -103,11 +103,7 @@
 - fail:
   when: elb_hosted_zone_id | length | int == 0
 
-<<<<<<< HEAD
 - name: "Adding {{ k8s_namespace }}.{{ dns_zone }} to route53"
-=======
-- name: "Creating {{ k8s_namespace }}.{{ dns_zone }}"
->>>>>>> b5754d56a8f4dbe9d220a0145b2eced620c41113
   route53:
     state: present
     wait: yes
