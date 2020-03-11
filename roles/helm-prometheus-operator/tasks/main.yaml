@@ -46,8 +46,8 @@
     --set grafana.ingress.annotations."{{ "nginx.ingress.kubernetes.io/use-regex" | regex_escape() }}=true"
   args:
     executable: /bin/bash
-
     #--set grafana.ingress.paths[0]="{{ "^(?!.*prometheus|.*alertmanager).*$" | regex_escape() }}"
+
 #- name: Adding Grafana via Helm
 #  shell: >--
 #    helm install --atomic --dep-up
@@ -57,4 +57,3 @@
 #    executable: /bin/bash
 #  vars:
 #    k8s_namespace: "{{ k8s_namespace }}"
-  when: false

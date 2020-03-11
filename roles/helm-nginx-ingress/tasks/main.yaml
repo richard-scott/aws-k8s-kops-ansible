@@ -45,15 +45,20 @@
 
 - name: "Adding Nginx-Ingress via Helm"
   shell: >-
-    helm install --atomic --dep-up stable/nginx-ingress --name nginx-ingress-{{ k8s_namespace }} --namespace {{ k8s_namespace }} --set
-    controller.metrics.enabled=true --set defaultBackend.enabled="{{ use_default_backend }}" --set controller.ingressClass="{{ k8s_namespace }}-nginx" --set
-    controller.service.targetPorts.http="{{ target_ports_http }}" --set controller.service.targetPorts.https="{{ target_ports_https }}" --set
-    controller.service.annotations."{{ "service.beta.kubernetes.io/aws-load-balancer-backend-protocol" | regex_escape() }}={{ backend_protocol }}" --set
-    controller.service.annotations."{{ "service.beta.kubernetes.io/aws-load-balancer-cross-zone-load-balancing-enabled" | regex_escape() }}={{ "true" |
-    regex_escape() }}" --set controller.service.annotations."{{ "service.beta.kubernetes.io/aws-load-balancer-proxy-protocol" | regex_escape() }}={{ "*" |
-    regex_escape() }}" --set controller.service.annotations."{{ "service.beta.kubernetes.io/aws-load-balancer-type" | regex_escape() }}={{ elb_type }}" --set
-    controller.service.annotations."{{ "service.beta.kubernetes.io/aws-load-balancer-ssl-ports" | regex_escape() }}={{ ssl_ports }}" {{ certificate_arn_string
-    }}
+    helm install --atomic --dep-up stable/nginx-ingress
+    --name nginx-ingress-{{ k8s_namespace }}
+    --namespace {{ k8s_namespace }}
+    --set controller.metrics.enabled=true
+    --set defaultBackend.enabled="{{ use_default_backend }}"
+    --set controller.ingressClass="{{ k8s_namespace }}-nginx"
+    --set controller.service.targetPorts.http="{{ target_ports_http }}"
+    --set controller.service.targetPorts.https="{{ target_ports_https }}"
+    --set controller.service.annotations."{{ "service.beta.kubernetes.io/aws-load-balancer-backend-protocol" | regex_escape() }}={{ backend_protocol }}"
+    --set controller.service.annotations."{{ "service.beta.kubernetes.io/aws-load-balancer-cross-zone-load-balancing-enabled" | regex_escape() }}={{ "true" | regex_escape() }}"
+    --set controller.service.annotations."{{ "service.beta.kubernetes.io/aws-load-balancer-proxy-protocol" | regex_escape() }}={{ "*" | regex_escape() }}"
+    --set controller.service.annotations."{{ "service.beta.kubernetes.io/aws-load-balancer-type" | regex_escape() }}={{ elb_type }}"
+    --set controller.service.annotations."{{ "service.beta.kubernetes.io/aws-load-balancer-ssl-ports" | regex_escape() }}={{ ssl_ports }}"
+    {{ certificate_arn_string }}
   args:
     executable: /bin/bash
 
@@ -98,7 +103,11 @@
 - fail:
   when: elb_hosted_zone_id | length | int == 0
 
+<<<<<<< HEAD
 - name: "Adding {{ k8s_namespace }}.{{ dns_zone }} to route53"
+=======
+- name: "Creating {{ k8s_namespace }}.{{ dns_zone }}"
+>>>>>>> b5754d56a8f4dbe9d220a0145b2eced620c41113
   route53:
     state: present
     wait: yes
