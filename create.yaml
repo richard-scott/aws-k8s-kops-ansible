@@ -61,8 +61,8 @@
       k8s_namespace: kube-mon
     tags: always
 
+#  - import_role:
 #      name: helm-nginx-ingress
 #    vars:
 #      use_hello_kubernetes_backend: true
-#      dns_zone_wildcard: true
 #    tags: always

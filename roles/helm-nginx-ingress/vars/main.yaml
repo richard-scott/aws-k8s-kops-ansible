@@ -21,5 +21,4 @@ use_default_backend: false
 use_hello_kubernetes_backend: false
 
 # DNS Settings
-dns_zone_wildcard: false
-dns_namespace_wildcard: false
+website: "{{ k8s_namespace }}.{{ dns_zone }}"

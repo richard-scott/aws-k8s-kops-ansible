@@ -103,77 +103,27 @@
 - fail:
   when: elb_hosted_zone_id | length | int == 0
 
-- name: "Adding {{ k8s_namespace }}.{{ dns_zone }} to route53"
+- name: "Adding {{ website }} to route53"
   route53:
     state: present
     wait: yes
     zone: "{{ dns_zone }}"
-    record: "{{ k8s_namespace }}.{{ dns_zone }}"
+    record: "{{ website }}"
     type: A
     value: "{{ elb_fqdn }}"
     overwrite: yes
     alias: True
     alias_hosted_zone_id: "{{ elb_hosted_zone_id }}"
 
-- name: "Waiting for DNS to update on '{{ k8s_namespace }}.{{ dns_zone }}'"
+- name: "Waiting for DNS to update on '{{ website }}'"
   shell: >
-    dig +short {{ k8s_namespace }}.{{ dns_zone }} | egrep -v "^$"
+    dig +short {{ website }} | egrep -v "^$"
   args:
     executable: /bin/bash
   register: cmd_result
   until: cmd_result.rc == 0
   retries: 30
   delay: 60
-
-- block:
-    - name: "Adding *.{{ k8s_namespace }}.{{ dns_zone }} to route53"
-      route53:
-        state: present
-        wait: yes
-        zone: "{{ dns_zone }}"
-        record: "*.{{ k8s_namespace }}.{{ dns_zone }}"
-        type: A
-        value: "{{ elb_fqdn }}"
-        overwrite: yes
-        alias: True
-        alias_hosted_zone_id: "{{ elb_hosted_zone_id }}"
-
-    - name: "Waiting for DNS to update on '*.{{ k8s_namespace }}.{{ dns_zone }}'"
-      shell: >
-        dig +short {{ k8s_namespace }}.{{ dns_zone }} | egrep -v "^$"
-      args:
-        executable: /bin/bash
-      register: cmd_result
-      until: cmd_result.rc == 0
-      retries: 30
-      delay: 60
-
-  when: dns_namespace_wildcard
-
-- block:
-    - name: "Adding *.{{ dns_zone }} to route53"
-      route53:
-        state: present
-        wait: yes
-        zone: "{{ dns_zone }}"
-        record: "*.{{ dns_zone }}"
-        type: A
-        value: "{{ elb_fqdn }}"
-        overwrite: yes
-        alias: True
-        alias_hosted_zone_id: "{{ elb_hosted_zone_id }}"
-
-    - name: "Waiting for DNS to update on '*.{{ dns_zone }}'"
-      shell: >
-        dig +short waiting.{{ dns_zone }} | egrep -v "^$"
-      args:
-        executable: /bin/bash
-      register: cmd_result
-      until: cmd_result.rc == 0
-      retries: 30
-      delay: 60
-
-  when: dns_zone_wildcard
 
 - import_role:
     name: hello-kubernetes
