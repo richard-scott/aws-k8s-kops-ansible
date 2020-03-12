@@ -3,24 +3,10 @@
 #####################################
 # Install Grafana via Helm
 #####################################
-
-- import_role:
-    name: helm-nginx-ingress
-  vars:
-    use_default_backend: true
-    use_hello_kubernetes_backend: true
-    load_balancer_source_ranges: "{{ dashboard_access_cidr }}"
-#    backend_protocol: http
-#    use_ssl: true
-#    ssl_ports: https
-#    target_ports_http: http
-#    target_ports_https: https
-#    use_proxy_protocol: true
-
 - name: Adding Grafana via Helm
   shell: >-
     helm install --atomic --dep-up
     stable/grafana
-    --set ingress.enabled=true
+    --namespace {{ k8s_namespace }}
   args:
     executable: /bin/bash

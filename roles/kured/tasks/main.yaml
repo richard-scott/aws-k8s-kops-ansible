@@ -1,0 +1,20 @@
+---
+
+###############
+# Install Kured
+###############
+- name: Find out the latest release version
+  register: url_content
+  uri:
+    url: "https://github.com/weaveworks/kured/releases/latest"
+    return_content: yes
+
+- name: Set 'latest_release' fact.
+  set_fact:
+    latest_release: "{{ url_content['url'] | basename }}"
+
+- name: Setup Hello-Kubernetes App
+  shell: |
+    kubectl apply -f https://github.com/weaveworks/kured/releases/download/{{ latest_release }}/kured-{{ latest_release }}-dockerhub.yaml
+  args:
+    executable: /bin/bash
