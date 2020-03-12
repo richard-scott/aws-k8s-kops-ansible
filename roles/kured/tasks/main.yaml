@@ -13,7 +13,7 @@
   set_fact:
     latest_release: "{{ url_content['url'] | basename }}"
 
-- name: Setup Hello-Kubernetes App
+- name: "Installing Kured v{{ latest_release }}"
   shell: |
     kubectl apply -f https://github.com/weaveworks/kured/releases/download/{{ latest_release }}/kured-{{ latest_release }}-dockerhub.yaml
   args:
