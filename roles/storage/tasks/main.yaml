@@ -12,7 +12,8 @@
   register: cmd_result
 
 - name: Delete existing "default" storage class
-  shell: kubectl delete storageclass default
+  shell: |
+    kubectl delete storageclass $(kubectl get storageclass --no-headers | grep default | awk '{print $1}')
   args:
     executable: /bin/bash
   when: cmd_result.stdout | int >= 2
