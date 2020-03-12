@@ -28,9 +28,9 @@
       name: create-cluster
     tags: always
 
-  #- import_role:
-  #    name: storage
-  #  tags: always
+  - import_role:
+      name: storage
+    tags: always
 
   - import_role:
       name: helm-install
