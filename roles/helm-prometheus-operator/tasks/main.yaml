@@ -4,18 +4,12 @@
 ######################################
 - import_role:
     name: helm-grafana
-  vars:
-    k8s_namespace: "{{ k8s_namespace }}"
 
 - import_role:
     name: helm-loki
-vars:
-    k8s_namespace: "{{ k8s_namespace }}"
 
 - import_role:
     name: helm-promtail
-vars:
-    k8s_namespace: "{{ k8s_namespace }}"
 
 - name: Adding Prometheus Operator via Helm
   shell: >-
