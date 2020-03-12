@@ -1,0 +1,31 @@
+---
+######################################
+# Install Prometheus via Helm
+######################################
+
+- name: Adding loki-stack via Helm
+  shell: >
+    helm install --atomic --dep-up
+    --name loki
+    --namespace {{ k8s_namespace }}
+    --set loki.persistence.enabled=true
+    --set loki.persistence.storageClassName="encrypted"
+    loki/loki-stack
+  args:
+    executable: /bin/bash
+
+- import_role:
+    name: helm-grafana
+  vars:
+    website: "monitoring.{{ dns_zone }}"
+
+- name: Adding Prometheus via Helm
+  shell: >-
+    helm install --atomic --dep-up
+    stable/prometheus
+    --name prometheus
+    --namespace "{{ k8s_namespace }}"
+    --set persistence.storageClassName="ssd"
+    --set alertmanager.persistentVolume.storageClass="encrypted"
+  args:
+    executable: /bin/bash
