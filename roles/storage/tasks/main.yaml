@@ -4,12 +4,26 @@
 # Install Storage Class
 #######################
 
+- name: Count 'default' storage classes
+  shell: |
+    kubectl get storageclass --no-headers | grep -c default
+  args:
+    executable: /bin/bash
+  register: cmd_result
+
+- name: Delete existing "default" storage class
+  shell: kubectl delete storageclass default
+  args:
+    executable: /bin/bash
+  when: cmd_result.stdout | int >= 2
+
 - name: Add Storage Class configuration
   template:
     src: storage-class.yaml.j2
     dest: /tmp/storage-class.yaml
     mode: 0644
-  become: false
+  when: cmd_result.stdout | int >= 2
 
 - name: Load storage class into configuration
   command: "kubectl apply -f /tmp/storage-class.yaml"
+  when: cmd_result.stdout | int >= 2

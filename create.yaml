@@ -28,9 +28,9 @@
       name: create-cluster
     tags: always
 
-  - import_role:
-      name: storage
-    tags: always
+  #- import_role:
+  #    name: storage
+  #  tags: always
 
   - import_role:
       name: helm-install
@@ -56,7 +56,7 @@
     tags: always
 
   - import_role:
-      name: helm-prometheus-operator
+      name: helm-prometheus
     vars:
       k8s_namespace: kube-mon
     tags: always
