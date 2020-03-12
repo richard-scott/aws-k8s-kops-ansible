@@ -55,19 +55,12 @@
       name: kubernetes-dashboard
     tags: always
 
-  - import_role:
-      name: helm-loki
-    tags: always
-
-  - import_role:
-      name: helm-promtail
-    tags: always
-
-  - import_role:
-      name: helm-prometheus-operator
-    tags: always
-
 #  - import_role:
+#      name: helm-prometheus-operator
+#     vars:
+#       k8s_namespace: kube-mon
+#    tags: always
+
 #      name: helm-nginx-ingress
 #    vars:
 #      use_hello_kubernetes_backend: true

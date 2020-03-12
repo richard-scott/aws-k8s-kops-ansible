@@ -7,7 +7,7 @@
   shell: >
     helm install --atomic --dep-up
     --name promtail
-    --namespace {{ local_k8s_namespace }}
+    --namespace {{ k8s_namespace }}
     loki/promtail
   args:
     executable: /bin/bash

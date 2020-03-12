@@ -1,3 +1,0 @@
----
-# K8S Defaults
-local_k8s_namespace: kube-mon

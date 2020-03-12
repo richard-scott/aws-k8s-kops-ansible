@@ -3,31 +3,28 @@
 # Install Prometheus Operator via Helm
 ######################################
 - import_role:
-    name: helm-nginx-ingress
+    name: helm-grafana
   vars:
-    k8s_namespace: "{{ local_k8s_namespace }}"
-    use_default_backend: true
-    use_hello_kubernetes_backend: true
-    load_balancer_source_ranges: "{{ dashboard_access_cidr }}"
-#    backend_protocol: http
-#    use_ssl: true
-#    ssl_ports: https
-#    target_ports_http: http
-#    target_ports_https: https
-#    use_proxy_protocol: true
+    k8s_namespace: "{{ k8s_namespace }}"
 
+- import_role:
+    name: helm-loki
+vars:
+    k8s_namespace: "{{ k8s_namespace }}"
+
+- import_role:
+    name: helm-promtail
+vars:
+    k8s_namespace: "{{ k8s_namespace }}"
 
 - name: Adding Prometheus Operator via Helm
   shell: >-
     helm install --atomic --dep-up
     stable/prometheus-operator
     --name prometheus-operator
-    --namespace "{{ local_k8s_namespace }}"
+    --namespace "{{ k8s_namespace }}"
     --set coreDns.enabled=false
-    --set kubeDns.enabled='true'
+    --set kubeDns.enabled=true
     --set kubeProxy.enabled=false
-    --set grafana.ingress.enabled='true'
-    --set grafana.ingress.hosts[0]="{{ local_k8s_namespace }}.{{ dns_zone }}"
-    --set grafana.ingress.annotations."{{ "kubernetes.io/ingress.class" | regex_escape() }}={{ local_k8s_namespace }}-nginx"
   args:
     executable: /bin/bash
