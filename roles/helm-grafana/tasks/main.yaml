@@ -16,5 +16,5 @@
     stable/grafana
     --namespace {{ k8s_namespace }}
     --set ingress.enabled=true
-    --set ingress.hosts[0]="grafana.{{ dns_zone }}"
+    --set ingress.hosts[0]="{{ website }}"
     --set ingress.annotations."{{ "kubernetes.io/ingress.class" | regex_escape() }}={{ k8s_namespace }}-nginx"
