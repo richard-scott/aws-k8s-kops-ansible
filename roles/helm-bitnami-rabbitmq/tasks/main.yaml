@@ -1,0 +1,38 @@
+---
+
+#####################################
+# Install RabbitMQ via Helm
+#####################################
+- name: Generate a random password
+  shell: |
+    date +%s | sha256sum | base64 | head -c "{{ rabbitmq_password_length }}" ; echo
+  register: rabbitmq_password
+  when: rabbitmq_password | length | int == 0
+
+- debug:
+    var: rabbitmq_password
+
+- name: Generate Erlang Cookie
+  shell: |
+    date +%s | sha256sum | base64 | head -c 32 ; echo
+  register: rabbitmq_erlangcookie
+  when: rabbitmq_erlangcookie | length | int == 0
+
+- debug:
+    var: rabbitmq_erlangcookie
+
+- name: Adding RabbitMQ via Helm
+  shell: >-
+    helm install --atomic --dep-up
+    bitnami/rabbitmq
+    --name rabbitmq
+    --namespace "{{ k8s_namespace }}"
+    --set rabbitmq.password="{{ rabbitmq_password.stdout }}"
+    --set rabbitmq.erlangcookie="{{ rabbitmq_erlangcookie.stdout }}"
+    --set rabbitmq.clustering.address_type="hostname"
+    --set rabbitmq.clustering.rebalance=true
+    --set rabbitmq.maxAvailableSchedulers="{{ rabbitmq_maxavailableschedulers | int }}"
+    --set rabbitmq.onlineSchedulers="{{ rabbitmq_onlineschedulers | int }}"
+    --set metrics.enabled=true
+  args:
+    executable: /bin/bash

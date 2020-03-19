@@ -1,0 +1,10 @@
+---
+# K8S Defaults
+k8s_namespace: default
+
+# RabbitMQ Settings
+rabbitmq_password_length: 16
+rabbitmq_password: ""
+rabbitmq_erlangcookie: ""
+rabbitmq_maxavailableschedulers: 2
+rabbitmq_onlineschedulers: 1
