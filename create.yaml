@@ -25,7 +25,7 @@
     tags: always
 
   - import_role:
-      name: create-cluster
+      name: helm-efs-provisioner
     tags: always
 
   - import_role:
@@ -50,6 +50,10 @@
 
   - import_role:
       name: helm-k8s-spot-termination-handler
+
+  - import_role:
+      name: helm-efs-provisioner
+    tags: always
 
   - import_role:
       name: kubernetes-dashboard
