@@ -9,11 +9,21 @@
   connection: local
   roles:
     - create-state-store
-    - lambda-delete
-    - delete-cluster
-    - delete-state-store
 
   tasks:
+
+    - name: Delete EFS
+      include_role:
+        name: helm-efs-provisioner
+        tasks_from: delete
+
+    - name: Delete Cluster
+      include_role:
+        name: "{{ item }}"
+      loop:
+        - lambda-delete
+        - delete-cluster
+        - delete-state-store
 
     - name: grab zone id
       route53_zone:

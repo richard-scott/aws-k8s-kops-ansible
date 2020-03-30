@@ -39,6 +39,9 @@
   register: efs_state
   loop: "{{ subnet_ids }}"
 
+- debug:
+    var: efs_state
+
 - name: Adding EFS Provisioner via Helm
   shell: >-
     helm install --atomic --dep-up
