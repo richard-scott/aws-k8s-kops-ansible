@@ -36,6 +36,7 @@
       - subnet_id: "{{ item }}"
     tags:
       Name: "{{ efs_name_tag }}"
+  register: efs_state
   loop: "{{ subnet_ids }}"
 
 - name: Adding EFS Provisioner via Helm
