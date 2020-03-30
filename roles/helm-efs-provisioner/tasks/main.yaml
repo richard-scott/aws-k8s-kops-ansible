@@ -11,20 +11,23 @@
 #- debug:
 #    var: aws_kms_state['keys'][0].key_arn
 
-- ec2_vpc_subnet_info:
+- name: "Collecing VPC subnets"
+  ec2_vpc_subnet_info:
     filters:
       "tag:KubernetesCluster": "{{ cluster_name }}.{{ dns_zone }}"
       "tag:SubnetType": "Private"     
   register: subnet_info
 
-- set_fact:
+- name: "Merging subnets into an array"
+  set_fact:
     subnet_ids: "{{ subnet_ids }} + [ '{{ item }}' ]"
   loop: "{{ subnet_info.subnets|map(attribute='id')|list }}"
 
 - debug:
     var: subnet_ids
 
-- efs:
+- name: Creating Elastic File System
+  efs:
     state: present
     name: "{{ efs_name_tag }}"
     encrypt: yes
