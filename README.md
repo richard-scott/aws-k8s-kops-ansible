@@ -109,7 +109,6 @@ The main configuration of the cluster is in the variables in `group_vars/all/var
 | `master_max_price` | Optional, max price for master spot instances. | `0.05` |
 | `master_profile` | Optional, custom master IAM role. | `arn:aws:iam::1234567890108:instance-profile/kops-custom-master-role` |
 | `node_size` | EC2 size of the nodes used as workers. | `m4.large` |
-| `node_initial_count` | Number of EC2 worker hosts (initial count). | `1` |
 | `node_volume_size` | Size of the node disk volume in GB. | `50` |
 | `node_max_price` | Optional, max price for node spot instances. | `0.05` |
 | `node_profile` | Optional, custom node IAM role. | `arn:aws:iam::1234567890108:instance-profile/kops-custom-node-role` |

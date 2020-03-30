@@ -46,11 +46,6 @@
 
 - name: Configure node count variable
   set_fact: 
-    node_initial_count: "1"
-  when: node_initial_count is undefined or node_initial_count == "auto"
-
-- name: Configure node count variable
-  set_fact: 
     base_image_string: "--image {{ base_image }}"
   when: base_image is defined and base_image != "auto"
 
@@ -118,7 +113,7 @@
     {{ network_cidr_string }}
     --networking "{{ kubernetes_networking }}"
     {{ k8s_version_string }}
-    --node-count "{{ node_initial_count }}"
+    --node-count 1
     {{ node_size_string }}
     --topology "{{ topology }}"
     --ssh-public-key "{{ ssh_public_key }}"

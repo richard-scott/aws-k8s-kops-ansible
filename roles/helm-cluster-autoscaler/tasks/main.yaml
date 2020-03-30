@@ -25,15 +25,10 @@
     scale_down_unneeded_time: "5m"
   when: scale_down_unneeded_time is undefined
 
-- name: Configure node count variable
-  set_fact:
-    node_initial_count: 1
-  when: node_initial_count is undefined or node_initial_count == "auto"
-
 - name: Check we have defined a Minimum ASG Node count
   set_fact:
-    node_autoscaler_min: "{{ node_initial_count }}"
-  when: node_autoscaler_min is not defined or ( node_initial_count is defined and node_autoscaler_min is defined and node_autoscaler_min < node_initial_count )
+    node_autoscaler_min: 1
+  when: node_autoscaler_min is not defined 
 
 - name: "See how many instances are pending/running in {{ aws_region }}"
   ec2_instance_info:
