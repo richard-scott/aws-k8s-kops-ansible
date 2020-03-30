@@ -25,10 +25,6 @@
     tags: always
 
   - import_role:
-      name: helm-efs-provisioner
-    tags: always
-
-  - import_role:
       name: storage
     tags: always
 
