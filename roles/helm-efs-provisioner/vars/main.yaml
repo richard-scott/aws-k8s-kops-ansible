@@ -1,0 +1,9 @@
+---
+# K8S Settings
+k8s_namespace: default
+
+# EFS Settings
+efs_name_tag: "{{ cluster_name }}.{{ dns_zone }}"
+
+# VPC Data
+subnet_ids: []

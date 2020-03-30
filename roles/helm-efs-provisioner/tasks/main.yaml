@@ -1,0 +1,44 @@
+---
+##################################
+# Install EFS Provisioner via Helm
+##################################
+
+
+#- aws_kms_info:
+#    region: "{{ aws_region }}"
+#  register: aws_kms_state
+
+#- debug:
+#    var: aws_kms_state['keys'][0].key_arn
+
+- ec2_vpc_subnet_info:
+    filters:
+      "tag:KubernetesCluster": "{{ cluster_name }}.{{ dns_zone }}"
+      "tag:SubnetType": "Private"     
+  register: subnet_info
+
+- set_fact:
+    subnet_ids: "{{ subnet_ids }} + [ '{{ item }}' ]"
+  loop: "{{ subnet_info.subnets|map(attribute='id')|list }}"
+
+- debug:
+    var: subnet_ids
+
+- efs:
+    state: present
+    name: "{{ efs_name_tag }}"
+    encrypt: yes
+    #kms_key_id: "{{ kms_key_id }}"
+    targets:
+      - subnet_id: "{{ item }}"
+    tags:
+      Name: "{{ efs_name_tag }}"
+  loop: "{{ subnet_ids }}"
+
+- name: Adding EFS Provisioner via Helm
+  shell: >-
+    helm install --atomic --dep-up
+    stable/efs-provisioner 
+    --namespace {{ k8s_namespace }}
+    --set efsProvisioner.efsFileSystemId={{ efs_state.efs.file_system_id }}
+    --set efsProvisioner.awsRegion={{ aws_region }}
