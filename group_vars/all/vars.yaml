@@ -72,7 +72,8 @@ master_count: auto
 
 ## Node configuration
 node_size: t3a.medium
-node_count: auto
+node_initial_count: auto
+
 # Use node_max_price if you want to use spot instances.
 # Useful to reduce cost during testing
 #node_max_price: 0.05

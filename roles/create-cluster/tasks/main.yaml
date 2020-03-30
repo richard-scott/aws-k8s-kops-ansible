@@ -46,8 +46,8 @@
 
 - name: Configure node count variable
   set_fact: 
-    node_count: "1"
-  when: node_count is undefined or node_count == "auto"
+    node_initial_count: "1"
+  when: node_initial_count is undefined or node_initial_count == "auto"
 
 - name: Configure node count variable
   set_fact: 
@@ -118,7 +118,7 @@
     {{ network_cidr_string }}
     --networking "{{ kubernetes_networking }}"
     {{ k8s_version_string }}
-    --node-count "{{ node_count }}"
+    --node-count "{{ node_initial_count }}"
     {{ node_size_string }}
     --topology "{{ topology }}"
     --ssh-public-key "{{ ssh_public_key }}"

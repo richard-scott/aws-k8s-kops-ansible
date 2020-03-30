@@ -27,13 +27,13 @@
 
 - name: Configure node count variable
   set_fact:
-    node_count: 1
-  when: node_count is undefined or node_count == "auto"
+    node_initial_count: 1
+  when: node_initial_count is undefined or node_initial_count == "auto"
 
 - name: Check we have defined a Minimum ASG Node count
   set_fact:
-    node_autoscaler_min: "{{ node_count }}"
-  when: node_autoscaler_min is not defined or ( node_count is defined and node_autoscaler_min is defined and node_autoscaler_min < node_count )
+    node_autoscaler_min: "{{ node_initial_count }}"
+  when: node_autoscaler_min is not defined or ( node_initial_count is defined and node_autoscaler_min is defined and node_autoscaler_min < node_initial_count )
 
 - name: "See how many instances are pending/running in {{ aws_region }}"
   ec2_instance_info:
