@@ -15,7 +15,7 @@ dns_zone: "{{ aws_region }}.{{ domain_name }}"
 cluster_name: k8s
 
 ## Where to store cluster state
-state_store: "s3://{{ cluster_name }}@{{ dns_zone }}"
+state_store: "s3://{{ cluster_name }}-{{ dns_zone }}"
 
 ## Which Kubernetes to install
 # The verison of K8S you select has to be older 
