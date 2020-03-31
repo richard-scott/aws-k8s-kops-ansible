@@ -40,7 +40,7 @@
   loop: "{{ subnet_ids }}"
 
 - debug:
-    var: efs_state
+    var: efs_state['efs']
 
 - name: Adding EFS Provisioner via Helm
   shell: >-
