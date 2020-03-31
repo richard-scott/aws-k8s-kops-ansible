@@ -1,0 +1,5 @@
+---
+- name: Delete Elastic File System
+  efs:
+    state: absent
+    name: "{{ efs_name_tag }}"
