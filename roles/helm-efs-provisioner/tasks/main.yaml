@@ -18,13 +18,18 @@
       "tag:SubnetType": "Private"     
   register: subnet_info
 
-- name: "Merging subnets into an array"
-  set_fact:
-    subnet_ids: "{{ subnet_ids }} + [ '{{ item }}' ]"
-  loop: "{{ subnet_info.subnets|map(attribute='id')|list }}"
+- ec2_group_info:
+    filters:
+      group-name: "nodes.{{ cluster_name }}.{{ dns_zone }}"
+  register: ec2_security_groups
 
-- debug:
-    var: subnet_ids
+- set_fact:
+    nodes_security_group: "{{ ec2_security_groups['security_groups'][0].group_id }}"
+
+- name: Populating targets list
+  set_fact:
+    targets: "{{ targets | default([]) }} + {{ [ { 'subnet_id': item, 'security_groups': [ nodes_security_group ] } ] }}"
+  loop: "{{ subnet_info.subnets|map(attribute='id')|list }}"
 
 - name: Creating Elastic File System
   efs:
@@ -32,20 +37,20 @@
     name: "{{ efs_name_tag }}"
     encrypt: yes
     #kms_key_id: "{{ kms_key_id }}"
-    targets:
-      - subnet_id: "{{ item }}"
     tags:
       Name: "{{ efs_name_tag }}"
+    targets: "{{ targets }}"
   register: efs_state
-  loop: "{{ subnet_ids }}"
 
-- debug:
-    var: efs_state['efs']
+- set_fact:
+    file_system_id: "{{ efs_state['efs'].file_system_id }}"
+  when: efs_state.changed
 
 - name: Adding EFS Provisioner via Helm
   shell: >-
     helm install --atomic --dep-up
     stable/efs-provisioner 
     --namespace {{ k8s_namespace }}
-    --set efsProvisioner.efsFileSystemId={{ efs_state.efs.file_system_id }}
+    --set efsProvisioner.efsFileSystemId={{ file_system_id }}
     --set efsProvisioner.awsRegion={{ aws_region }}
+  when: efs_state.changed
