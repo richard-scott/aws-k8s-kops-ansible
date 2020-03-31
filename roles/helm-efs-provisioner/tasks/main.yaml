@@ -50,7 +50,7 @@
   shell: >-
     helm install --atomic --dep-up
     stable/efs-provisioner 
-    --namespace "{{ k8s_namespace }}"
-    --set efsProvisioner.efsFileSystemId="{{ file_system_id }}"
-    --set efsProvisioner.awsRegion="{{ aws_region }}"
+    --namespace {{ k8s_namespace }}
+    --set efsProvisioner.efsFileSystemId={{ file_system_id }}
+    --set efsProvisioner.awsRegion={{ aws_region }}
   when: efs_state.changed

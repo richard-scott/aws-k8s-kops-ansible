@@ -1,5 +1,4 @@
 ---
-
 ####################
 # Install Helm
 ####################
@@ -11,7 +10,8 @@
     executable: /bin/bash
   with_items:
     - "kubectl -n kube-system create serviceaccount tiller"
-    - "kubectl create clusterrolebinding tiller --clusterrole cluster-admin --serviceaccount=kube-system:tiller"
+#    - "kubectl create clusterrolebinding tiller --clusterrole cluster-admin --serviceaccount=kube-system:tiller"
+    - "kubectl create clusterrolebinding tiller-cluster-rule --clusterrole=cluster-admin --serviceaccount=kube-system:tiller"
 
 - name: Install Helm
   shell: >
