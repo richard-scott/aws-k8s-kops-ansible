@@ -38,22 +38,22 @@
 
   - import_role:
       name: helm-metrics-server
-    tags: always
+    tags: never
 
   - import_role:
       name: helm-cluster-autoscaler
-    tags: always
+    tags: never
 
   - import_role:
       name: helm-cluster-overprovisioner
-    tags: always
+    tags: never
 
   - import_role:
       name: helm-k8s-spot-termination-handler
 
-#  - import_role:
-#      name: helm-efs-provisioner
-#    tags: always
+  - import_role:
+      name: helm-efs-provisioner
+    tags: always
 
   - import_role:
       name: kubernetes-dashboard
@@ -63,7 +63,10 @@
       name: helm-prometheus
     vars:
       k8s_namespace: kube-mon
-    tags: always
+    tags: never
+
+
+
 
 #  - import_role:
 #      name: helm-nginx-ingress
