@@ -1,0 +1,60 @@
+---
+- name: "Collecing VPC subnets"
+  ec2_vpc_subnet_info:
+    filters:
+      "tag:KubernetesCluster": "{{ cluster_name }}.{{ dns_zone }}"
+      "tag:SubnetType": "Private"
+  register: subnet_info
+
+- ec2_group_info:
+    filters:
+      group-name: "nodes.{{ cluster_name }}.{{ dns_zone }}"
+  register: ec2_security_groups
+
+- set_fact:
+    nodes_security_group: "{{ ec2_security_groups['security_groups'][0].group_id }}"
+
+- name: Populating targets list
+  set_fact:
+    targets: "{{ targets | default([]) }} + {{ [ { 'subnet_id': item, 'security_groups': [ nodes_security_group ] } ] }}"
+  loop: "{{ subnet_info.subnets|map(attribute='id')|list }}"
+
+- name: Creating Elastic File System
+  efs:
+    state: present
+    name: "{{ efs_name_tag }}"
+    encrypt: yes
+    #kms_key_id: "{{ kms_key_id }}"
+    tags:
+      Name: "{{ efs_name_tag }}"
+    targets: "{{ targets }}"
+  register: efs_state
+
+- name: Update search_and_replace dictionary
+  set_fact:
+    search_and_replace: "{{ search_and_replace|combine({'file.system.id:': {'replace': {{ efs_state['efs'].file_system_id }} }}, recursive=True) }}"
+  when: efs_state.changed
+
+- name: Revert manifest back to original
+  shell: >
+    git checkout {{ role_path }}/files/external-storage/aws/efs/deploy/manifest.yaml
+    
+- name: Update "manifest.yaml" with our latest EFS settings
+  replace:
+    path: "{{ role_path }}/files/external-storage/aws/efs/deploy/manifest.yaml"
+    regexp: '^(.*\s){{ item.key }}:\s{{ item.value.find }}$'
+    replace: '\1{{ item.key }}: {{ item.value.replace }}'
+  loop: "{{ lookup('dict', search_and_replace) }}"
+
+- fail:
+
+- name: Apply yaml files
+  shell: >
+    kubectl apply -f
+  ignore_errors: true
+  args:
+    executable: /bin/bash
+    chdir: "{{ role_path }}/files/external-storage/aws/efs/deploy"
+  loop:
+    - "rbac.yaml"
+    - "manifest.yaml"

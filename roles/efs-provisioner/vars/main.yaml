@@ -1,0 +1,14 @@
+---
+search_and_replace:
+  file.system.id:
+    find: "yourEFSsystemid"
+    replace: ""
+  aws.region:
+    find: "regionyourEFSisin"
+    replace: ""
+  provisioner.name:
+    find: "example.com/aws-efs"
+    replace: "A3"
+  dns.name:
+    find: '""'
+    replace: ""
