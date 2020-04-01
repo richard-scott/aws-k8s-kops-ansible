@@ -30,31 +30,52 @@
     targets: "{{ targets }}"
   register: efs_state
 
-- name: Update search_and_replace dictionary
-  set_fact:
-    search_and_replace: "{{ search_and_replace|combine({'file.system.id:': {'replace': {{ efs_state['efs'].file_system_id }} }}, recursive=True) }}"
+- debug:
+    var: efs_state
+
+- block:
+
+  - name: Revert manifest back to original
+    shell: >
+      git checkout manifest.yaml
+    args:
+      executable: /bin/bash
+      chdir: "{{ role_path }}/files/external-storage/aws/efs/deploy"
+
+  - name: "Update search_and_replace dictionary element 'file.system.id' to {{ efs_state['efs'].file_system_id }}"
+    set_fact:
+      search_and_replace: "{{ search_and_replace|combine( { 'file.system.id': { 'replace': efs_state['efs'].file_system_id } }, recursive=True) }}"
+
+  - name: "Update search_and_replace dictionary element 'aws.region' to {{ aws_region }}"
+    set_fact:
+      search_and_replace: "{{ search_and_replace|combine( { 'aws.region': { 'replace': aws_region } }, recursive=True) }}"
+
+  - set_fact:
+      new_server: "{{ search_and_replace['file.system.id']['replace'] }}.efs.{{ aws_region }}.amazonaws.com"
+
+  - name: "Update search_and_replace dictionary element 'server' to {{ search_and_replace['file.system.id']['replace'] }}"
+    set_fact:
+      search_and_replace: "{{ search_and_replace|combine( { 'server': { 'replace': new_server } }, recursive=True) }}"
+
+  - name: "Update search_and_replace dictionary element 'provisioner' to {{ search_and_replace['provisioner.name']['replace'] }}"
+    set_fact:
+      search_and_replace: "{{ search_and_replace|combine( { 'provisioner': { 'replace': search_and_replace['provisioner.name']['replace'] } }, recursive=True) }}"
+
+  - name: Update "manifest.yaml" with our latest EFS settings
+    replace:
+      path: "{{ role_path }}/files/external-storage/aws/efs/deploy/manifest.yaml"
+      regexp: '^(.*\s){{ item.key }}:\s{{ item.value.find | regex_escape() }}$'
+      replace: '\1{{ item.key }}: {{ item.value.replace }}'
+    loop: "{{ lookup('dict', search_and_replace) }}"
+
+  - name: Apply yaml files
+    shell: |
+      kubectl apply -f {{ item }}
+    args:
+      executable: /bin/bash
+      chdir: "{{ role_path }}/files/external-storage/aws/efs/deploy/"
+    loop:
+      - "rbac.yaml"
+      - "manifest.yaml"
+
   when: efs_state.changed
-
-- name: Revert manifest back to original
-  shell: >
-    git checkout {{ role_path }}/files/external-storage/aws/efs/deploy/manifest.yaml
-    
-- name: Update "manifest.yaml" with our latest EFS settings
-  replace:
-    path: "{{ role_path }}/files/external-storage/aws/efs/deploy/manifest.yaml"
-    regexp: '^(.*\s){{ item.key }}:\s{{ item.value.find }}$'
-    replace: '\1{{ item.key }}: {{ item.value.replace }}'
-  loop: "{{ lookup('dict', search_and_replace) }}"
-
-- fail:
-
-- name: Apply yaml files
-  shell: >
-    kubectl apply -f
-  ignore_errors: true
-  args:
-    executable: /bin/bash
-    chdir: "{{ role_path }}/files/external-storage/aws/efs/deploy"
-  loop:
-    - "rbac.yaml"
-    - "manifest.yaml"

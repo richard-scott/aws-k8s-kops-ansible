@@ -1,5 +1,5 @@
 #!/bin/bash
-STAR="$(pwd)"
+START="$(pwd)"
 cd $(dirname $(dirname ${0}))
 mkdir -p sbin
 cd sbin
