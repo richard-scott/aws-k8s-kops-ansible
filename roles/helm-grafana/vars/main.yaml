@@ -1,6 +1,3 @@
 ---
-# K8S Defaults
-k8s_namespace: default
-
 # DNS Settings
 website: "{{ k8s_namespace }}.{{ dns_zone }}"
