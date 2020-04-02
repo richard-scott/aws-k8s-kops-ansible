@@ -33,16 +33,13 @@
     tags: always
 
   - import_role:
-      name: efs-provisioner
-    tags: always
-
-  - import_role:
       name: helm-install
     tags: always
 
-#  - import_role:
-#      name: helm-efs-provisioner
-#    tags: always
+  - import_role:
+      #name: helm-efs-provisioner
+      name: efs-provisioner
+    tags: always
 
   - import_role:
       name: helm-metrics-server

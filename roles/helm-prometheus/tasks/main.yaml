@@ -9,7 +9,7 @@
     --name loki
     --namespace {{ k8s_namespace }}
     --set loki.persistence.enabled=true
-    --set loki.persistence.storageClassName="encrypted"
+    --set loki.persistence.storageClassName="aws-ebs"
     loki/loki-stack
   args:
     executable: /bin/bash
