@@ -25,7 +25,7 @@
     stable/prometheus
     --name prometheus
     --namespace "{{ k8s_namespace }}"
-    --set persistence.storageClassName="ssd"
-    --set alertmanager.persistentVolume.storageClass="encrypted"
+    --set persistence.storageClassName="aws-ebs"
+    --set alertmanager.persistentVolume.storageClass="aws-ebs"
   args:
     executable: /bin/bash

@@ -33,8 +33,16 @@
     tags: always
 
   - import_role:
+      name: efs-provisioner
+    tags: always
+
+  - import_role:
       name: helm-install
     tags: always
+
+#  - import_role:
+#      name: helm-efs-provisioner
+#    tags: always
 
   - import_role:
       name: helm-metrics-server
@@ -56,18 +64,13 @@
     tags: always
 
   - import_role:
-      #name: helm-efs-provisioner
-      name: efs-provisioner
+      name: helm-prometheus
+    vars:
+      k8s_namespace: kube-mon
+    tags: never
+
+  - import_role:
+      name: helm-nginx-ingress
+    vars:
+      use_hello_kubernetes_backend: true
     tags: always
-
-  #- import_role:
-  #    name: helm-prometheus
-  #  vars:
-  #    k8s_namespace: kube-mon
-  #  tags: never
-
-  #- import_role:
-  #    name: helm-nginx-ingress
-  #  vars:
-  #    use_hello_kubernetes_backend: true
-  #  tags: always
