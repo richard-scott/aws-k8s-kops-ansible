@@ -81,8 +81,8 @@
       - "rbac.yaml"
       - "manifest-{{ cluster_name }}.{{ dns_zone }}.yaml"
 
-    - file:
-        path: "{{ role_path }}/files/external-storage/aws/efs/deploy/manifest-{{ cluster_name }}.{{ dns_zone }}.yaml"
-        state: absent
- 
+  - file:
+      path: "{{ role_path }}/files/external-storage/aws/efs/deploy/manifest-{{ cluster_name }}.{{ dns_zone }}.yaml"
+      state: absent
+
   when: efs_state.changed
