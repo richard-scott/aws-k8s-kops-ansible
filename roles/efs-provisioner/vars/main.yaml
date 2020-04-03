@@ -1,6 +1,6 @@
 ---
 # K8S Settings
-k8s_namespace: default
+k8s_namespace: kube-storage
 
 # EFS Settings
 efs_name_tag: "{{ cluster_name }}.{{ dns_zone }}"
@@ -11,23 +11,23 @@ subnet_ids: []
 # RBAC vairables to change
 rbac_search_and_replace:
   namespace:
-    value: "default"
+    find: "default"
     replace: "{{ k8s_namespace }}"
 
 # Manifest vairables to change
 manifest_search_and_replace:
   file.system.id:
-    value: "yourEFSsystemid"
+    find: "yourEFSsystemid"
     replace: ""
   aws.region:
-    value: "regionyourEFSisin"
+    find: "regionyourEFSisin"
     replace: "{{ aws_region }}"
   provisioner.name:
-    value: "example.com/aws-efs"
+    find: "example.com/aws-efs"
     replace: "{{ efs_name_tag }}/aws-efs"
   server:
-    value: "yourEFSsystemID.efs.yourEFSregion.amazonaws.com"
+    find: "yourEFSsystemID.efs.yourEFSregion.amazonaws.com"
     replace: ""
   provisioner:
-    value: "example.com/aws-efs"
+    find: "example.com/aws-efs"
     replace: "{{ efs_name_tag }}/aws-efs"

@@ -77,16 +77,16 @@
   - name: Update "manifest-{{ cluster_name }}.{{ dns_zone }}.yaml" with our latest EFS settings
     replace:
       path: "{{ role_path }}/files/external-storage/aws/efs/deploy/manifest-{{ cluster_name }}.{{ dns_zone }}.yaml"
-      regexp: '^(.*\s){{ item.key }}:\s{{ item.value.value | regex_escape() }}$'
+      regexp: '^(.*\s){{ item.key }}:\s{{ item.value.find | regex_escape() }}$'
       replace: '\1{{ item.key }}: {{ item.value.replace }}'
-    loop: "{{ lookup('dict', manifest_search_and_replace) }}"
+    loop: "{{ lookup('dict', manifest_search_and_replace, wantlist=True) }}"
 
   - name: Update "rbac-{{ cluster_name }}.{{ dns_zone }}.yaml" with our latest EFS settings
     replace:
       path: "{{ role_path }}/files/external-storage/aws/efs/deploy/rbac-{{ cluster_name }}.{{ dns_zone }}.yaml"
-      regexp: '^(.*\s){{ item.key }}:\s{{ item.value.value | regex_escape() }}$'
+      regexp: '^(.*\s){{ item.key }}:\s{{ item.value.find | regex_escape() }}$'
       replace: '\1{{ item.key }}: {{ item.value.replace }}'
-    loop: "{{ lookup('dict', rbac_search_and_replace) }}"
+    loop: "{{ lookup('dict', rbac_search_and_replace, wantlist=True ) }}"
 
   - name: Apply yaml files
     shell: |
