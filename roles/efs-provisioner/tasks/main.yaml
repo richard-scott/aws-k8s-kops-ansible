@@ -32,6 +32,10 @@
 
 - block:
 
+  - file:
+      path: "{{ role_path }}/files/external-storage/aws/efs/deploy/manifest-{{ cluster_name }}.{{ dns_zone }}.yaml"
+      state: absent
+
   - name: "Pull updates from https://github.com/kubernetes-incubator/external-storage.git"
     git:
       repo: https://github.com/kubernetes-incubator/external-storage.git
@@ -80,9 +84,5 @@
     loop:
       - "rbac.yaml"
       - "manifest-{{ cluster_name }}.{{ dns_zone }}.yaml"
-
-  - file:
-      path: "{{ role_path }}/files/external-storage/aws/efs/deploy/manifest-{{ cluster_name }}.{{ dns_zone }}.yaml"
-      state: absent
 
   when: efs_state.changed
