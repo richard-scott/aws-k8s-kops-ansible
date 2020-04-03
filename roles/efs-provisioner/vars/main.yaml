@@ -10,22 +10,24 @@ subnet_ids: []
 
 # RBAC vairables to change
 rbac_search_and_replace:
-  namespace: "{{ k8s_namespace }}"
-  
+  namespace:
+    value: "default"
+    replace: "{{ k8s_namespace }}"
+
 # Manifest vairables to change
 manifest_search_and_replace:
   file.system.id:
-    find: "yourEFSsystemid"
+    value: "yourEFSsystemid"
     replace: ""
   aws.region:
-    find: "regionyourEFSisin"
+    value: "regionyourEFSisin"
     replace: "{{ aws_region }}"
   provisioner.name:
-    find: "example.com/aws-efs"
+    value: "example.com/aws-efs"
     replace: "{{ efs_name_tag }}/aws-efs"
   server:
-    find: "yourEFSsystemID.efs.yourEFSregion.amazonaws.com"
+    value: "yourEFSsystemID.efs.yourEFSregion.amazonaws.com"
     replace: ""
   provisioner:
-    find: "example.com/aws-efs"
+    value: "example.com/aws-efs"
     replace: "{{ efs_name_tag }}/aws-efs"
