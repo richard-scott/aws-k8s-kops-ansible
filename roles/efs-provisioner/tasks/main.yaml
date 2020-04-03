@@ -33,8 +33,11 @@
 - block:
 
   - file:
-      path: "{{ role_path }}/files/external-storage/aws/efs/deploy/manifest-{{ cluster_name }}.{{ dns_zone }}.yaml"
+      path: "{{ role_path }}/files/external-storage/aws/efs/deploy/{{ item }}-{{ cluster_name }}.{{ dns_zone }}.yaml"
       state: absent
+    loop:
+      - "rbac"
+      - "manifest"
 
   - name: "Pull updates from https://github.com/kubernetes-incubator/external-storage.git"
     git:
@@ -45,35 +48,45 @@
 
   - name: "Copy 'manifest.yaml' -> 'manifest-{{ cluster_name }}.{{ dns_zone }}.yaml'"
     copy:
-     src: "{{ role_path }}/files/external-storage/aws/efs/deploy/manifest.yaml"
-     dest: "{{ role_path }}/files/external-storage/aws/efs/deploy/manifest-{{ cluster_name }}.{{ dns_zone }}.yaml"
+     src: "{{ role_path }}/files/external-storage/aws/efs/deploy/{{ item }}.yaml"
+     dest: "{{ role_path }}/files/external-storage/aws/efs/deploy/{{ item }}-{{ cluster_name }}.{{ dns_zone }}.yaml"
     delegate_to: localhost
+    loop:
+      - "rbac"
+      - "manifest"
 
-  - name: "Update search_and_replace dictionary element 'file.system.id' to {{ efs_state['efs'].file_system_id }}"
+  - name: "Update manifest_search_and_replace dictionary element 'file.system.id' to {{ efs_state['efs'].file_system_id }}"
     set_fact:
-      search_and_replace: "{{ search_and_replace|combine( { 'file.system.id': { 'replace': efs_state['efs'].file_system_id } }, recursive=True) }}"
+      manifest_search_and_replace: "{{ manifest_search_and_replace|combine( { 'file.system.id': { 'replace': efs_state['efs'].file_system_id } }, recursive=True) }}"
 
-  - name: "Update search_and_replace dictionary element 'aws.region' to {{ aws_region }}"
+  - name: "Update manifest_search_and_replace dictionary element 'aws.region' to {{ aws_region }}"
     set_fact:
-      search_and_replace: "{{ search_and_replace|combine( { 'aws.region': { 'replace': aws_region } }, recursive=True) }}"
+      manifest_search_and_replace: "{{ manifest_search_and_replace|combine( { 'aws.region': { 'replace': aws_region } }, recursive=True) }}"
 
   - set_fact:
-      new_server: "{{ search_and_replace['file.system.id']['replace'] }}.efs.{{ aws_region }}.amazonaws.com"
+      new_server: "{{ manifest_search_and_replace['file.system.id']['replace'] }}.efs.{{ aws_region }}.amazonaws.com"
 
-  - name: "Update search_and_replace dictionary element 'server' to {{ search_and_replace['file.system.id']['replace'] }}"
+  - name: "Update manifest_search_and_replace dictionary element 'server' to {{ manifest_search_and_replace['file.system.id']['replace'] }}"
     set_fact:
-      search_and_replace: "{{ search_and_replace|combine( { 'server': { 'replace': new_server } }, recursive=True) }}"
+      manifest_search_and_replace: "{{ manifest_search_and_replace|combine( { 'server': { 'replace': new_server } }, recursive=True) }}"
 
-  - name: "Update search_and_replace dictionary element 'provisioner' to {{ search_and_replace['provisioner.name']['replace'] }}"
+  - name: "Update manifest_search_and_replace dictionary element 'provisioner' to {{ manifest_search_and_replace['provisioner.name']['replace'] }}"
     set_fact:
-      search_and_replace: "{{ search_and_replace|combine( { 'provisioner': { 'replace': search_and_replace['provisioner.name']['replace'] } }, recursive=True) }}"
+      manifest_search_and_replace: "{{ manifest_search_and_replace|combine( { 'provisioner': { 'replace': manifest_search_and_replace['provisioner.name']['replace'] } }, recursive=True) }}"
 
   - name: Update "manifest-{{ cluster_name }}.{{ dns_zone }}.yaml" with our latest EFS settings
     replace:
       path: "{{ role_path }}/files/external-storage/aws/efs/deploy/manifest-{{ cluster_name }}.{{ dns_zone }}.yaml"
       regexp: '^(.*\s){{ item.key }}:\s{{ item.value.find | regex_escape() }}$'
       replace: '\1{{ item.key }}: {{ item.value.replace }}'
-    loop: "{{ lookup('dict', search_and_replace) }}"
+    loop: "{{ lookup('dict', manifest_search_and_replace) }}"
+
+  - name: Update "rbac-{{ cluster_name }}.{{ dns_zone }}.yaml" with our latest EFS settings
+    replace:
+      path: "{{ role_path }}/files/external-storage/aws/efs/deploy/rbac-{{ cluster_name }}.{{ dns_zone }}.yaml"
+      regexp: '^(.*\s){{ item.key }}:\s{{ item.value.find | regex_escape() }}$'
+      replace: '\1{{ item.key }}: {{ item.value.replace }}'
+    loop: "{{ lookup('dict', rbac_search_and_replace) }}"
 
   - name: Apply yaml files
     shell: |
@@ -82,7 +95,7 @@
       executable: /bin/bash
       chdir: "{{ role_path }}/files/external-storage/aws/efs/deploy/"
     loop:
-      - "rbac.yaml"
+      - "rbac-{{ cluster_name }}.{{ dns_zone }}.yaml"
       - "manifest-{{ cluster_name }}.{{ dns_zone }}.yaml"
 
   when: efs_state.changed

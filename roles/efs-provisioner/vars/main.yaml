@@ -8,8 +8,12 @@ efs_name_tag: "{{ cluster_name }}.{{ dns_zone }}"
 # VPC Data
 subnet_ids: []
 
+# RBAC vairables to change
+rbac_search_and_replace:
+  namespace: "{{ k8s_namespace }}"
+  
 # Manifest vairables to change
-search_and_replace:
+manifest_search_and_replace:
   file.system.id:
     find: "yourEFSsystemid"
     replace: ""
