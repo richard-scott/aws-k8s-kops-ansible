@@ -8,6 +8,12 @@ efs_name_tag: "{{ cluster_name }}.{{ dns_zone }}"
 # VPC Data
 subnet_ids: []
 
+# Config files to update
+config_files_to_update:
+  - "rbac"
+  - "manifest"
+  - "deployment"
+
 # RBAC vairables to change
 rbac_search_and_replace:
   namespace:
@@ -31,3 +37,8 @@ manifest_search_and_replace:
   provisioner:
     find: "example.com/aws-efs"
     replace: "{{ efs_name_tag }}/aws-efs"
+
+deployment_search_and_replace:
+  server:
+    find: "fs-47a2c22e.efs.us-west-2.amazonaws.com"
+    replace: ""

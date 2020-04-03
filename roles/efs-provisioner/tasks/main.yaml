@@ -35,10 +35,8 @@
   - file:
       path: "{{ role_path }}/files/external-storage/aws/efs/deploy/{{ item }}-{{ cluster_name }}.{{ dns_zone }}.yaml"
       state: absent
-    loop:
-      - "rbac"
-      - "manifest"
-
+    loop: config_files_to_update
+    
   - name: "Pull updates from https://github.com/kubernetes-incubator/external-storage.git"
     git:
       repo: https://github.com/kubernetes-incubator/external-storage.git
@@ -51,10 +49,8 @@
      src: "{{ role_path }}/files/external-storage/aws/efs/deploy/{{ item }}.yaml"
      dest: "{{ role_path }}/files/external-storage/aws/efs/deploy/{{ item }}-{{ cluster_name }}.{{ dns_zone }}.yaml"
     delegate_to: localhost
-    loop:
-      - "rbac"
-      - "manifest"
-
+    loop: config_files_to_update
+    
   - name: "Update manifest_search_and_replace dictionary element 'file.system.id' to {{ efs_state['efs'].file_system_id }}"
     set_fact:
       manifest_search_and_replace: "{{ manifest_search_and_replace|combine( { 'file.system.id': { 'replace': efs_state['efs'].file_system_id } }, recursive=True) }}"
@@ -90,12 +86,10 @@
 
   - name: Apply yaml files
     shell: |
-      kubectl apply -f {{ item }}
+      kubectl apply -f {{ item }}-{{ cluster_name }}.{{ dns_zone }}.yaml
     args:
       executable: /bin/bash
       chdir: "{{ role_path }}/files/external-storage/aws/efs/deploy/"
-    loop:
-      - "rbac-{{ cluster_name }}.{{ dns_zone }}.yaml"
-      - "manifest-{{ cluster_name }}.{{ dns_zone }}.yaml"
-
+    loop: config_files_to_update
+    
   when: efs_state.changed
