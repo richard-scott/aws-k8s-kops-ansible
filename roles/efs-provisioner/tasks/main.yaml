@@ -90,8 +90,6 @@
     args:
       executable: /bin/bash
       chdir: "{{ role_path }}/files/external-storage/aws/efs/deploy/"
-    loop:
-      - "{{ config_files_to_update }}"
-      - "claim.yaml"
+    loop: config_files_to_update
 
   when: efs_state.changed
