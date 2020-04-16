@@ -1,3 +1,4 @@
 *.retry
 sbin
 logs
+roles/efs-provisioner/files/external-storage
