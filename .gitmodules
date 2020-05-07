@@ -1,3 +1,6 @@
 [submodule "tools/aws-export-profile"]
 	path = tools/aws-export-profile
 	url = https://github.com/cytopia/aws-export-profile
+[submodule "roles/efs-provisioner/files/external-storage"]
+	path = roles/efs-provisioner/files/external-storage
+	url = https://github.com/kubernetes-incubator/external-storage.git
