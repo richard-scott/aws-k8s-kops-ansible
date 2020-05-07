@@ -57,9 +57,9 @@
       name: helm-k8s-spot-termination-handler
     tags: always
 
-  - import_role:
-      name: helm-clamav
-    tags: always
+#  - import_role:
+#      name: helm-clamav
+#    tags: always
 
   - import_role:
       name: kubernetes-dashboard
